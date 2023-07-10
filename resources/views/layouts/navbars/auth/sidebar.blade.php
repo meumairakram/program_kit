@@ -44,6 +44,30 @@
       </li>
 
 
+      <li class="nav-item pb-2">
+        <a class="nav-link {{ (Request::is('website-management') ? 'active' : '') }}" href="{{ url('website-management') }}">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center text-dark {{ (Request::is('website-management') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+            </div>
+            <span class="nav-link-text ms-1">Websites</span>
+        </a>
+      </li>
+
+
+
+      
+      <li class="nav-item pb-2">
+        <a class="nav-link {{ (Request::is('manage-datasources') || Request::is('add-datasource') ? 'active' : '') }}" href="{{ url('manage-datasources') }}">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i style="font-size: 1rem;" class="fas fa-lg fa-list-ul ps-2 pe-2 text-center text-dark {{ (Request::is('manage-datasources')  || Request::is('add-datasource') ? 'text-white' : 'text-dark') }} " aria-hidden="true"></i>
+            </div>
+            <span class="nav-link-text ms-1">Data sources</span>
+        </a>
+      </li>
+
+
+
+
       <li class="nav-item">
         <a class="nav-link {{ (Request::is('user-profile') ? 'active' : '') }} " href="{{ url('user-profile') }}">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">

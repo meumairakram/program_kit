@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
                 'id' => 1,
                 'name' => 'admin',
                 'email' => 'admin@softui.com',
-                'password' => Hash::make('adminuser123'),
+                'password' => Hash::make('secret'),
                 'created_at' => now(),
                 'updated_at' => now()
         ]);
@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
                 'id' => 2,
                 'name' => 'Umair',
                 'email' => 'umairakram@gmail.com',
-                'password' => Hash::make('adminuser123'),
+                'password' => Hash::make('secret'),
                 'campaigns' => '2',
                 'created_at' => now(),
                 'updated_at' => now()
@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
                 'id' => 3,
                 'name' => 'Usman',
                 'email' => 'usmanakram@gmail.com',
-                'password' => Hash::make('adminuser123'),
+                'password' => Hash::make('secret'),
                 'campaigns' => '1',
                 'created_at' => now(),
                 'updated_at' => now()

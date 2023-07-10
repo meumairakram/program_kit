@@ -7,6 +7,8 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\CampaignController;
+use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\DatasourcesController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -46,11 +48,28 @@ Route::group(['middleware' => 'auth'], function () {
 		return view('rtl');
 	})->name('rtl');
 
-	Route::get('campaign-management', [CampaignController::class, 'manage'])->name('campaign-management');
-	
-	Route::post("create-campaign", [CampaignController::class, 'store'])->name("store-campaign");
 
+
+	// Camapaign Management
+	Route::get('campaign-management', [CampaignController::class, 'manage'])->name('campaign-management');
+	Route::post("create-campaign", [CampaignController::class, 'store'])->name("store-campaign");
 	Route::get('create-campaign', [CampaignController::class, 'create'])->name('create-campaign');
+
+
+
+	// websites
+	Route::get('website-management', [WebsiteController::class, 'manage'])->name('website-management');
+	Route::get('add-website', [WebsiteController::class, 'add_new'])->name('add-website');
+	Route::post('add-website', [WebsiteController::class, 'store'])->name('store-add-website');
+
+
+	// Data sources
+	Route::get('manage-datasources', [DatasourcesController::class, 'manage'])->name('manage-datasources');
+	Route::get('add-datasource', [DatasourcesController::class, 'add_new'])->name('add-datasource');
+	Route::post('add-datasource', [DatasourcesController::class, 'store'])->name('store-datasource');
+
+
+
 
 	Route::get('tables', function () {
 		return view('tables');
