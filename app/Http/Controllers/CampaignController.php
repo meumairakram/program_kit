@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\WebsitesInfo;
 use Illuminate\Http\Request;
 use App\Models\Campaign ;
+use App\Models\Datasources;
 use Illuminate\Support\Facades\Auth;
+
 
 
 class CampaignController extends Controller {
@@ -25,9 +28,16 @@ class CampaignController extends Controller {
 
     public function create() {
 
-        return view('dashboard-pages/create-campaign',array(
-            
-        ));
+
+        $current_user_id = Auth::user()->id;
+
+
+        $allWebsites = WebsitesInfo::where("owner_id", "=", $current_user_id)->get();
+
+        $allDatasources = Datasources::where("owner_id", "=", $current_user_id)->get();
+
+
+        return view('dashboard-pages/create-campaign',compact(["allWebsites", "allDatasources"]));
 
     }
 

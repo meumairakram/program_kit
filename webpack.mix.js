@@ -11,6 +11,19 @@ const mix = require('laravel-mix');
  |
  */
 
+mix.webpackConfig({
+    'resolve': {
+        'alias': {
+        'react': 'preact-compat',
+        'react-dom': 'preact-compat',
+        },
+    },
+})
+.react('app.js', 'dist/js');
+
+
+
+
 mix.js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
         //

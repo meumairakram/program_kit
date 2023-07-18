@@ -40,6 +40,7 @@ class WebsiteController extends Controller {
             'website_url' => ['required'],
             'ajax_url' => ['required'],
             'authentication_key' => ['required'],
+            'verified' => ["required"]
         ]);
 
 
@@ -59,6 +60,7 @@ class WebsiteController extends Controller {
         $website->website_url = $attributes['website_url'];
         $website->request_url = $attributes['ajax_url'];
         $website->authentication_key = $attributes['authentication_key'];
+        $website->is_authenticated = $attributes['verified'] == "1" ? "yes" : "no";
         $website->owner_id = $user->id;
         
 

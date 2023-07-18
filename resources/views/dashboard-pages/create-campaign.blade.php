@@ -40,7 +40,7 @@
                             </div>
                         @endif
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="form-group">
                                     <label for="user-name" class="form-control-label">Title</label>
                                     <div class="@error('user.name')border border-danger rounded-3 @enderror">
@@ -52,7 +52,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
@@ -68,7 +68,22 @@
                                         
                                     </div>
                                 </div>
-                            </div>                            
+                            </div>    -->
+
+                            <div class="col-md-4">
+                                <div class="form-group ps-0 form-switch">
+                                    <label class="d-block">Status</label>
+                                    <div class="d-flex align-items-center">
+                                        <label class="my-0">Paused</label>
+                                        
+                                        <input class="form-check-input mx-auto" type="checkbox" id="flexSwitchCheckDefault" checked>                         
+
+                                        <label class="my-0">Active</label>
+                                    </div>
+                                     
+                                </div>
+
+                            </div>
                         </div>
 
                         <div class="row">
@@ -83,18 +98,53 @@
                             </div>
 
                         </div>
+                    
+
+                </div>
+            </div>
 
 
-                        <div class="row">
+            <div class="card mb-4">
+                <div class="card-header pb-0 px-3">
+                    <h6 class="mb-0">Choose Website</h6>
+                </div>
+
+                <div class="card-body pt-4 p-3">
+                     <div class="row">
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="user.phone" class="form-control-label">Choose Website</label>
+                                    <label for="user.phone" class="form-control-label">Select Website Type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control" name="website">
                                             <option value="wordpress">Wordpress</option>
-                                            <option value="wordpress">Webflow</option>
-                                            <option value="wordpress">Bubble</option>
+                                            <!-- <option value="wordpress">Webflow</option>
+                                            <option value="wordpress">Bubble</option> -->
+                                        </select>
+                                        
+                                        @error('type')
+                                                <p class="text-danger text-xs mt-2">{{ $message }}</p>
+                                        @enderror
+                                        
+                                    </div>
+                                </div>  
+                            </div>  
+
+
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="user.phone" class="form-control-label">Select Website</label>
+                                    <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                        <select class="form-control" name="website">
+                                            <option value="">Select a website</option>
+                                            
+                                            @foreach($allWebsites as $website)
+
+                                                <option value="{{ $website->id }}">{{$website->website_name}} ({{$website->website_url}})</option>
+
+                                            @endforeach
+
                                         </select>
                                         
                                         @error('type')
@@ -108,7 +158,26 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="user.phone" class="form-control-label">Choose Template</label>
+                                    <label for="user.phone" class="form-control-label">Post type</label>
+                                    <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                        <select class="form-control" name="wp_template_id">
+                                            <option value="1">Template title - #18</option>
+                                            <option value="2">Template title - #19</option>
+                                            <option value="3">Bubble</option>
+                                        </select>
+                                        
+                                        @error('type')
+                                                <p class="text-danger text-xs mt-2">{{ $message }}</p>
+                                        @enderror
+                                        
+                                    </div>
+                                </div>  
+                            </div>  
+
+
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="user.phone" class="form-control-label">Template</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control" name="wp_template_id">
                                             <option value="1">Template title - #18</option>
@@ -125,12 +194,12 @@
                             </div>  
 
                         </div>
-
-                        
-                    
-
                 </div>
+
+
             </div>
+
+            
 
 
             <div class="card mb-4">
@@ -142,14 +211,27 @@
                     
                     <div class="row">
                         
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="user.location" class="form-control-label">Select data source</label>
-                                <div class="@error('user.location') border border-danger rounded-3 @enderror">
-                                    <input class="form-control" type="text" placeholder="Location" id="name" name="data_source" value="{{ auth()->user()->location }}">
-                                </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="user.phone" class="form-control-label">Data source</label>
+                                    <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                        <select class="form-control" name="website">
+                                            <option value="">-- Choose --</option>
+
+                                            @foreach($allDatasources as $ds)
+                                                <option value="{{ $ds->id }}">{{ $ds->name }} ( {{$ds->type}} )</option>
+
+                                            @endforeach
+
+                                        </select>
+                                        
+                                        @error('type')
+                                                <p class="text-danger text-xs mt-2">{{ $message }}</p>
+                                        @enderror
+                                        
+                                    </div>
+                                </div>  
                             </div>
-                        </div>
                     </div>
 
                    
@@ -162,35 +244,131 @@
 
 
 
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-header pb-0 px-3">
-                    <h6 class="mb-0">Preview Data</h6>
+                    <h6 class="mb-0">Map Data Fields</h6>
                 </div>
 
                 <div class="card-body pt-4 p-3">
                     
                     <div class="row">
                         
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="user.location" class="form-control-label">Select data source</label>
-                                <div class="@error('user.location') border border-danger rounded-3 @enderror">
-                                    <input class="form-control" type="text" placeholder="Location" id="name" name="location" value="{{ auth()->user()->location }}">
+                        <div class="col-md-8 offset-md-2">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    
+                                    <span class="text-bold">Template fields</span>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <select class="form-control" name="website">
+                                                <option value="wordpress">Some name (CSV)</option>
+                                                <option value="wordpress">Some Name (Google Sheet)</option>
+                                                <option value="wordpress">Bubble</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+
+
                                 </div>
+
+
+                                <div class="col-md-6">
+                                    <span class="text-bold">Source field</span>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <select class="form-control" name="website">
+                                                <option value="wordpress">Some name (CSV)</option>
+                                                <option value="wordpress">Some Name (Google Sheet)</option>
+                                                <option value="wordpress">Bubble</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </div>
+
                             </div>
+
+                            <!-- <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td>Template field</td>
+                                        <td>Data source field</td>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <select class="form-control" name="website">
+                                                <option value="wordpress">Some name (CSV)</option>
+                                                <option value="wordpress">Some Name (Google Sheet)</option>
+                                                <option value="wordpress">Bubble</option>
+                                            </select>
+                                        </td>
+
+                                       <td> 
+                                            <select class="form-control" name="website">
+                                                <option value="wordpress">Empty</option>
+                                                <option value="wordpress">Default value</option>
+                                                <option value="wordpress">Bubble</option>
+                                            </select>
+                                        </td>
+
+
+                                    </tr>
+
+                                </tbody>
+
+
+
+                            </table> -->
+
+
+
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-start">
-                        <button type="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4">Save &amp; Start Sync</button>
-                    </div>
-
+                   
 
                 </div>
 
-               
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header pb-0 px-3">
+                    <h6 class="mb-0">Lets save and start</h6>
+                </div>
+
+            
+                <div class="card-body pt-4 p-3">
+                    
+                    <div class="row">
+                        
+                        <div class="col-md-6">
+
+                            <div class="d-flex justify-content-start">
+                                <button type="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4">Save &amp; Start Sync</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
+
+
+            
+
 
     </form>
 

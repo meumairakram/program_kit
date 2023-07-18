@@ -78,7 +78,7 @@
                                     <div class="form-group">
                                         <label for="user.phone" class="form-control-label">Website URL</label>
                                         <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                            <input class="form-control" value="" type="text" placeholder="eg: https://www.example.com" id="website_url" name="website_url">
+                                            <input class="form-control website_url" value="" type="text" placeholder="eg: https://www.example.com" id="website_url" name="website_url">
                                                 
                                                 @error('type')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -95,7 +95,7 @@
                                     <div class="form-group">
                                         <label for="user.phone" class="form-control-label">AJAX URL</label>
                                         <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                            <input class="form-control" value="" type="text" placeholder="eg: https://www.example.com/wp-admin/admin-ajax.php" id="ajax_url" name="ajax_url">
+                                            <input class="form-control ajax_url" value="" type="text" placeholder="eg: https://www.example.com/wp-admin/admin-ajax.php" id="ajax_url" name="ajax_url">
                                             
                                             @error('type')
                                             <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -131,7 +131,7 @@
                                 <label for="user.location" class="form-control-label d-block mb-0">Authentication Key</label>
                                 <span class="text-xs mb-2 d-block ms-1">Can be found in your Wordpress dashboard under the plugin</span> 
                                 <div class="@error('user.location') border border-danger rounded-3 @enderror">
-                                    <input class="form-control" type="text" placeholder="Location" id="name" name="authentication_key" value="{{ auth()->user()->location }}">
+                                    <input class="form-control authentication_key" type="text"  placeholder="Location" id="name" name="authentication_key" value="{{ auth()->user()->location }}">
                                 </div>
                             </div>
                         </div>
@@ -141,7 +141,8 @@
                             <div class="form-group">
                                 <label for="user.location" class="form-control-label d-block mb-0">Verification Status</label>
                                 <div class="mt-2 ms-1">
-                                    <span class="text-bold">Pending</span>
+                                    <span class="text-bold verification_status" >Pending</span>
+                                    <input type="hidden" name="verified" value="0" class="website-verified" />
                                 </div>
                             </div>
                         </div>
@@ -149,7 +150,7 @@
 
 
                         
-                        <div class="d-flex justify-content-start">
+                        <div class="d-flex justify-content-start d-none save-button-wrap">
                             <button type="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4">Save Website</button>
                         </div>
                     </div>
@@ -172,4 +173,88 @@
 
         
        
+@endsection
+
+
+@section("javascript")
+
+    <script>
+        jQuery(function($) {
+
+            $('.website_url').change(autoFillAjaxUrl);
+
+            function autoFillAjaxUrl(e) {
+
+                var website_url = $(e.target).val();
+                    
+                var websiteUrl = new URL(website_url);
+
+
+                $('.ajax_url').val(websiteUrl.origin + "/wp-admin/admin-ajax.php")
+            
+            }
+
+
+
+            var fieldsToWatch = [".website_url",".ajax_url", ".authentication_key"];
+
+            function handleWebsiteAuthentication(e) {
+
+                var website_url = $('.website_url').val();
+                var ajax_url = $('.ajax_url').val();
+
+                var auth_key = $('.authentication_key').val();
+
+                var urlToAuthenticate = ajax_url + "?action=pseo_validate_auth_key" + "&auth_key="  + auth_key;
+
+                if(website_url == "" || ajax_url == "" || auth_key == "") {
+                    
+                    return false;
+                
+                }
+
+
+            
+                $.ajax({
+
+                    method:"GET",
+                    url: urlToAuthenticate,
+                    success: function(response) {
+                        
+                        if(response.success) {
+                            $('.verification_status').html("VERIFIED");
+                            $('.save-button-wrap').removeClass('d-none');
+                            $('.website-verified').val('1');
+
+
+                        } else {
+                            $('.verification_status').html("FAILED");
+                        }
+                        // console.log(response);
+                    
+                    },
+                    error: function(error) {
+
+                        $('.verification_status').html("FAILED");
+
+                        console.log(error);
+                    
+                    }
+                });
+                    
+                    
+            }
+
+
+            fieldsToWatch.forEach(function(item) {
+
+                $(item).change(handleWebsiteAuthentication);
+            
+            });
+        
+        })
+
+    </script>
+
+
 @endsection

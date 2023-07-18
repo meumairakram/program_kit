@@ -17,3 +17,37 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::post('/csv-preview', function(Request $request) {
+
+    $csv_data = $request->file('csv_file');
+
+    if(!$csv_data) {
+
+        return response()->json([
+
+            "success" => false,
+            "data" => []
+        
+        ]);
+    
+    }
+
+    $csvData = array_map("str_getcsv", file($csv_data));
+
+    $csvHeaders = $csvData[0];
+
+    $first_10_records = array_slice($csvData, 1, 10);
+
+    // dd($first_10_records);
+    return response()->json([
+        "success" => true,
+        "data" => array(
+           "headers" => $csvHeaders,
+           "preview_rows" => $first_10_records
+        )
+    ]);
+
+
+});

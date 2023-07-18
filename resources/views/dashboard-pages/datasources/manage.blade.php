@@ -25,6 +25,19 @@
                         <a href="{{url('add-datasource')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Connect new</a>
                     </div>
                 </div>
+
+
+                @if(session('success'))
+                    <div class="m-3  alert alert-success alert-dismissible fade show" id="alert-success" role="alert">
+                        <span class="alert-text text-white">
+                        {{ session('success') }}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                @endif
+
+                
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
@@ -88,7 +101,7 @@
                                         <td class="text-center">
                                             <span class="text-secondary text-xs font-weight-bold">
                                                 @php
-                                                   echo ($web->created_at)->format('m/d/Y');
+                                                   echo ($dsource->created_at)->format('m/d/Y');
                                                 @endphp
 
                                             </span>

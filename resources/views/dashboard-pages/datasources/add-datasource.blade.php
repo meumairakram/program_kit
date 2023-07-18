@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <form class="container-fluid py-4" action="{{ route('store-add-website') }}" method="POST" role="form text-left">
+    <form class="container-fluid py-4" action="{{ route('store-datasource') }}" method="POST" enctype="multipart/form-data" role="form text-left">
             <div class="card mb-4">
                 <div class="card-header pb-0 px-3">
                     <div class="d-flex align-items-center justify-content-between">
@@ -112,7 +112,7 @@
 
 
 
-            <div class="card mb-4">
+            <div class="card mb-4 data-preview d-none">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Preview your Database</h6>
                 </div>
@@ -124,7 +124,7 @@
                         <div class="col-md-10">
                             
                             <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
+                                <table class="table align-items-center mb-0 preview-data-table">
                                     <thead>
 
                                     
@@ -225,4 +225,105 @@
 
         
        
+@endsection
+
+
+@section('javascript')
+
+    <script>
+        
+        jQuery(function($) {
+
+            $('input[name="csv_file"]').change(function(e) {
+
+                var formValues = new FormData();
+
+               
+                formValues.append('csv_file', e.target.files[0]);
+                formValues.append('name',"Umair");
+
+                jQuery.ajax({
+                    method: "POST",
+                    url: "/api/csv-preview",
+                    data: formValues,
+                    processData: false,
+                    contentType: false, // Set contentType to false to allow the browser to set the correct content type for the FormData object
+
+                    success: function(res) {
+
+
+                        if(!res.success ) {
+
+                            if(!$('.data-preview').hasClass('d-none')) {
+                                
+                                $('.data-preview').addClass('d-none');
+                                
+                            }
+
+                            $('.data-preview thead tr').html("");
+                            $('.data-preview tbody tr').html("");
+                        }
+
+
+                        var headers = res.data.headers;
+
+                        var rows = res.data.preview_rows;
+
+
+                        if(headers.length < 1){
+                            return false;
+                        }
+
+
+                        $('.data-preview').removeClass('d-none');
+
+                        $('.data-preview thead tr').html("");
+                        $('.data-preview tbody tr').html("");
+
+
+                        var headersToPreview = headers.length < 7 ? headers : headers.splice(0, 6)
+
+                        headersToPreview.forEach(function(item, index) {
+    
+    
+                            $('.data-preview thead tr').append(`<th>${item}</th>`);
+                        
+                        });
+
+                        
+                        rows.forEach(function(item, index) {
+
+                            elemRow = $('<tr></tr>');
+
+                            item.forEach(function(rowItem, rowIndex) {
+                                elemRow.append(`<td>${rowItem}</td>`)
+                            })
+                            
+                            
+                            $('.data-preview tbody').append(elemRow);
+
+                            // elemRow
+                        
+                        })
+
+
+                        // console.log(res);
+                    }
+                })
+
+            })
+        
+        })
+
+
+    </script>
+
+
+    <style>
+        tr td, tr th {
+            text-align:center;
+        }
+
+    </style>
+
 @endsection
