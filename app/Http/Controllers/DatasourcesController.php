@@ -6,6 +6,7 @@ use App\Models\Datasources;
 use Illuminate\Http\Request;
 use App\Models\Campaign ;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
@@ -119,17 +120,64 @@ class DatasourcesController extends Controller {
 
         $datasource->save();
 
-
-        // title
-
-        
-
-
         return redirect()->route('manage-datasources')->with('success', 'Data source added successfully!');
         // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');
         // store-campaign
+    }
 
+    public function edit(Request $request, $id) {
 
+        $datasources = DB::table('user_datasources')->where('id', $id)->first();
+
+        return view('dashboard-pages/datasources/edit-datasource',[
+            'datasource' => $datasources
+        ]);
+
+    }
+
+    public function update(Request $request, Datasources $datasources) {
+
+        $customErrors = new MessageBag();
+        if(!Auth::check()) {
+            $customErrors->add("some_error", "You are not authroized");
+        }
+
+        $csv_data = $request->file('csv_file');
+        if(!$csv_data) {
+          $customErrors->add("some_error", "CSV is Invalid.");
+        }
+        $errors = $request->session()->get('errors', new MessageBag())->merge($customErrors);
+        if($errors->any()) {
+            return redirect()->back()->withErrors($errors);
+        }
+        $csvData = array_map("str_getcsv", file($csv_data));
+        $recordCount = count($csvData) - 1;
+
+        $user = Auth::user();
+        $randomKey = uniqid();
+        $userId = $user->id;
+
+        $directory = "storage/user_datasources/{$userId}";
+        if (!Storage::exists($directory)) {
+            Storage::makeDirectory($directory);
+        }
+
+        $originalFileName = $csv_data->getClientOriginalName();
+        $cleanedFileName = Str::slug(pathinfo($originalFileName, PATHINFO_FILENAME));
+        $fileExtension = $csv_data->getClientOriginalExtension();
+        $finalFileName = "{$cleanedFileName}_{$randomKey}.{$fileExtension}";
+        $filePath = $csv_data->storeAs($directory, $finalFileName);
+
+        $datasource =  Datasources::find($request->id);
+        $datasource->name = $request->input('name');
+        $datasource->type = $request->input('type');
+        $datasource->requires_mapping = false;
+        $datasource->records_count = $recordCount;
+        $datasource->file_path = $filePath; 
+        $datasource->last_synced = now();
+        $datasource->save();
+
+        return redirect()->route('manage-datasources')->with('success', 'Data source Updated successfully!');
 
     }
 

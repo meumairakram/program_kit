@@ -215,12 +215,11 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Data source</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control" name="website">
+                                        <select class="form-control" name="website" id="dataSource">
                                             <option value="">-- Choose --</option>
 
                                             @foreach($allDatasources as $ds)
-                                                <option value="{{ $ds->id }}">{{ $ds->name }} ( {{$ds->type}} )</option>
-
+                                                <option value="{{ $ds->file_path }}">{{ $ds->name }} ( {{$ds->type}} )</option>
                                             @endforeach
 
                                         </select>
@@ -281,11 +280,14 @@
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <select class="form-control" name="website">
+                                            <select class="form-control csv-headers" name="website" id="csvHeaders">
+                                                <option value="">-- Select Data Source First --</option>
+                                            </select>
+                                            <!-- <select class="form-control" name="website">
                                                 <option value="wordpress">Some name (CSV)</option>
                                                 <option value="wordpress">Some Name (Google Sheet)</option>
                                                 <option value="wordpress">Bubble</option>
-                                            </select>
+                                            </select> -->
                                         </div>
 
                                     </div>
@@ -366,13 +368,51 @@
 
             </div>
 
-
-            
-
-
     </form>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<script>
+    document.getElementById('dataSource').addEventListener('change', function(e) {
+        const selectedFilePath = this.value;
+        if (selectedFilePath === '') {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('csv_file', selectedFilePath);
+
+        $.ajax({
+            method: "POST",
+            url: "/api/csv-extract", 
+            data: formData,
+            processData: false, 
+            contentType: false, 
+            success: function(res) {
+                console.log(res)
+                if (!res.success) {
+                    console.error('Error: ', res.message);
+                    $('#csvHeaders').html('<option value="">-- Choose --</option>');
+                    return;
+                }
+
+                const csvHeadersSelect = $('#csvHeaders');
+                csvHeadersSelect.empty(); 
+
+                const headers = res.data.headers;
+                csvHeadersSelect.append('<option value="">Choose Fields of selected file</option>'); 
+                headers.forEach(header => {
+                    csvHeadersSelect.append(`<option value="${header}">${header}</option>`);
+                });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Handle the AJAX error if needed
+                console.error('AJAX Error:', textStatus, errorThrown);
+                $('#csvHeaders').html('<option value="">-- Choose --</option>');
+            }
+        });
+    });
+</script>
         
 
         

@@ -51,3 +51,28 @@ Route::post('/csv-preview', function(Request $request) {
 
 
 });
+
+Route::post('/csv-extract', function(Request $request) {
+    $file_path = $request->input('csv_file'); 
+
+    $absolute_file_path = storage_path('app/'.$file_path);
+
+    if (!file_exists($absolute_file_path)) {
+        return response()->json([
+            "success" => false,
+            "data" => []
+        ]);
+    }
+
+    $csvData = array_map("str_getcsv", file($absolute_file_path));
+    $csvHeaders = $csvData[0];
+    $first_10_records = array_slice($csvData, 1, 10);
+
+    return response()->json([
+        "success" => true,
+        "data" => array(
+            "headers" => $csvHeaders,
+            "preview_rows" => $first_10_records
+        )
+    ]);
+});

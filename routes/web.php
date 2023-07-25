@@ -67,6 +67,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('manage-datasources', [DatasourcesController::class, 'manage'])->name('manage-datasources');
 	Route::get('add-datasource', [DatasourcesController::class, 'add_new'])->name('add-datasource');
 	Route::post('add-datasource', [DatasourcesController::class, 'store'])->name('store-datasource');
+	Route::get('edit-datasource/{id}', [DatasourcesController::class, 'edit'])->name('edit-datasource');
+	Route::post('edit-datasource', [DatasourcesController::class, 'update'])->name('update-datasource');
 
 
 
