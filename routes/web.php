@@ -61,6 +61,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('website-management', [WebsiteController::class, 'manage'])->name('website-management');
 	Route::get('add-website', [WebsiteController::class, 'add_new'])->name('add-website');
 	Route::post('add-website', [WebsiteController::class, 'store'])->name('store-add-website');
+	Route::get('edit-website/{id}', [WebsiteController::class, 'edit'])->name('edit-website');
+	Route::post('edit-website', [WebsiteController::class, 'update'])->name('update-website');
 
 
 	// Data sources
