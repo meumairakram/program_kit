@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <input type="hidden" name="id" value="{{$datasource->id}}">
-                    <input type="hidden" name="updateid" value="{{ $datasource->id }}"/>
+                    <!-- <input type="hidden" name="updateid" value="{{ $datasource->id }}"/> -->
                 
                 </div>
             </div>

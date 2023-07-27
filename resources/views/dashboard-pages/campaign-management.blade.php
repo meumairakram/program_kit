@@ -25,6 +25,15 @@
                         <a href="{{url('create-campaign')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Create New</a>
                     </div>
                 </div>
+                @if(session('success'))
+                    <div class="m-3  alert alert-success alert-dismissible fade show" id="alert-success" role="alert">
+                        <span class="alert-text text-white">
+                        {{ session('success') }}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                @endif
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
@@ -84,7 +93,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <a href="#" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit user">
+                                            <a href="{{ url('edit-campaign')}}/{{$camp->id}}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit user">
                                                 <i class="fas fa-user-edit text-secondary"></i>
                                             </a>
                                             <span>

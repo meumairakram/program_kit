@@ -54,6 +54,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('campaign-management', [CampaignController::class, 'manage'])->name('campaign-management');
 	Route::post("create-campaign", [CampaignController::class, 'store'])->name("store-campaign");
 	Route::get('create-campaign', [CampaignController::class, 'create'])->name('create-campaign');
+	Route::get('edit-campaign/{id}', [CampaignController::class, 'edit'])->name('edit-campaign');
+	Route::post('edit-campaign', [CampaignController::class, 'update'])->name('update-campaign');
 
 
 

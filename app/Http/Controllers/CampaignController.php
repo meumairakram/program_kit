@@ -73,20 +73,38 @@ class CampaignController extends Controller {
         
 
         $campaign->save();
-
-
         // title
-
-        
-
-
         return redirect()->route('campaign-management')->with('success', 'Campaign created successfully!');
         // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');
         // store-campaign
-
-
-
     }
 
+    public function edit(Request $request, $id) {
+
+        $current_user_id = Auth::user()->id;
+        $campaign = Campaign::where('id', $id)->first();       
+        $allWebsites = WebsitesInfo::where("owner_id", "=", $current_user_id)->get();
+        $allDatasources = Datasources::where("owner_id", "=", $current_user_id)->get();
+        return view('dashboard-pages/edit-campaign',compact(["campaign", "allWebsites", "allDatasources"]));
+    }
+
+    public function update(Request $request, Campaign $campaign) {
+
+        if(!Auth::check()) {
+           // User not logged in
+        }
+
+        $user = Auth::user();
+        $campaign =  Campaign::find($request->id);
+        $campaign->title = $request->title;
+        $campaign->description = $request->description;
+        $campaign->wp_template_id = $request->wp_template_id;
+        $campaign->type = $request->type;
+        $campaign->status = 'ready';
+        $campaign->owner_id = $user->id;
+        $campaign->save();
+
+        return redirect()->route('campaign-management')->with('success', 'Campaign Updated successfully!');
+    }
 
 }
