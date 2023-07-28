@@ -25,10 +25,10 @@
                         <a href="{{url('create-campaign')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Create New</a>
                     </div>
                 </div>
-                @if(session('success'))
+                @if(session('message'))
                     <div class="m-3  alert alert-success alert-dismissible fade show" id="alert-success" role="alert">
                         <span class="alert-text text-white">
-                        {{ session('success') }}</span>
+                        {{ session('message') }}</span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                             <i class="fa fa-close" aria-hidden="true"></i>
                         </button>

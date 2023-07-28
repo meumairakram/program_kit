@@ -104,7 +104,7 @@ class CampaignController extends Controller {
         $campaign->owner_id = $user->id;
         $campaign->save();
 
-        return redirect()->route('campaign-management')->with('success', 'Campaign Updated successfully!');
+        return redirect()->route('campaign-management')->with('message', 'Campaign Updated successfully!');
     }
 
 }
