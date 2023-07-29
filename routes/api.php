@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\FakeApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -75,4 +76,26 @@ Route::post('/csv-extract', function(Request $request) {
             "preview_rows" => $first_10_records
         )
     ]);
+
+
 });
+
+
+
+
+
+
+/// FAKE API ENDPOINTS START HERE
+
+
+Route::get('/get_post_types', [FakeApiController::class, 'getPostTypes']);
+Route::post('/get_templates_by_type', [FakeApiController::class, 'getPostsByType']);
+Route::get('/get_template_vars', [FakeApiController::class, 'getTemplateVarsById']);
+
+Route::get('/validate_auth_key', [FakeApiController::class, 'validateAuthKey']);
+
+
+
+
+
+/// FAKE API ENDOINTS END HERE
