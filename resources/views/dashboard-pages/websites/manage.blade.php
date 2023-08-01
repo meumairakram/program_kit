@@ -105,7 +105,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{ url('edit-website')}}/{{$web->id}}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit user">
+                                            <a href="{{ url('edit-website')}}/{{$web->id}}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit Website">
                                                 <i class="fas fa-user-edit text-secondary"></i>
                                             </a>
                                             <span>
