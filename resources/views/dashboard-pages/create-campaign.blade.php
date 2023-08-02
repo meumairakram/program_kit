@@ -392,7 +392,7 @@
                 console.log(res)
                 if (!res.success) {
                     console.error('Error: ', res.message);
-                    $('#csvHeaders').html('<option value="">-- Choose --</option>');
+                    $('#csvHeaders').html('<option value="">Nothing Fetched</option>');
                     return;
                 }
 
@@ -400,7 +400,7 @@
                 csvHeadersSelect.empty(); 
 
                 const headers = res.data.headers;
-                csvHeadersSelect.append('<option value="">Choose Fields of selected file</option>'); 
+                csvHeadersSelect.append('<option value=""> </option>'); 
                 headers.forEach(header => {
                     csvHeadersSelect.append(`<option value="${header}">${header}</option>`);
                 });
