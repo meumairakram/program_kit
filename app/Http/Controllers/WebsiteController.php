@@ -66,7 +66,7 @@ class WebsiteController extends Controller {
         $website->owner_id = $user->id;
         $website->save();
 
-        return redirect()->route('website-management')->with('success', 'Website added successfully!');
+        return redirect()->route('website-management')->with('message', 'Website added successfully!');
         // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');
         // store-campaign
 
@@ -102,9 +102,18 @@ class WebsiteController extends Controller {
         $website->owner_id = $user->id;
         $website->save();
 
-        return redirect()->route('website-management')->with('success', 'Website Updated successfully!');
+        return redirect()->route('website-management')->with('message', 'Website Updated successfully!');
     }
 
+    public function delete(Request $request, $id) 
+    {
+        WebsitesInfo::destroy(array('id',$id));
+        $current_user_id = Auth::user()->id;
+        $websites = WebsitesInfo::where('owner_id', $current_user_id)->get();  
+        return redirect()->route('website-management',array(
+            'websites' => $websites
+        ))->with('message', 'Website Deleted successfully!');
 
+    }
 
 }

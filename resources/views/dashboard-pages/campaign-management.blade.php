@@ -97,7 +97,9 @@
                                                 <i class="fas fa-user-edit text-secondary"></i>
                                             </a>
                                             <span>
+                                            <a href="{{ url('delete-campaign')}}/{{$camp->id}}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Delete Campaign">
                                                 <i class="cursor-pointer fas fa-trash text-secondary"></i>
+                                            </a>
                                             </span>
                                         </td>
                                     </tr>

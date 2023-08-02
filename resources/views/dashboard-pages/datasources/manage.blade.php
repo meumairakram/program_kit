@@ -27,10 +27,10 @@
                 </div>
 
 
-                @if(session('success'))
+                @if(session('message'))
                     <div class="m-3  alert alert-success alert-dismissible fade show" id="alert-success" role="alert">
                         <span class="alert-text text-white">
-                        {{ session('success') }}</span>
+                        {{ session('message') }}</span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                             <i class="fa fa-close" aria-hidden="true"></i>
                         </button>
@@ -111,7 +111,9 @@
                                                 <i class="fas fa-user-edit text-secondary"></i>
                                             </a>
                                             <span>
+                                            <a href="{{ url('delete-datasource')}}/{{$dsource->id}}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Delete DataSource">
                                                 <i class="cursor-pointer fas fa-trash text-secondary"></i>
+                                            </a>
                                             </span>
                                         </td>
                                     </tr>

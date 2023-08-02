@@ -56,6 +56,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('create-campaign', [CampaignController::class, 'create'])->name('create-campaign');
 	Route::get('edit-campaign/{id}', [CampaignController::class, 'edit'])->name('edit-campaign');
 	Route::post('edit-campaign', [CampaignController::class, 'update'])->name('update-campaign');
+	Route::get('delete-campaign/{id}', [CampaignController::class, 'delete'])->name('delete-campaign');
 
 
 
@@ -65,6 +66,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('add-website', [WebsiteController::class, 'store'])->name('store-add-website');
 	Route::get('edit-website/{id}', [WebsiteController::class, 'edit'])->name('edit-website');
 	Route::post('edit-website', [WebsiteController::class, 'update'])->name('update-website');
+	Route::get('delete-website/{id}', [WebsiteController::class, 'delete'])->name('delete-website');
 
 
 	// Data sources
@@ -73,6 +75,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('add-datasource', [DatasourcesController::class, 'store'])->name('store-datasource');
 	Route::get('edit-datasource/{id}', [DatasourcesController::class, 'edit'])->name('edit-datasource');
 	Route::post('edit-datasource', [DatasourcesController::class, 'update'])->name('update-datasource');
+	Route::get('delete-datasource/{id}', [DatasourcesController::class, 'delete'])->name('delete-datasource');
 
 
 

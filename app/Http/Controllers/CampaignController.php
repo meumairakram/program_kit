@@ -74,7 +74,7 @@ class CampaignController extends Controller {
 
         $campaign->save();
         // title
-        return redirect()->route('campaign-management')->with('success', 'Campaign created successfully!');
+        return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');
         // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');
         // store-campaign
     }
@@ -105,6 +105,17 @@ class CampaignController extends Controller {
         $campaign->save();
 
         return redirect()->route('campaign-management')->with('message', 'Campaign Updated successfully!');
+    }
+
+    public function delete(Request $request, $id) 
+    {
+        Campaign::destroy(array('id',$id));
+        $current_user_id = Auth::user()->id;
+        $campaigns = Campaign::where('owner_id', $current_user_id)->get();  
+        return redirect()->route('campaign-management',array(
+            'campaigns' => $campaigns
+        ))->with('message', 'Campaign Deleted successfully!');
+
     }
 
 }

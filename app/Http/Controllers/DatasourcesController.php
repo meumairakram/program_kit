@@ -120,7 +120,7 @@ class DatasourcesController extends Controller {
 
         $datasource->save();
 
-        return redirect()->route('manage-datasources')->with('success', 'Data source added successfully!');
+        return redirect()->route('manage-datasources')->with('message', 'Data source added successfully!');
         // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');
         // store-campaign
     }
@@ -177,9 +177,20 @@ class DatasourcesController extends Controller {
         $datasource->last_synced = now();
         $datasource->save();
 
-        return redirect()->route('manage-datasources')->with('success', 'Data source Updated successfully!');
+        return redirect()->route('manage-datasources')->with('message', 'Data source Updated successfully!');
 
     }
 
+    public function delete(Request $request, $id) 
+    {
+        // $datasource =  Datasources::find($id);
+        Datasources::destroy(array('id',$id));
+        $current_user_id = Auth::user()->id;
+        $datasources = Datasources::where('owner_id', $current_user_id)->get();  
+
+        return redirect()->route('manage-datasources',array(
+            'datasources' => $datasources
+        ))->with('message', 'Data source Deleted successfully!');
+    }
 
 }
