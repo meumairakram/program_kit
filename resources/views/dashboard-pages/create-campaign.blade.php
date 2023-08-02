@@ -98,13 +98,15 @@
                             </div>
 
                         </div>
-                    
+                        <div class="d-flex justify-content-start">
+                            <button type="button" id="nextButton" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                        </div>
 
                 </div>
             </div>
 
 
-            <div class="card mb-4">
+            <div class="card mb-4 d-none website">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Choose Website</h6>
                 </div>
@@ -194,15 +196,16 @@
                             </div>  
 
                         </div>
+                        <div class="d-flex justify-content-start">
+                                <button type="button" id="webNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                        </div>
                 </div>
-
-
             </div>
 
             
 
 
-            <div class="card mb-4">
+            <div class="card mb-4 d-none datasource">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Connect/Choose Data Source</h6>
                 </div>
@@ -231,19 +234,17 @@
                                     </div>
                                 </div>  
                             </div>
+                    </div> 
+                    <div class="d-flex justify-content-start">
+                        <button type="button" id="datasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
                     </div>
 
-                   
-
                 </div>
-
-               
-
             </div>
 
 
 
-            <div class="card mb-4">
+            <div class="card mb-4 d-none mapdata">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Map Data Fields</h6>
                 </div>
@@ -337,14 +338,15 @@
                         </div>
                     </div>
 
-                   
+                    <div class="d-flex justify-content-start">
+                        <button type="button" id="mapdataNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                    </div>
 
                 </div>
-
             </div>
 
 
-            <div class="card">
+            <div class="card d-none SaveAndStart">
 
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Lets save and start</h6>
@@ -412,6 +414,31 @@
             }
         });
     });
+
+
+// next button dependency
+
+        $('#nextButton').on('click', function(e) {
+            e.preventDefault();
+            $('.website').removeClass('d-none');
+        });
+
+        $('#webNext').on('click', function(e) {
+            e.preventDefault();
+            $('.datasource').removeClass('d-none');
+        });
+
+        $('#datasourceNext').on('click', function(e) {
+            e.preventDefault();
+            $('.mapdata').removeClass('d-none');
+        });
+        
+        $('#mapdataNext').on('click', function(e) {
+            e.preventDefault();
+            $('.SaveAndStart').removeClass('d-none');
+        });
+       
+
 </script>
         
 
