@@ -58,6 +58,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('edit-campaign', [CampaignController::class, 'update'])->name('update-campaign');
 	Route::get('delete-campaign/{id}', [CampaignController::class, 'delete'])->name('delete-campaign');
 
+    Route::post('/websites_type', [CampaignController::class, 'selectWebSite']);
 
 
 	// websites

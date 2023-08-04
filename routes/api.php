@@ -90,7 +90,7 @@ Route::post('/csv-extract', function(Request $request) {
 
 Route::get('/get_post_types', [FakeApiController::class, 'getPostTypes']);
 Route::post('/get_templates_by_type', [FakeApiController::class, 'getPostsByType']);
-Route::get('/get_template_vars', [FakeApiController::class, 'getTemplateVarsById']);
+Route::post('/get_template_vars', [FakeApiController::class, 'getTemplateVarsById']);
 
 Route::get('/validate_auth_key', [FakeApiController::class, 'validateAuthKey']);
 

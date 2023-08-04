@@ -118,4 +118,23 @@ class CampaignController extends Controller {
 
     }
 
+    public function selectWebSite(Request $request) 
+    {
+        $type = $request->input('type');
+
+        if(!$type) {
+            return response()->json([
+                "success" => false,
+                "data" => []
+            ]);
+        }
+        
+        $current_user_id = Auth::user()->id;
+        $websites = WebsitesInfo::where("owner_id", "=", $current_user_id)->where("type", $type)->get();
+        return response()->json([
+            "success" => true,
+            "websites" => $websites
+        ]);
+    }
+
 }

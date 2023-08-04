@@ -104,7 +104,7 @@ class FakeApiController extends Controller {
 
     public function getTemplateVarsById(Request $request) {
 
-        $template_id = $request->query('post_id');
+        $template_id = $request->input('post_id');
 
         $variables = array();
 
