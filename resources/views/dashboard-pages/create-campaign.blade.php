@@ -102,6 +102,12 @@
                             <button type="button" id="nextButton" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
                         </div>
 
+                        <div class="mt-3  alert alert-primary alert-dismissible fade show d-none firstError" role="alert">
+                            <span class="alert-text text-white">You have to fill all the required fields to proceed next.</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                <i class="fa fa-close" aria-hidden="true"></i>
+                            </button>
+                        </div>
                 </div>
             </div>
 
@@ -197,6 +203,13 @@
                         <div class="d-flex justify-content-start">
                                 <button type="button" id="webNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
                         </div>
+
+                        <div class="mt-3  alert alert-primary alert-dismissible fade show d-none secondError" role="alert">
+                            <span class="alert-text text-white">You have to fill 'Website' section completely to proceed next.</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                <i class="fa fa-close" aria-hidden="true"></i>
+                            </button>
+                        </div>
                 </div>
             </div>
 
@@ -235,6 +248,13 @@
                     </div> 
                     <div class="d-flex justify-content-start">
                         <button type="button" id="datasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                    </div>
+
+                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none thirdError" role="alert">
+                        <span class="alert-text text-white">You have to fill 'Data Source' section completely to proceed next.</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
                     </div>
 
                 </div>
@@ -339,6 +359,13 @@
 
                     <div class="d-flex justify-content-start">
                         <button type="button" id="mapdataNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                    </div>
+
+                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none fourthError" role="alert">
+                        <span class="alert-text text-white">You have to fill 'Map Data' section completely to proceed next.</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
                     </div>
 
                 </div>
@@ -589,14 +616,11 @@
         });
         if(isValid == true){
             $('.website').removeClass('d-none');
+            $('.firstError').addClass('d-none');
         }
         else{
-            Swal.fire({
-                text: "You have to fill all the required fields to proceed next.",
-                icon: "error",
-            });
+            $('.firstError').removeClass('d-none');
         }
-
     });
 
     $('#webNext').on('click', function(e) {
@@ -609,12 +633,10 @@
         });
         if(isValid == true){
             $('.datasource').removeClass('d-none');
+            $('.secondError').addClass('d-none');
         }
         else{
-            Swal.fire({
-                text: "You have to fill 'Website' section completely to proceed next.",
-                icon: "error",
-            });
+            $('.secondError').removeClass('d-none');
         }
     });
 
@@ -628,12 +650,10 @@
         });
         if(isValid == true){
             $('.mapdata').removeClass('d-none');
+            $('.thirdError').addClass('d-none');
         }
         else{
-            Swal.fire({
-                text: "You have to fill 'Data Source' section completely to proceed next.",
-                icon: "error",
-            });
+            $('.thirdError').removeClass('d-none');
         }
     });
 
@@ -647,12 +667,10 @@
         });
         if(isValid == true){
             $('.SaveAndStart').removeClass('d-none');
+            $('.fourthError').addClass('d-none');
         }
         else{
-            Swal.fire({
-                text: "You have to fill 'Map Data' section completely to proceed next.",
-                icon: "error",
-            });
+            $('.fourthError').removeClass('d-none');
         }
     });
     // next button dependency section ends
