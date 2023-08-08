@@ -49,49 +49,26 @@ class DatasourcesController extends Controller {
 
 
         ]);
-
-
         $customErrors = new MessageBag();
-
         if(!Auth::check()) {
-
             // User not logged in
             $customErrors->add("some_error", "You are not authroized");
-
         }
-
-
-
 
         $csv_data = $request->file('csv_file');
-
         if(!$csv_data) {
-
           $customErrors->add("some_error", "CSV is Invalid.");
-        
         }
-
         $errors = $request->session()->get('errors', new MessageBag())->merge($customErrors);
-
         if($errors->any()) {
-
-
             return redirect()->back()->withErrors($errors);
         }
-
         $csvData = array_map("str_getcsv", file($csv_data));
-
         $recordCount = count($csvData) - 1;
-
         $user = Auth::user();
-
-
-
         $randomKey = uniqid();
-
         // Get the user's ID to create a user-specific directory
         $userId = $user->id;
-
         // Create the directory if it doesn't exist
         $directory = "storage/user_datasources/{$userId}";
         if (!Storage::exists($directory)) {
@@ -128,9 +105,18 @@ class DatasourcesController extends Controller {
     public function edit(Request $request, $id) {
 
         $datasources = DB::table('user_datasources')->where('id', $id)->first();
+        $file_path = $datasources->file_path; 
+        $absolute_file_path = storage_path('app/'.$file_path);
+
+        $csvData = array_map("str_getcsv", file($absolute_file_path));
+        $csvHeaders = $csvData[0];
+        $first_10_records = array_slice($csvData, 1, 10);
 
         return view('dashboard-pages/datasources/edit-datasource',[
-            'datasource' => $datasources
+            'datasource' => $datasources,
+            'absolute_file_path' => $absolute_file_path,
+            'csvHeaders' => $csvHeaders,
+            'first_10_records' => $first_10_records
         ]);
 
     }

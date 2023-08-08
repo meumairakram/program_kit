@@ -57,7 +57,8 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control" name="type">
+                                        <select class="form-control" name="type" id="selectType">
+                                            <option value="csv"> </option>
                                             <option value="csv">CSV</option>
                                             <option value="airtable">Airtable</option>
                                             <option value="google_sheet">Google sheet</option>
@@ -71,21 +72,16 @@
                                 </div>
                             </div>                            
                         </div>
-                    
-
                 </div>
             </div>
 
 
-            <div class="card mb-4">
+            <div class="card mb-4 uploadCSV d-none">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Upload your database</h6>
                 </div>
-
                 <div class="card-body pt-4 p-3">
-                    
                     <div class="row">
-                        
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="user.location" class="form-control-label d-block mb-0">Upload file</label>
@@ -94,19 +90,28 @@
                                     <input class="form-control" type="file" placeholder="Location" id="name" name="csv_file" value="">
                                 </div>
                             </div>
-                        </div>
-
-
-                        
-                       
+                        </div>  
                     </div>
-
-                   
-
                 </div>
+            </div>
 
-               
-
+            <div class="card mb-4 uploadGoogleSheets d-none">
+                <div class="card-header pb-0 px-3">
+                    <h6 class="mb-0">Create google sheet</h6>
+                </div>
+                <div class="card-body pt-4 p-3">
+                    <div class="row"> 
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="user.location" class="form-control-label d-block mb-0">Upload sheet</label>
+                                <span class="text-xs mb-2 d-block ms-1">Upload your Google sheet</span> 
+                                <div class="@error('user.location') border border-danger rounded-3 @enderror">
+                                    <input class="form-control" type="file" placeholder="Location" id="name" name="csv_file" value="">
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
             </div>
 
 
@@ -116,18 +121,12 @@
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Preview your Database</h6>
                 </div>
-
                 <div class="card-body pt-4 p-3">
-                    
                     <div class="row">
-                        
                         <div class="col-md-10">
-                            
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0 preview-data-table">
                                     <thead>
-
-                                    
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 ID
@@ -144,7 +143,6 @@
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Status
                                             </th>
-
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Last synced
                                             </th>
@@ -152,14 +150,9 @@
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Creation Date
                                             </th>
-                                           
-
                                         </tr>
                                     </thead>
-
-
                                     <tbody>
-
                                         <tr>
                                             <td class="ps-4">
                                                 <p class="text-xs font-weight-bold mb-0">45</p>
@@ -186,38 +179,20 @@
 
                                             </td>
                                         </tr>
-
-                                    
                                     </tbody>
                                 </table>
                             </div>
-
-
                         </div>
-
-
 
                         <div class="col-md-12">
                             <div class="d-flex justify-content-start">
                                 <button type="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4">Save Data source</button>
                             </div>
-                        </div>
-                        
-                    </div>
-                    
-                    
-                    
-                   
+                        </div> 
 
+                    </div> 
                 </div>
-
-               
-
-            </div>
-
-
-
-           
+            </div>      
     </form>
 
 
@@ -315,6 +290,19 @@
         
         })
 
+        // handle sections based on selected type
+        document.getElementById('selectType').addEventListener('change', function(e) 
+        {
+            var selectedValue = $(this).val();
+            if(selectedValue == 'csv'){
+                $('.uploadCSV').removeClass('d-none');
+                $('.uploadGoogleSheets').addClass('d-none');
+            }
+            else if(selectedValue == 'google_sheet'){
+                $('.uploadGoogleSheets').removeClass('d-none');
+                $('.uploadCSV').addClass('d-none');
+            }
+        });
 
     </script>
 
