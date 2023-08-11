@@ -1,18 +1,19 @@
 <?php
 
-use App\Http\Controllers\ChangePasswordController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Password;
+use App\Http\Controllers\ResetController;
+use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\InfoUserController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\ResetController;
-use App\Http\Controllers\SessionsController;
-use App\Http\Controllers\CampaignController;
-use App\Http\Controllers\WebsiteController;
-use App\Http\Controllers\DatasourcesController;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SessionsController;
+use App\Http\Controllers\DatasourcesController;
+use App\Http\Controllers\GoogleSheetController;
+use App\Http\Controllers\ChangePasswordController;
 
 
 
@@ -49,6 +50,10 @@ Route::group(['middleware' => 'auth'], function () {
 	})->name('rtl');
 
 
+	
+	// Google Sheets
+	Route::get('sheets', [GoogleSheetController::class, 'sheets'])->name('sheets');
+	Route::post('store-sheet-data', [GoogleSheetController::class, 'storeSheetData'])->name('store-sheet-data');
 
 	// Camapaign Management
 	Route::get('campaign-management', [CampaignController::class, 'manage'])->name('campaign-management');

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "crypto-isotope-395306",
+  "private_key_id": "cb56a902b1bc128117e2703fdbfa596381c1660b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDhT6jd+BbJ3qor\nmZ0pnNzDMHkFwcl58McwGmiyZfT+o0wGbfXJiCjcRvb3SXSk/uoiKzG2fWBAwvnh\nWcezkngbPmwFpfxtlaejXiq+El0EGZv8Qex3cWjVIEa4k7NcTDHbvn6j+4uqKovj\ndGLhYVzdzp3x/0QTCo2P9T668wytYb4bv7zxjM1MXQOqAQxNh3972+Um8BUsTqCr\n3X1Pz4rnhXsH42AxTD3gAFOt2QGHWYDvSpcdYqryJn9QJalcB4rCA+1QI1X8X4X/\nCwMJKRhtpFaMgsftS42e0/7t4JyZB2xWflyRBr9LxmdUWadNvncJmaAn8+ERKyv8\nu4pqP2u1AgMBAAECggEAGcNimKhkGVwxKCrOCkfqBGsNWPJXkpkiJabMvvgimLVd\nHZptkZ2p/RojkOjg13cLQwdJDXLDp/7Df5hPr1cPDcpy+VMJYhHL6UXSFwmBglUC\nqEh00hRGkPblBKO6+CcBnSdoqAvnj03Ye2nqXpbOqCbr75PT7xDKBCKJCZZ+JhsB\nRMOfCIyt0/EsOvT8wHDAfYYmf6OGYZ1RNjxcnIG/FX4sD1CtBdxZODOxEl3VBKEO\n19AivXo60Uka6UH8EcgpXD1MJrkBLh0MQcjtpS1LbKXeg/cOu0MsAET4REHi8q7i\nksU3WPA0tSCNN0uwCSfaizNSdDi4yp7ZJ0vn+3eRhwKBgQD8TNF3wu8r3M5ASHPS\np2AHTNKSjGYI+Q20/wNyIDpW6Ght3Ybc1m0YQJNJPznUD2Nj0Djrp8ThCru+fO12\ntNT+LVBJF3AdYFHDm8wnFMdEPqzG7arT9P5p7P1FK476cNDaPi5ZW5PVBWcdmOlD\nGQWm4RaNFdqZLsIDe+qEFFMd1wKBgQDknYUfY1YuNIVhSDgfONIHRskB4ESBddDn\n0Z+9tlZgjUvD72naXOQ+45wGsH/rDHm+jjmurw9QaInWzpO+t5wdTay7tO8kwfzn\ntA83wQ/2lgK4dGmfOi9Xd+P/AI+7XDIKjeFtkKnr4tzO4ay1jLVcmBClQd+JQfeF\ns7WT8dtZUwKBgQCL4kuBCyNwPkxcd88/zG0BnyZg+lbYQr3GzF0suZGe/dxojZpo\ndrql56fBxLxbRuzkOl5Uyf/uhfTx+HHwjvJIuvb4j3Yp022B9q+KO4r/24AQC1Xb\njspAEJWb9DqhwEsLtc4c3Rlp0kUJs+4gtY7cp4/JSYSZycLoC5xK/rnWoQKBgQC1\nEbn1cVU5xWl68ptYx0U6dCsSbFF2BB2Q7mvJ85gYYvEGYCKDzB0PXnEerz6xqTDn\n53fyTj8f3ZyG4RkN7hkc8H+GMDlU8LxhvDBtZWFCWfAPrkxVy9zhN1kCiKxOpigQ\nSe2pPPIInadryDxlkuu2Sc6tRS5KZVApuntvkRi9dwKBgQC1Gufa/O6hKVi2ZEjC\noBsqUA3kRGgMsrLrLKkiyjz+aPmtBUvji9kDUkWsGhfDBybSzkyqaXsO3Xwgs6CZ\n5OsizN/VlvsSgkUbZk8L2Ib6RZ1v/swb80teBPe6VcDwPKhDMWLO0eq+qiLR3y93\nnyrsNJKEjo/t2whmswf4G8bnBw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "google-sheet-api@crypto-isotope-395306.iam.gserviceaccount.com",
+  "client_id": "112286367779618843644",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/google-sheet-api%40crypto-isotope-395306.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

@@ -97,16 +97,16 @@
 
             <div class="card mb-4 uploadGoogleSheets d-none">
                 <div class="card-header pb-0 px-3">
-                    <h6 class="mb-0">Create google sheet</h6>
+                    <h6 class="mb-0">Google sheets</h6>
                 </div>
                 <div class="card-body pt-4 p-3">
                     <div class="row"> 
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="user.location" class="form-control-label d-block mb-0">Upload sheet</label>
-                                <span class="text-xs mb-2 d-block ms-1">Upload your Google sheet</span> 
-                                <div class="@error('user.location') border border-danger rounded-3 @enderror">
-                                    <input class="form-control" type="file" placeholder="Location" id="name" name="csv_file" value="">
+                                <!-- <label for="user.location" class="form-control-label d-block mb-0">Upload sheet</label> -->
+                                <!-- <span class="text-xs mb-2 d-block ms-1">Upload your Google sheet</span>  -->
+                                <div class="d-flex justify-content-start">
+                                    <button type="button" class="btn btn-dark bg-gradient-dark gsheets">Create Google Sheet</button>
                                 </div>
                             </div>
                         </div>  
@@ -114,7 +114,7 @@
                 </div>
             </div>
 
-
+            <div id="input-container"></div>
 
 
             <div class="card mb-4 data-preview d-none">
@@ -303,6 +303,38 @@
                 $('.uploadCSV').addClass('d-none');
             }
         });
+
+        $('.gsheets').on('click', function(e) {
+            jQuery.ajax({
+                    method: "GET",
+                    url: "/sheets",
+                    success: function(response) {
+                        console.log(response);
+                        var sheetId = response.spreadsheetId; 
+                        var sheetName = response.sheetName; 
+
+                        var formValues = new FormData();
+                        formValues.append('sheet_id', JSON.stringify(sheetId));
+                        formValues.append('sheet_name', sheetName);
+
+                        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                        jQuery.ajax({
+                            method: "POST",
+                            url: "/store-sheet-data",
+                            data: formValues,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                console.log(response);
+                            }
+                        });
+                    }
+            });
+
+        });  
 
     </script>
 
