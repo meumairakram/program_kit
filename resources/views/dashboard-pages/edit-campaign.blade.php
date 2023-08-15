@@ -35,7 +35,7 @@
                                 <div class="form-group">
                                     <label for="user-name" class="form-control-label">Title</label>
                                     <div class="@error('user.name')border border-danger rounded-3 @enderror">
-                                        <input class="form-control" value="{{$campaign->title}}" type="text" placeholder="Title" id="campaign-title" name="title">
+                                        <input class="form-control first_sec_required" value="{{$campaign->title}}" type="text" placeholder="Title" id="campaign-title" name="title">
                                             @error('name')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
                                             @enderror
@@ -47,7 +47,7 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control" name="type"  value="{{$campaign->type}}">
+                                        <select class="form-control first_sec_required" name="type"  value="{{$campaign->type}}">
                                             <option value="wordpress">Wordpress</option>
                                             <option value="webflow">Webflow</option>
                                             <option value="bubble">Bubble</option>
@@ -67,7 +67,7 @@
                                     <div class="d-flex align-items-center">
                                         <label class="my-0">Paused</label>
                                         
-                                        <input class="form-check-input mx-auto" type="checkbox" id="flexSwitchCheckDefault" checked>                         
+                                        <input class="form-check-input mx-auto first_sec_required" type="checkbox" id="flexSwitchCheckDefault" checked>                         
 
                                         <label class="my-0">Active</label>
                                     </div>
@@ -83,19 +83,28 @@
                                     <div class="form-group">
                                         <label for="user-email" class="form-control-label">Description</label>
                                         <div class="@error('user.about')border border-danger rounded-3 @enderror">
-                                            <textarea class="form-control" id="about" rows="3"  value="{{$campaign->description}}" placeholder="Say something about yourself" name="description">{{ auth()->user()->about_me }}</textarea>
+                                            <textarea class="form-control first_sec_required" id="about" rows="3"  value="{{$campaign->description}}" placeholder="Say something about yourself" name="description">{{$campaign->description}}</textarea>
                                         </div>
                                     </div>
                             </div>
 
                         </div>
-                    
+                        <div class="d-flex justify-content-start">
+                            <button type="button" id="nextButton" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                        </div>
+
+                        <div class="mt-3  alert alert-primary alert-dismissible fade show d-none firstError" role="alert">
+                            <span class="alert-text text-white">You have to fill all the required fields to proceed next.</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                <i class="fa fa-close" aria-hidden="true"></i>
+                            </button>
+                        </div>
 
                 </div>
             </div>
 
 
-            <div class="card mb-4">
+            <div class="card mb-4 d-none website">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Choose Website</h6>
                 </div>
@@ -107,7 +116,8 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Select Website Type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control" name="website"  value="{{$campaign->website}}">
+                                        <select class="form-control web_sec_required" name="website"  value="{{$campaign->type}}" id="websiteType">
+                                            <option value="wordpress">{{$campaign->website}}</option>
                                             <option value="wordpress">Wordpress</option>
                                             <!-- <option value="wordpress">Webflow</option>
                                             <option value="wordpress">Bubble</option> -->
@@ -127,14 +137,12 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Select Website</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control" name="website"  value="{{$campaign->website}}">
-                                            <option value="">Select a website</option>
+                                        <select class="form-control web_sec_required" name="website"  value="{{$campaign->website}}" id="selectWebSite">
+                                            <option value="">{{$campaign->website}}</option>
                                             
-                                            @foreach($allWebsites as $website)
-
+                                            <!-- @foreach($allWebsites as $website)
                                                 <option value="{{ $website->id }}">{{$website->website_name}} ({{$website->website_url}})</option>
-
-                                            @endforeach
+                                            @endforeach -->
 
                                         </select>
                                         
@@ -151,10 +159,11 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Post type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control" name="wp_template_id"  value="{{$campaign->wp_template_id}}">
-                                            <option value="1">Template title - #18</option>
+                                        <select class="form-control web_sec_required" name="wp_template_id"  value="{{$campaign->wp_template_id}}" id="postType">
+                                            <option value="1">{{$campaign->wp_template_id}}</option>
+                                            <!-- <option value="1">Template title - #18</option>
                                             <option value="2">Template title - #19</option>
-                                            <option value="3">Bubble</option>
+                                            <option value="3">Bubble</option> -->
                                         </select>
                                         
                                         @error('type')
@@ -170,10 +179,11 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Template</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control" name="wp_template_id"  value="{{$campaign->wp_template_id}}">
-                                            <option value="1">Template title - #18</option>
+                                        <select class="form-control web_sec_required" name="wp_template_id"  value="{{$campaign->wp_template_id}}" id="template">
+                                            <option value="1">{{$campaign->wp_template_id}}</option>
+                                            <!-- <option value="1">Template title - #18</option>
                                             <option value="2">Template title - #19</option>
-                                            <option value="3">Bubble</option>
+                                            <option value="3">Bubble</option> -->
                                         </select>
                                         
                                         @error('type')
@@ -185,15 +195,23 @@
                             </div>  
 
                         </div>
+                        <div class="d-flex justify-content-start">
+                                <button type="button" id="webNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                        </div>
+
+                        <div class="mt-3  alert alert-primary alert-dismissible fade show d-none secondError" role="alert">
+                            <span class="alert-text text-white">You have to fill 'Website' section completely to proceed next.</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                <i class="fa fa-close" aria-hidden="true"></i>
+                            </button>
+                        </div>
                 </div>
-
-
             </div>
 
             
 
 
-            <div class="card mb-4">
+            <div class="card mb-4 d-none datasource">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Connect/Choose Data Source</h6>
                 </div>
@@ -206,7 +224,7 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Data source</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control" name="data_source" id="dataSource"  value="{{$campaign->data_source}}">
+                                        <select class="form-control datasource_sec_required" name="data_source" id="dataSource"  value="{{$campaign->data_source}}">
                                             <option value="">-- Choose --</option>
 
                                             @foreach($allDatasources as $ds)
@@ -223,25 +241,30 @@
                                 </div>  
                             </div>
                     </div>
+                    <div class="d-flex justify-content-start">
+                        <button type="button" id="datasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                    </div>
 
+                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none thirdError" role="alert">
+                        <span class="alert-text text-white">You have to fill 'Data Source' section completely to proceed next.</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
+                    </div>
                    
-
                 </div>
-
-               
-
             </div>
 
 
 
-            <div class="card mb-4">
+            <div class="card mb-4 d-none mapdata">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Map Data Fields</h6>
                 </div>
 
                 <div class="card-body pt-4 p-3">
                     
-                    <div class="row">
+                    <div class="row" id="mapDataFields">
                         
                         <div class="col-md-8 offset-md-2">
 
@@ -252,11 +275,12 @@
                                     
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <select class="form-control" name="template_field"  value="{{$campaign->template_field}}">
+                                            <input class="form-control" value="" type="text" id="tempVariablesInput" name="template"  value="{{$campaign->template_field}}">
+                                            <!-- <select class="form-control" name="template_field"  value="{{$campaign->template_field}}">
                                                 <option value="wordpress">Some name (CSV)</option>
                                                 <option value="wordpress">Some Name (Google Sheet)</option>
                                                 <option value="wordpress">Bubble</option>
-                                            </select>
+                                            </select> -->
                                         </div>
 
                                     </div>
@@ -271,7 +295,7 @@
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <select class="form-control csv-headers" name="source_field" id="csvHeaders"  value="{{$campaign->source_field}}">
+                                            <select class="form-control csv-headers" name="source_field" id="csvHeaders"  value="{{$campaign->source_field}}" id="csvHeaders">
                                                 <option value="">-- Select Data Source First --</option>
                                             </select>
                                             <!-- <select class="form-control" name="website">
@@ -327,15 +351,22 @@
 
                         </div>
                     </div>
+                    <div class="d-flex justify-content-start">
+                        <button type="button" id="mapdataNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                    </div>
 
-                   
+                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none fourthError" role="alert">
+                        <span class="alert-text text-white">You have to fill 'Map Data' section completely to proceed next.</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
+                    </div>
 
                 </div>
-
             </div>
 
 
-            <div class="card">
+            <div class="card d-none SaveAndStart">
 
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Lets save and start</h6>
@@ -364,6 +395,177 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+    // website type 
+    document.getElementById('websiteType').addEventListener('change', function(e) 
+    {
+            const selectedType = this.value;
+            if (selectedType === '') {
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('type', selectedType);
+
+            $.ajax({
+                method: "POST",
+                url: "/websites_type", 
+                data: formData,
+                processData: false, 
+                contentType: false, 
+                success: function(response) {
+                    console.log(response)
+                    if (!response.success) {
+                        console.error('Error: ', response.message);
+                        $('#selectWebSite').html('<option value=""> </option>');
+                        return;
+                    }
+
+                    const websiteSelect = $('#selectWebSite');
+                    websiteSelect.empty(); 
+
+                    const websites = response.websites;
+                    websiteSelect.append('<option value=""> </option>'); 
+                    websites.forEach(websites => {
+                        websiteSelect.append(`<option value="${websites.id}">Name: ${websites.website_name} | URL:${websites.website_url}</option>`);
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Handle the AJAX error if needed
+                    console.error('AJAX Error:', textStatus, errorThrown);
+                    $('#selectWebSite').html('<option value="">-- Select WebSite --</option>');
+                }
+            });
+    });
+
+      // geting post types by selecting website
+    document.getElementById('selectWebSite').addEventListener('change', function(e) 
+    {
+            $.ajax({
+                method: "get",
+                url: "/api/get_post_types", 
+                processData: false, 
+                contentType: false, 
+                success: function(response) {
+                    console.log(response)
+                    if (!response.success) {
+                        console.error('Error: ', response.message);
+                        $('#postType').html('<option value=""> </option>');
+                        return;
+                    }
+
+                    const postType = $('#postType');
+                    postType.empty(); 
+
+                    const type = response.data.post_types; // Corrected access to the array
+                    postType.append('<option value=""> </option>');
+                    
+                    type.forEach(typeItem => { // Use typeItem as an element in the forEach loop
+                        postType.append(`<option value="${typeItem}">${typeItem}</option>`);
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Handle the AJAX error if needed
+                    console.error('AJAX Error:', textStatus, errorThrown);
+                    $('#postType').html('<option value="">-- Select WebSite --</option>');
+                }
+            });
+    });
+
+    // geting template by post type
+    document.getElementById('postType').addEventListener('change', function(e) 
+    {
+            const selectedType = this.value;
+            if (selectedType === '') {
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('post_type', selectedType);
+
+            $.ajax({
+                method: "POST",
+                url: "/api/get_templates_by_type", 
+                data: formData,
+                processData: false, 
+                contentType: false, 
+                success: function(response) {
+                    console.log(response)
+                    if (!response.success) {
+                        console.error('Error: ', response.message);
+                        $('#template').html('<option value=""> </option>');
+                        return;
+                    }
+
+                    const template = $('#template');
+                    template.empty(); 
+
+                    const get_templates_by_type = response.data.posts;
+                    template.append('<option value=""> </option>'); 
+                    get_templates_by_type.forEach(get_templates_by_type => {
+                        template.append(`<option value="${get_templates_by_type.id}">${get_templates_by_type.title}</option>`);
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Handle the AJAX error if needed
+                    console.error('AJAX Error:', textStatus, errorThrown);
+                    $('#template').html('<option value="">-- Select WebSite --</option>');
+                }
+            });
+    });
+
+    // geting template Variables
+    document.getElementById('template').addEventListener('change', function(e) 
+    {
+        const selectedType = this.value;
+        console.log(selectedType);
+        if (selectedType === '') {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('_token', '{{ csrf_token() }}');
+        formData.append('post_id', selectedType);
+
+        $.ajax({
+            method: "POST",
+            url: "/api/get_template_vars", 
+            data: formData,
+            processData: false, 
+            contentType: false, 
+            success: function(response) {
+                console.log(response)
+                if (!response.success) {
+                    console.error('Error: ', response.message);
+                    $('#tempVariables').val('');
+                    return;
+                }
+                    
+                const variables = response.data.variables;
+                variables.forEach(variable => {
+                    const variableText = variable.replace(/[{}"]/g, ''); 
+                    console.log(variableText);
+                    const variableDiv = `<div class="variable-div">${variableText}</div>`;
+                    $('#tempVariablesInput').addClass('d-none');
+
+                    const csvHeadersClone = $('#csvHeaders').clone();
+                    const rowDiv = $('<div>', {
+                        class: 'row'
+                    }).append(
+                        $('<div>', { class: 'col-md-6 mb-2' }).append(variableDiv),
+                        $('<div>', { class: 'col-md-6 mb-2' }).append(csvHeadersClone)
+                    );
+                    $('#mapDataFields').append(rowDiv);
+                });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX Error:', textStatus, errorThrown);
+                $('#tempVariables').val(''); // Clear the input field
+            }
+        });
+    });
+
     document.getElementById('dataSource').addEventListener('change', function(e) {
         const selectedFilePath = this.value;
         if (selectedFilePath === '') {
@@ -403,6 +605,77 @@
             }
         });
     });
+
+     // next button dependency section starts
+     $('#nextButton').on('click', function(e) {
+        e.preventDefault();
+        var isValid = true;
+        $('.first_sec_required').each(function() {
+            if ($(this).val() === '') {
+                isValid = false;
+            }
+        });
+        if(isValid == true){
+            $('.website').removeClass('d-none');
+            $('.firstError').addClass('d-none');
+        }
+        else{
+            $('.firstError').removeClass('d-none');
+        }
+    });
+
+    $('#webNext').on('click', function(e) {
+        e.preventDefault();
+        var isValid = true;
+        $('.web_sec_required').each(function() {
+            if ($(this).val() === '') {
+                isValid = false;
+            }
+        });
+        if(isValid == true){
+            $('.datasource').removeClass('d-none');
+            $('.secondError').addClass('d-none');
+        }
+        else{
+            $('.secondError').removeClass('d-none');
+        }
+    });
+
+    $('#datasourceNext').on('click', function(e) {
+        e.preventDefault();
+        var isValid = true;
+        $('.datasource_sec_required').each(function() {
+            if ($(this).val() === '') {
+                isValid = false;
+            }
+        });
+        if(isValid == true){
+            $('.mapdata').removeClass('d-none');
+            $('.thirdError').addClass('d-none');
+        }
+        else{
+            $('.thirdError').removeClass('d-none');
+        }
+    });
+
+    $('#mapdataNext').on('click', function(e) {
+        e.preventDefault();
+        var isValid = true;
+        $('.mapdata_sec_required').each(function() {
+            if ($(this).val() === '') {
+                isValid = false;
+            }
+        });
+        if(isValid == true){
+            $('.SaveAndStart').removeClass('d-none');
+            $('.fourthError').addClass('d-none');
+        }
+        else{
+            $('.fourthError').removeClass('d-none');
+        }
+    });
+    // next button dependency section ends
+
 </script>
         
 

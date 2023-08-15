@@ -273,14 +273,14 @@
                         
                         <div class="col-md-8 offset-md-2">
 
-                            <div class="row">
+                            <div class="row" id="mapDataFields">
                                 <div class="col-md-6">
                                     
                                     <span class="text-bold">Template fields</span>
                                     
                                     <div class="row">
-                                        <div class="col-md-12">
-                                            <input class="form-control mapdata_sec_required" value="" type="text" id="tempVariables" name="template">
+                                        <div class="col-md-12" id="tempVariables">
+                                            <input class="form-control" value="" type="text" id="tempVariablesInput" name="template">
                                             <!-- <select class="form-control" name="website">
                                                 <option value="wordpress">Some name (CSV)</option>
                                                 <option value="wordpress">Some Name (Google Sheet)</option>
@@ -300,7 +300,7 @@
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <select class="form-control csv-headers mapdata_sec_required" name="website" id="csvHeaders">
+                                            <select class="form-control csv-headers" name="website" id="csvHeaders">
                                                 <option value="">-- Select Data Source First --</option>
                                             </select>
                                             <!-- <select class="form-control" name="website">
@@ -523,6 +523,26 @@
             });
     });
 
+
+    // Updated function to handle CSV headers and variables
+    function updateCsvHeadersOptions(variableDiv, headers) {
+        const csvHeadersClone = $('#csvHeaders').clone();
+        const rowDiv = $('<div>', {
+            class: 'row'
+        }).append(
+            $('<div>', { class: 'col-md-6 mb-2' }).append(variableDiv),
+            $('<div>', { class: 'col-md-6 mb-2' }).append(function() {
+                const csvHeadersDiv = $('<div>'); 
+                headers.forEach(header => {
+                    csvHeadersDiv.append($(`<option value="${header}">${header}</option>`));
+                });
+
+                return csvHeadersClone.append(csvHeadersDiv); // Append the headers div to cloned select
+            })
+        );
+        $('#mapDataFields').append(rowDiv);
+    }
+
     // geting template Variables
     document.getElementById('template').addEventListener('change', function(e) 
     {
@@ -549,12 +569,18 @@
                     $('#tempVariables').val('');
                     return;
                 }
+                    
+                const variables = response.data.variables;
+                variables.forEach(variable => {
+                    const variableText = variable.replace(/[{}"]/g, ''); 
+                    console.log(variableText);
+                    const variableDiv = `<div class="variable-div">${variableText}</div>`;
+                    $('#tempVariablesInput').addClass('d-none')
 
-                const variables = response.data.variables.join(' '); 
-                $('#tempVariables').val(variables); 
+                    updateCsvHeadersOptions(variableDiv, [])
+                });
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                // Handle the AJAX error if needed
                 console.error('AJAX Error:', textStatus, errorThrown);
                 $('#tempVariables').val(''); // Clear the input field
             }
@@ -591,10 +617,9 @@
                 csvHeadersSelect.empty(); 
 
                 const headers = res.data.headers;
-                csvHeadersSelect.append('<option value=""> </option>'); 
-                headers.forEach(header => {
-                    csvHeadersSelect.append(`<option value="${header}">${header}</option>`);
-                });
+                csvHeadersSelect.append('<option value=""> </option>');
+                    updateCsvHeadersOptions('', headers)
+                   
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 // Handle the AJAX error if needed
