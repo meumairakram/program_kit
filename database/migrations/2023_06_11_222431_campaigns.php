@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->integer('wp_template_id');
+            $table->unsignedBigInteger('wp_template_id');
             $table->string('type');    // wordpress //webflow  // bubble
             $table->string('status');   // ready   //in_progress   //complete
             $table->timestamps();

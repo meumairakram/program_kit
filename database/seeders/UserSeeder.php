@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
                 'name' => 'Umair',
                 'email' => 'umairakram@gmail.com',
                 'password' => Hash::make('secret'),
-                'campaigns' => '2',
+                'campaigns' => 2,
                 'created_at' => now(),
                 'updated_at' => now()
         ]);
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
                 'name' => 'Usman',
                 'email' => 'usmanakram@gmail.com',
                 'password' => Hash::make('secret'),
-                'campaigns' => '1',
+                'campaigns' => 1,
                 'created_at' => now(),
                 'updated_at' => now()
         ]);

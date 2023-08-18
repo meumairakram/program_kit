@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('authentication_key');
             $table->string("request_url")->nullable();
 
-            $table->integer('owner_id');
+            $table->unsignedBigInteger('owner_id');
             $table->foreign('owner_id')->references('id')->on('users');
 
             $table->timestamps();
