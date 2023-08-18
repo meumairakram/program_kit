@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('type');     // csv - more airtable, google sheets, excel in future
             $table->boolean('requires_mapping');
-            $table->integer('records_count');
+            $table->unsignedBigInteger('records_count');
             $table->timestamp('last_synced');
-            $table->integer('owner_id');
+            $table->unsignedBigInteger('owner_id');
             
             $table->foreign('owner_id')->references('id')->on('users');
             $table->timestamps();
