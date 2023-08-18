@@ -648,7 +648,6 @@
         const csvHeadersSelectId = this.value;
         $('#csvHeaders').val(csvHeadersSelectId); 
         const dataSource = $(this).find('option:selected').attr('name');
-        alert(dataSource);
         $('#dataSourceName').val(dataSource);
         
         const selectedFilePath =  $(this).find('option:selected').attr('id');
