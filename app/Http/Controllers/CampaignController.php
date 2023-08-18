@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\WebsitesInfo;
-use Illuminate\Http\Request;
+use App\Models\Template;
 use App\Models\Campaign ;
 use App\Models\Datasources;
+use App\Models\WebsitesInfo;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\DataSourceField;
 
 
 class CampaignController extends Controller {
@@ -45,34 +46,50 @@ class CampaignController extends Controller {
 
         $attributes  = $request->validate([
             'title' => ['required'],
-            'type' => ['required'],
-            'website' => ['required'],
-            'wp_template_id' => ['required'],
-            'data_source' => ['required'],
-            'description' => []
+            'description' => [],
+            'website_type' => [''],
+            'website_id' => [''],
+            'post_type' => [''],
+            'wp_template_id' => [''],
+            'data_source_id' => [''],
         ]);
 
-
         if(!Auth::check()) {
-
             // User not logged in
-
         }
 
-
         $user = Auth::user();
-
-
         $campaign = new Campaign();
         $campaign->title = $attributes['title'];
         $campaign->description = $attributes['description'];
+        $campaign->website_type = $attributes['website_type'];
+        $campaign->website_id = $attributes['website_id'];
+        $campaign->post_type = $attributes['post_type'];
         $campaign->wp_template_id = $attributes['wp_template_id'];
-        $campaign->type = $attributes['type'];
+        $campaign->data_source_id = $attributes['data_source_id'];
         $campaign->status = 'ready';
         $campaign->owner_id = $user->id;
-        
-
         $campaign->save();
+
+        $variables = '';
+        if ($request->has('template_variables') && is_array($request->input('template_variables'))) {
+            foreach ($request->input('template_variables') as $templateVariable) {
+                $variables = $templateVariable;
+            }
+        }
+
+        $template = new Template();
+        $template->template_id = $attributes['wp_template_id'];
+        $template->template = $request->template_name;
+        $template->template_variables = $request->input('template_variables');
+        $template->save();
+
+        $template = new DataSourceField();
+        $template->data_source_id = $attributes['data_source_id'];
+        $template->data_source = $request->data_source_name;
+        $template->data_source_headers = $request->input('data_source_headers');
+        $template->save();
+        
         // title
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');
         // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');

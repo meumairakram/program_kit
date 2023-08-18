@@ -124,8 +124,8 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Select Website Type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" name="website" id="websiteType">
-                                            <option value="wordpress"> </option>
+                                        <select class="form-control web_sec_required" name="website_type" id="websiteType">
+                                            <option value=""> </option>
                                             <option value="wordpress">Wordpress</option>
                                             <!-- <option value="wordpress">Webflow</option>
                                             <option value="wordpress">Bubble</option> -->
@@ -145,7 +145,7 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Select Website</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" name="website" id="selectWebSite">
+                                        <select class="form-control web_sec_required" name="website_id" id="selectWebSite">
                                             <option value="">Select a website</option>
                                             
                                             <!-- @foreach($allWebsites as $website)
@@ -162,13 +162,12 @@
                                 </div>  
                             </div>  
 
-
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Post type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" name="wp_template_id" id="postType">
-                                            <option value="1"> </option>
+                                        <select class="form-control web_sec_required" name="post_type" id="postType">
+                                            <option value=""> </option>
                                         </select>
                                         
                                         @error('type')
@@ -179,13 +178,12 @@
                                 </div>  
                             </div>  
 
-
-                             <div class="col-md-6">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Template</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control web_sec_required" name="wp_template_id" id="template">
-                                            <option value="1">Template title</option>
+                                            <option value="">Template title</option>
                                             <!-- <option value="1">Template title - #18</option>
                                             <option value="2">Template title - #19</option>
                                             <option value="3">Bubble</option> -->
@@ -198,6 +196,9 @@
                                     </div>
                                 </div>  
                             </div>  
+                            
+                            <input type="hidden" name="template_name" id="templateName" value="">
+                            <input type="hidden" name="template_variables" id="templateVariables" value="">
 
                         </div>
                         <div class="d-flex justify-content-start">
@@ -229,11 +230,11 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Data source</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control datasource_sec_required" name="website" id="dataSource">
+                                        <select class="form-control datasource_sec_required" name="data_source_id" id="dataSource">
                                             <option value="">-- Choose --</option>
 
                                             @foreach($allDatasources as $ds)
-                                                <option value="{{ $ds->file_path }}">{{ $ds->name }} ( {{$ds->type}} )</option>
+                                                <option value="{{ $ds->id }}" id="{{ $ds->file_path }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
                                             @endforeach
 
                                         </select>
@@ -245,6 +246,8 @@
                                     </div>
                                 </div>  
                             </div>
+                                <input type="hidden" name="data_source_name" id="dataSourceName" value="">
+
                     </div> 
                     <div class="d-flex justify-content-start">
                         <button type="button" id="datasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
@@ -280,7 +283,7 @@
                                     
                                     <div class="row">
                                         <div class="col-md-12" id="tempVariables">
-                                            <input class="form-control" value="" type="text" id="tempVariablesInput" name="template">
+                                            <input class="form-control" value="" type="text" id="tempVariablesInput" name="template_variables">
                                             <!-- <select class="form-control" name="website">
                                                 <option value="wordpress">Some name (CSV)</option>
                                                 <option value="wordpress">Some Name (Google Sheet)</option>
@@ -300,7 +303,7 @@
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <select class="form-control csv-headers" name="website" id="csvHeaders">
+                                            <select class="form-control csv-headers" name="source_Headers" id="csvHeaders">
                                                 <option value="">-- Select Data Source First --</option>
                                             </select>
                                             <!-- <select class="form-control" name="website">
@@ -386,7 +389,7 @@
                         <div class="col-md-6">
 
                             <div class="d-flex justify-content-start">
-                                <button type="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4">Save &amp; Start Sync</button>
+                                <button type="submit" id="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4">Save &amp; Start Sync</button>
                             </div>
                         </div>
 
@@ -437,6 +440,12 @@
                     websites.forEach(websites => {
                         websiteSelect.append(`<option value="${websites.id}">Name: ${websites.website_name} | URL:${websites.website_url}</option>`);
                     });
+
+                    // Update the hidden input value with the selected website ID
+                    websiteSelect.on('change', function() {
+                        const selectedWebsiteId = $(this).val();
+                        $('#selectWebSite').val(selectedWebsiteId);
+                    });
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     // Handle the AJAX error if needed
@@ -470,6 +479,11 @@
                     
                     type.forEach(typeItem => { // Use typeItem as an element in the forEach loop
                         postType.append(`<option value="${typeItem}">${typeItem}</option>`);
+                    }); 
+                    postType.on('change', function() {
+                        const postTypeId = $(this).val();
+                        // alert(postTypeId);
+                        $('#postType').val(postTypeId);
                     });
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -512,7 +526,14 @@
                     const get_templates_by_type = response.data.posts;
                     template.append('<option value=""> </option>'); 
                     get_templates_by_type.forEach(get_templates_by_type => {
-                        template.append(`<option value="${get_templates_by_type.id}">${get_templates_by_type.title}</option>`);
+                        template.append(`<option name="${get_templates_by_type.title}" value="${get_templates_by_type.id}">${get_templates_by_type.title}</option>`);
+                    });
+                    template.on('change', function() {
+                        const templateId = $(this).val();
+                        const templateName = $(this).find('option:selected').attr('name');
+                        // alert(templateId);
+                        $('#template').val(templateId);
+                        $('#templateName').val(templateName);
                     });
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -525,23 +546,23 @@
 
 
     // Updated function to handle CSV headers and variables
-    function updateCsvHeadersOptions(variableDiv, headers) {
-        const csvHeadersClone = $('#csvHeaders').clone();
-        const rowDiv = $('<div>', {
-            class: 'row'
-        }).append(
-            $('<div>', { class: 'col-md-6 mb-2' }).append(variableDiv),
-            $('<div>', { class: 'col-md-6 mb-2' }).append(function() {
-                const csvHeadersDiv = $('<div>'); 
-                headers.forEach(header => {
-                    csvHeadersDiv.append($(`<option value="${header}">${header}</option>`));
-                });
+    // function updateCsvHeadersOptions(variableDiv, headers) {
+    //     const csvHeadersClone = $('#csvHeaders').clone();
+    //     const rowDiv = $('<div>', {
+    //         class: 'row'
+    //     }).append(
+    //         $('<div>', { class: 'col-md-6 mb-2' }).append(variableDiv),
+    //         $('<div>', { class: 'col-md-6 mb-2' }).append(function() {
+    //             const csvHeadersDiv = $('<div>'); 
+    //             headers.forEach(header => {
+    //                 csvHeadersDiv.append($(`<option value="${header}">${header}</option>`));
+    //             });
 
-                return csvHeadersClone.append(csvHeadersDiv); // Append the headers div to cloned select
-            })
-        );
-        $('#mapDataFields').append(rowDiv);
-    }
+    //             return csvHeadersClone.append(csvHeadersDiv); // Append the headers div to cloned select
+    //         })
+    //     );
+    //     $('#mapDataFields').append(rowDiv);
+    // }
 
     // geting template Variables
     document.getElementById('template').addEventListener('change', function(e) 
@@ -571,14 +592,48 @@
                 }
                     
                 const variables = response.data.variables;
+                const collectedVariables = [];
+
                 variables.forEach(variable => {
                     const variableText = variable.replace(/[{}"]/g, ''); 
+                    collectedVariables.push(variableText);
                     console.log(variableText);
-                    const variableDiv = `<div class="variable-div">${variableText}</div>`;
-                    $('#tempVariablesInput').addClass('d-none')
+                    const variableDiv = `<div name="${variableText}" class="variable-div">${variableText}</div>`;
 
-                    updateCsvHeadersOptions(variableDiv, [])
+                    // const templatevariable = variableDiv.attr('name');
+                    // $('#templateVariables').val(${variableText});
+                    $('#tempVariablesInput').addClass('d-none')
+                    const csvHeadersClone = $('#csvHeaders').clone();
+
+                    const rowDiv = $('<div>', {
+                        class: 'row'
+                    }).append(
+                        $('<div>', { class: 'col-md-6 mb-2' }).append(variableDiv),
+                        $('<div>', { class: 'col-md-6 mb-2' }).append(csvHeadersClone)
+                    );
+                    $('#mapDataFields').append(rowDiv);
+                    // updateCsvHeadersOptions(variableDiv, [])
                 });
+
+                    $('#submit').on('click', function(){
+                        const formData = new FormData();
+                        formData.append('_token', '{{ csrf_token() }}');
+                        variableText.forEach(variable => {
+                            formData.append('template_variables[]', collectedVariables);
+                        });
+
+                        $.ajax({
+                            method: "POST",
+                            url: "/create-campaign", 
+                            data: formData,
+                            processData: false, 
+                            contentType: false, 
+                            success: function(response) {
+                                console.log(response);
+                            }
+                        });
+                    });
+
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error('AJAX Error:', textStatus, errorThrown);
@@ -590,8 +645,13 @@
     // data source
     document.getElementById('dataSource').addEventListener('change', function(e) 
     {
-
-        const selectedFilePath = this.value;
+        const csvHeadersSelectId = this.value;
+        $('#csvHeaders').val(csvHeadersSelectId); 
+        const dataSource = $(this).find('option:selected').attr('name');
+        alert(dataSource);
+        $('#dataSourceName').val(dataSource);
+        
+        const selectedFilePath =  $(this).find('option:selected').attr('id');
         if (selectedFilePath === '') {
             return;
         }
@@ -618,7 +678,10 @@
 
                 const headers = res.data.headers;
                 csvHeadersSelect.append('<option value=""> </option>');
-                    updateCsvHeadersOptions('', headers)
+                headers.forEach(header => {
+                    csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
+                });
+                    // updateCsvHeadersOptions('', headers)  
                    
             },
             error: function(jqXHR, textStatus, errorThrown) {

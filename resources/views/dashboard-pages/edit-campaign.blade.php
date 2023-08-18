@@ -264,11 +264,11 @@
 
                 <div class="card-body pt-4 p-3">
                     
-                    <div class="row" id="mapDataFields">
+                    <div class="row">
                         
                         <div class="col-md-8 offset-md-2">
 
-                            <div class="row">
+                            <div class="row" id="mapDataFields">
                                 <div class="col-md-6">
                                     
                                     <span class="text-bold">Template fields</span>
