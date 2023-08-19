@@ -101,13 +101,12 @@ class SheetsController extends Controller
                 $client = $this->getClient();
 
                 $accessToken = $client->fetchAccessTokenWithAuthCode($accessCode);
-                
+
+                var_dump($accessToken); die();
                 // $client->setAccessToken($accessToken);
 
-                $refreshToken = $client->getRefreshToken();
+                // $refreshToken = $client->getRefreshToken();
 
-                var_dump($refreshToken);
-                
                 // match recieved scopes 
                 // $client->fetchAccessTokenWithRefreshToken()
 
@@ -117,7 +116,7 @@ class SheetsController extends Controller
                     'auth_type' => 'google_oauth',
                     'key_type' => 'access_token',
                     'key_value' => $accessToken,
-                    'refresh_token' => $refreshToken
+                    // 'refresh_token' => $refreshToken
                 ));
 
                 $saveAuthToken->save();
