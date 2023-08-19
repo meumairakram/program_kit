@@ -99,13 +99,14 @@ class SheetsController extends Controller
 
 
                 $client = $this->getClient();
-                
+
                 $accessToken = $client->fetchAccessTokenWithAuthCode($accessCode);
-                var_dump($accessToken); die();
+                
                 // $client->setAccessToken($accessToken);
 
                 $refreshToken = $client->getRefreshToken();
 
+                
                 // match recieved scopes 
                 // $client->fetchAccessTokenWithRefreshToken()
 
