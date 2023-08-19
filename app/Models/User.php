@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Campaign;
 
+use App\Models\AuthTokens;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -51,6 +53,13 @@ class User extends Authenticatable
     public function campaigns()
     {
         return $this->hasMany(Campaign::class,'owner_id','id');
+    }
+
+
+    public function google_access_token() {
+
+        return $this->hasMany(AuthTokens::class, 'owner_id', 'id');
+    
     }
     
 }
