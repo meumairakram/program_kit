@@ -15,7 +15,8 @@ class AuthTokens extends Model
         'owner_id',
         'auth_type',
         'key_type',
-        'key_value'
+        'key_value',
+        'refresh_token'
     ];
     public function owner_id()
     {
