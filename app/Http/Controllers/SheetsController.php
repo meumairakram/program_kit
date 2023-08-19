@@ -102,14 +102,6 @@ class SheetsController extends Controller
 
                 $accessToken = $client->fetchAccessTokenWithAuthCode($accessCode);
 
-                var_dump($accessToken); die();
-                // $client->setAccessToken($accessToken);
-
-                // $refreshToken = $client->getRefreshToken();
-
-                // match recieved scopes 
-                // $client->fetchAccessTokenWithRefreshToken()
-
                 // save code recieved
                 $saveAuthToken = AuthTokens::create(array(
                     'owner_id' => $request->user()->id,
