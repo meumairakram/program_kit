@@ -190,7 +190,7 @@ class SheetsController extends Controller
 
 
     public function testRoute(Request $request) {
-
+        var_dump($this->getUserAccessToken()); die(); 
         var_dump($this->createNewGoogleSheet("Testing new sheet")); die();
     
     }
