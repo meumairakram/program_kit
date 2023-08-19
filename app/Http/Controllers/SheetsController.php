@@ -163,6 +163,7 @@ class SheetsController extends Controller
         }
 
         $client = new Client();
+        $client->useApplicationDefaultCredentials();
 
         $client->setAccessToken($authToken);
 
