@@ -106,8 +106,8 @@ class SheetsController extends Controller
 
                 $client = new Client();
                 $accessToken = $client->fetchAccessTokenWithAuthCode($accessCode);
-
-                $client->setAccessToken($accessToken);
+                var_dump($accessToken); die();
+                // $client->setAccessToken($accessToken);
 
                 $refreshToken = $client->getRefreshToken();
 
