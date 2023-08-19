@@ -29,6 +29,8 @@ use App\Http\Controllers\ChangePasswordController;
 */
 
 
+
+
 Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/', [HomeController::class, 'home'])
@@ -86,6 +88,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 
 
+
 	Route::get('tables', function () {
 		return view('tables');
 	})->name('tables');
@@ -123,6 +126,9 @@ Route::group(['middleware' => 'guest'], function () {
 	Route::post('/reset-password', [ChangePasswordController::class, 'changePassword'])->name('password.update');
 
 });
+
+Route::get('sheets/init', [App\Http\Controllers\SheetsController::class, 'init'])->name('sheets.init');
+
 
 Route::get('/login', function () {
     return view('session/login-session');
