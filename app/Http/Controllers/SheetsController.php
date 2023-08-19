@@ -7,6 +7,10 @@ use Revolution\Google\Sheets\Facades\Google;
 use Google\Client;
 // use Sheets\Facades\Sheets;
 use App\Models\AuthTokens;
+use Google\Service\Sheets\SpreadSheet;
+use Google\Service\Sheets\SpreadsheetProperties;
+use Google\Service\Sheets;
+
 
 class SheetsController extends Controller
 {
@@ -120,6 +124,74 @@ class SheetsController extends Controller
         }
 
         return false;
+    
+    }
+
+
+
+
+    public function getUserAccessToken() {
+
+        $user = auth()->user();
+
+        if(!$user) {
+
+            die("Unauthorized");
+        }
+
+        $accessTokens = $user->google_access_token()->where(['auth_type' => 'google_oauth']);
+
+        if($accessTokens->count() < 1) {
+
+            return false;
+        }
+
+        return $accessTokens->first()->key_value;
+    
+    }
+
+
+
+    public function getClient() {
+
+        $authToken = $this->getUserAccessToken();
+
+        if(!$authToken) {
+
+            redirect('/sheets/init');
+        
+        }
+
+        $client = new Client();
+
+        $client->setAccessToken($authToken);
+
+        return $client;
+    
+    }
+
+
+
+
+    public function createNewGoogleSheet($title) {
+
+        $client = $this->getClient();
+        $service = new Sheets($client);
+        $spreadSheetProps = new SpreadsheetProperties(['title' => $title]);
+        $spreadSheet = new SpreadSheet($spreadSheetProps);
+        // var_dump($spreadSheetProps);
+
+        var_dump($service->spreadsheets->create($spreadSheet, ['fields' => 'spreadsheetId']));
+    
+        // $client = new Client()
+    
+    }
+
+
+
+    public function testRoute(Request $request) {
+
+        var_dump($this->createNewGoogleSheet("Testing new sheet")); die();
     
     }
 

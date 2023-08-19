@@ -56,6 +56,9 @@ Route::group(['middleware' => 'auth'], function () {
 	// Google Sheets
 	Route::get('sheets', [GoogleSheetController::class, 'sheets'])->name('sheets');
 	Route::post('store-sheet-data', [GoogleSheetController::class, 'storeSheetData'])->name('store-sheet-data');
+	Route::get('sheets/init', [App\Http\Controllers\SheetsController::class, 'init'])->name('sheets.init');
+	Route::get('sheets/test', [App\Http\Controllers\SheetsController::class, 'testRoute'])->name('sheets.test');
+
 
 	// Camapaign Management
 	Route::get('campaign-management', [CampaignController::class, 'manage'])->name('campaign-management');
@@ -127,7 +130,6 @@ Route::group(['middleware' => 'guest'], function () {
 
 });
 
-Route::get('sheets/init', [App\Http\Controllers\SheetsController::class, 'init'])->name('sheets.init');
 
 
 Route::get('/login', function () {
