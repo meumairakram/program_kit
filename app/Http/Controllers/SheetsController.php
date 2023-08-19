@@ -163,7 +163,7 @@ class SheetsController extends Controller
         }
 
         $client = new Client();
-        $client->useApplicationDefaultCredentials();
+        
 
         $client->setAccessToken($authToken);
 
@@ -179,6 +179,10 @@ class SheetsController extends Controller
         $client = $this->getClient();
         $service = new Sheets($client);
         // $spreadSheetProps = new SpreadsheetProperties(['title' => $title]);
+
+        var_dump($client->getAccessToken());
+
+
         $spreadSheet = new Spreadsheet([
             'properties' => [
                 'title' => $title
@@ -195,7 +199,7 @@ class SheetsController extends Controller
 
 
     public function testRoute(Request $request) {
-        var_dump($this->getUserAccessToken()); 
+      // var_dump($this->getUserAccessToken()); 
         var_dump($this->createNewGoogleSheet("Testing new sheet")); die();
     
     }
