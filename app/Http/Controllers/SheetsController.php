@@ -180,7 +180,7 @@ class SheetsController extends Controller
         $service = new Sheets($client);
         // $spreadSheetProps = new SpreadsheetProperties(['title' => $title]);
 
-        var_dump($client->getAccessToken());
+        var_dump($client->isAccessTokenExpired());
 
 
         $spreadSheet = new Spreadsheet([
