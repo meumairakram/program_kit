@@ -107,7 +107,7 @@ class SheetsController extends Controller
                     'owner_id' => $request->user()->id,
                     'auth_type' => 'google_oauth',
                     'key_type' => 'access_token',
-                    'key_value' => $accessToken,
+                    'key_value' => $accessToken['access_token'],
                     // 'refresh_token' => $refreshToken
                 ));
 
@@ -151,14 +151,7 @@ class SheetsController extends Controller
 
     public function getClient() {
 
-        // $authToken = $this->getUserAccessToken();
-
-        // if(!$authToken) {
-
-        //     redirect('/sheets/init');
-        
-        // }
-
+       
        
         
         // if($authToken) {
@@ -193,7 +186,18 @@ class SheetsController extends Controller
 
     public function createNewGoogleSheet($title) {
 
+        $accessToken = $this->getUserAccessToken();
+
+        if(!$accessToken) {
+
+            redirect('/sheets/init');
+        
+        }
+
+
         $client = $this->getClient();
+        $client->setAccessToken($accessToken);
+
         $service = new Sheets($client);
         // $spreadSheetProps = new SpreadsheetProperties(['title' => $title]);
 
