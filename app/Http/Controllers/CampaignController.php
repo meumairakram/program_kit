@@ -9,7 +9,7 @@ use App\Models\WebsitesInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DataSourceField;
-
+use DB;
 
 class CampaignController extends Controller {
     //
@@ -19,7 +19,7 @@ class CampaignController extends Controller {
     public function manage() {
 
         $current_user_id = Auth::user()->id;
-        $campaigns = Campaign::where('owner_id', $current_user_id)->get();       
+        $campaigns = Campaign::where('owner_id', $current_user_id)->get();
 
         return view('dashboard-pages/campaign-management',array(
             'campaigns' => $campaigns
@@ -82,14 +82,20 @@ class CampaignController extends Controller {
         $template->template_id = $attributes['wp_template_id'];
         $template->template = $request->template_name;
         $template->template_variables = $request->input('template_variables');
+        $template->owner_id = $user->id;
         $template->save();
 
-        $template = new DataSourceField();
-        $template->data_source_id = $attributes['data_source_id'];
-        $template->data_source = $request->data_source_name;
-        $template->data_source_headers = $request->input('data_source_headers');
-        $template->save();
-        
+        $csvHeaders = $request->input('csv_headers');
+        foreach ($csvHeaders as $header) {
+
+            $dataSource = new DataSourceField();
+            $dataSource->data_source_id = $attributes['data_source_id'];
+            $dataSource->data_source = $request->data_source_name;
+            $dataSource->data_source_headers = $header;
+            $dataSource->owner_id = $user->id;
+            $dataSource->save();
+        }
+
         // title
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');
         // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');
@@ -99,7 +105,19 @@ class CampaignController extends Controller {
     public function edit(Request $request, $id) {
 
         $current_user_id = Auth::user()->id;
-        $campaign = Campaign::where('id', $id)->first();       
+//      $campaign = Campaign::where('id', $id)->first();
+        $campaign = DB::table('campaigns')
+            ->join('data_source_fields', 'campaigns.data_source_id', '=', 'data_source_fields.data_source_id')
+            ->join('templates', 'campaigns.wp_template_id', '=', 'templates.template_id')
+            ->where('campaigns.id', $id)
+            ->select(
+                'data_source_fields.data_source as dataSourceName',
+                'data_source_fields.data_source_headers as data_source_headers',
+                'templates.template as templateName',
+                'templates.template_variables as template_variables',
+                'campaigns.*'
+            )
+            ->first();
         $allWebsites = WebsitesInfo::where("owner_id", "=", $current_user_id)->get();
         $allDatasources = Datasources::where("owner_id", "=", $current_user_id)->get();
         return view('dashboard-pages/edit-campaign',compact(["campaign", "allWebsites", "allDatasources"]));
@@ -115,27 +133,47 @@ class CampaignController extends Controller {
         $campaign =  Campaign::find($request->id);
         $campaign->title = $request->title;
         $campaign->description = $request->description;
+        $campaign->website_type = $request->website_type;
+        $campaign->website_id = $request->website_id;
+        $campaign->post_type = $request->post_type;
         $campaign->wp_template_id = $request->wp_template_id;
-        $campaign->type = $request->type;
+        $campaign->data_source_id = $request->data_source_id;
         $campaign->status = 'ready';
         $campaign->owner_id = $user->id;
         $campaign->save();
 
+
+        $template = Template::find($request->id);
+        $template->template_id = $request->wp_template_id;;
+        $template->template = $request->template_name;
+        $template->template_variables = $request->input('template_variables');
+        $template->owner_id = $user->id;
+        $template->save();
+
+
+        $dataSource = DataSourceField::find($request->id);
+        $dataSource->data_source_id = $request->data_source_id;
+        $dataSource->data_source = $request->data_source_name;
+        $dataSource->data_source_headers = $request->input('csv_headers');
+        $dataSource->owner_id = $user->id;
+        $dataSource->save();
+
+
         return redirect()->route('campaign-management')->with('message', 'Campaign Updated successfully!');
     }
 
-    public function delete(Request $request, $id) 
+    public function delete(Request $request, $id)
     {
         Campaign::destroy(array('id',$id));
         $current_user_id = Auth::user()->id;
-        $campaigns = Campaign::where('owner_id', $current_user_id)->get();  
+        $campaigns = Campaign::where('owner_id', $current_user_id)->get();
         return redirect()->route('campaign-management',array(
             'campaigns' => $campaigns
         ))->with('message', 'Campaign Deleted successfully!');
 
     }
 
-    public function selectWebSite(Request $request) 
+    public function selectWebSite(Request $request)
     {
         $type = $request->input('type');
 
@@ -145,7 +183,7 @@ class CampaignController extends Controller {
                 "data" => []
             ]);
         }
-        
+
         $current_user_id = Auth::user()->id;
         $websites = WebsitesInfo::where("owner_id", "=", $current_user_id)->where("type", $type)->get();
         return response()->json([

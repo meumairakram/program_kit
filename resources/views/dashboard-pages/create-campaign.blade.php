@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="card-body pt-4 p-3">
-                   
+
                         @csrf
                         @if($errors->any())
                             <div class="mt-3  alert alert-primary alert-dismissible fade show" role="alert">
@@ -61,11 +61,11 @@
                                             <option value="webflow">Webflow</option>
                                             <option value="bubble">Bubble</option>
                                         </select>
-                                        
+
                                         @error('type')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
                                         @enderror
-                                        
+
                                     </div>
                                 </div>
                             </div>    -->
@@ -75,12 +75,12 @@
                                     <label class="d-block">Status</label>
                                     <div class="d-flex align-items-center">
                                         <label class="my-0">Paused</label>
-                                        
-                                        <input class="form-check-input mx-auto" type="checkbox" id="flexSwitchCheckDefault" checked>                         
+
+                                        <input class="form-check-input mx-auto" type="checkbox" id="flexSwitchCheckDefault" checked>
 
                                         <label class="my-0">Active</label>
                                     </div>
-                                     
+
                                 </div>
 
                             </div>
@@ -130,14 +130,14 @@
                                             <!-- <option value="wordpress">Webflow</option>
                                             <option value="wordpress">Bubble</option> -->
                                         </select>
-                                        
+
                                         @error('type')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
                                         @enderror
-                                        
+
                                     </div>
-                                </div>  
-                            </div>  
+                                </div>
+                            </div>
 
 
 
@@ -147,20 +147,20 @@
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control web_sec_required" name="website_id" id="selectWebSite">
                                             <option value="">Select a website</option>
-                                            
+
                                             <!-- @foreach($allWebsites as $website)
                                                 <option value="{{ $website->id }}">{{$website->website_name}} ({{$website->website_url}})</option>
                                             @endforeach -->
 
                                         </select>
-                                        
+
                                         @error('type')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
                                         @enderror
-                                        
+
                                     </div>
-                                </div>  
-                            </div>  
+                                </div>
+                            </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -169,14 +169,14 @@
                                         <select class="form-control web_sec_required" name="post_type" id="postType">
                                             <option value=""> </option>
                                         </select>
-                                        
+
                                         @error('type')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
                                         @enderror
-                                        
+
                                     </div>
-                                </div>  
-                            </div>  
+                                </div>
+                            </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -188,15 +188,15 @@
                                             <option value="2">Template title - #19</option>
                                             <option value="3">Bubble</option> -->
                                         </select>
-                                        
+
                                         @error('type')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
                                         @enderror
-                                        
+
                                     </div>
-                                </div>  
-                            </div>  
-                            
+                                </div>
+                            </div>
+
                             <input type="hidden" name="template_name" id="templateName" value="">
                             <input type="hidden" name="template_variables" id="templateVariables" value="">
 
@@ -214,7 +214,7 @@
                 </div>
             </div>
 
-            
+
 
 
             <div class="card mb-4 d-none datasource">
@@ -223,9 +223,9 @@
                 </div>
 
                 <div class="card-body pt-4 p-3">
-                    
+
                     <div class="row">
-                        
+
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Data source</label>
@@ -238,17 +238,17 @@
                                             @endforeach
 
                                         </select>
-                                        
+
                                         @error('type')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
                                         @enderror
-                                        
+
                                     </div>
-                                </div>  
+                                </div>
                             </div>
                                 <input type="hidden" name="data_source_name" id="dataSourceName" value="">
 
-                    </div> 
+                    </div>
                     <div class="d-flex justify-content-start">
                         <button type="button" id="datasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
                     </div>
@@ -271,16 +271,16 @@
                 </div>
 
                 <div class="card-body pt-4 p-3">
-                    
+
                     <div class="row">
-                        
+
                         <div class="col-md-8 offset-md-2">
 
                             <div class="row" id="mapDataFields">
                                 <div class="col-md-6">
-                                    
+
                                     <span class="text-bold">Template fields</span>
-                                    
+
                                     <div class="row">
                                         <div class="col-md-12" id="tempVariables">
                                             <input class="form-control" value="" type="text" id="tempVariablesInput" name="template_variables">
@@ -338,7 +338,7 @@
                                             </select>
                                         </td>
 
-                                       <td> 
+                                       <td>
                                             <select class="form-control" name="website">
                                                 <option value="wordpress">Empty</option>
                                                 <option value="wordpress">Default value</option>
@@ -381,11 +381,11 @@
                     <h6 class="mb-0">Lets save and start</h6>
                 </div>
 
-            
+
                 <div class="card-body pt-4 p-3">
-                    
+
                     <div class="row">
-                        
+
                         <div class="col-md-6">
 
                             <div class="d-flex justify-content-start">
@@ -406,8 +406,8 @@
 
 <script>
 
-    // website type 
-    document.getElementById('websiteType').addEventListener('change', function(e) 
+    // website type
+    document.getElementById('websiteType').addEventListener('change', function(e)
     {
             const selectedType = this.value;
             if (selectedType === '') {
@@ -420,10 +420,10 @@
 
             $.ajax({
                 method: "POST",
-                url: "/websites_type", 
+                url: "/websites_type",
                 data: formData,
-                processData: false, 
-                contentType: false, 
+                processData: false,
+                contentType: false,
                 success: function(response) {
                     console.log(response)
                     if (!response.success) {
@@ -433,10 +433,10 @@
                     }
 
                     const websiteSelect = $('#selectWebSite');
-                    websiteSelect.empty(); 
+                    websiteSelect.empty();
 
                     const websites = response.websites;
-                    websiteSelect.append('<option value=""> </option>'); 
+                    websiteSelect.append('<option value=""> </option>');
                     websites.forEach(websites => {
                         websiteSelect.append(`<option value="${websites.id}">Name: ${websites.website_name} | URL:${websites.website_url}</option>`);
                     });
@@ -456,13 +456,13 @@
     });
 
     // geting post types by selecting website
-    document.getElementById('selectWebSite').addEventListener('change', function(e) 
+    document.getElementById('selectWebSite').addEventListener('change', function(e)
     {
             $.ajax({
                 method: "get",
-                url: "/api/get_post_types", 
-                processData: false, 
-                contentType: false, 
+                url: "/api/get_post_types",
+                processData: false,
+                contentType: false,
                 success: function(response) {
                     console.log(response)
                     if (!response.success) {
@@ -472,14 +472,14 @@
                     }
 
                     const postType = $('#postType');
-                    postType.empty(); 
+                    postType.empty();
 
                     const type = response.data.post_types; // Corrected access to the array
                     postType.append('<option value=""> </option>');
-                    
+
                     type.forEach(typeItem => { // Use typeItem as an element in the forEach loop
                         postType.append(`<option value="${typeItem}">${typeItem}</option>`);
-                    }); 
+                    });
                     postType.on('change', function() {
                         const postTypeId = $(this).val();
                         // alert(postTypeId);
@@ -495,7 +495,7 @@
     });
 
     // geting template by post type
-    document.getElementById('postType').addEventListener('change', function(e) 
+    document.getElementById('postType').addEventListener('change', function(e)
     {
             const selectedType = this.value;
             if (selectedType === '') {
@@ -508,10 +508,10 @@
 
             $.ajax({
                 method: "POST",
-                url: "/api/get_templates_by_type", 
+                url: "/api/get_templates_by_type",
                 data: formData,
-                processData: false, 
-                contentType: false, 
+                processData: false,
+                contentType: false,
                 success: function(response) {
                     console.log(response)
                     if (!response.success) {
@@ -521,13 +521,15 @@
                     }
 
                     const template = $('#template');
-                    template.empty(); 
+                    template.empty();
 
                     const get_templates_by_type = response.data.posts;
-                    template.append('<option value=""> </option>'); 
+                    template.append('<option value=""> </option>');
+
                     get_templates_by_type.forEach(get_templates_by_type => {
                         template.append(`<option name="${get_templates_by_type.title}" value="${get_templates_by_type.id}">${get_templates_by_type.title}</option>`);
                     });
+
                     template.on('change', function() {
                         const templateId = $(this).val();
                         const templateName = $(this).find('option:selected').attr('name');
@@ -553,7 +555,7 @@
     //     }).append(
     //         $('<div>', { class: 'col-md-6 mb-2' }).append(variableDiv),
     //         $('<div>', { class: 'col-md-6 mb-2' }).append(function() {
-    //             const csvHeadersDiv = $('<div>'); 
+    //             const csvHeadersDiv = $('<div>');
     //             headers.forEach(header => {
     //                 csvHeadersDiv.append($(`<option value="${header}">${header}</option>`));
     //             });
@@ -565,7 +567,7 @@
     // }
 
     // geting template Variables
-    document.getElementById('template').addEventListener('change', function(e) 
+    document.getElementById('template').addEventListener('change', function(e)
     {
         const selectedType = this.value;
         console.log(selectedType);
@@ -579,10 +581,10 @@
 
         $.ajax({
             method: "POST",
-            url: "/api/get_template_vars", 
+            url: "/api/get_template_vars",
             data: formData,
-            processData: false, 
-            contentType: false, 
+            processData: false,
+            contentType: false,
             success: function(response) {
                 console.log(response)
                 if (!response.success) {
@@ -590,12 +592,12 @@
                     $('#tempVariables').val('');
                     return;
                 }
-                    
+
                 const variables = response.data.variables;
                 const collectedVariables = [];
 
                 variables.forEach(variable => {
-                    const variableText = variable.replace(/[{}"]/g, ''); 
+                    const variableText = variable.replace(/[{}"]/g, '');
                     collectedVariables.push(variableText);
                     console.log(variableText);
                     const variableDiv = `<div name="${variableText}" class="variable-div">${variableText}</div>`;
@@ -624,10 +626,10 @@
 
                         $.ajax({
                             method: "POST",
-                            url: "/create-campaign", 
+                            url: "/create-campaign",
                             data: formData,
-                            processData: false, 
-                            contentType: false, 
+                            processData: false,
+                            contentType: false,
                             success: function(response) {
                                 console.log(response);
                             }
@@ -643,13 +645,14 @@
     });
 
     // data source
-    document.getElementById('dataSource').addEventListener('change', function(e) 
+    var source_headers = [];
+    document.getElementById('dataSource').addEventListener('change', function(e)
     {
         const csvHeadersSelectId = this.value;
-        $('#csvHeaders').val(csvHeadersSelectId); 
+        $('#csvHeaders').val(csvHeadersSelectId);
         const dataSource = $(this).find('option:selected').attr('name');
         $('#dataSourceName').val(dataSource);
-        
+
         const selectedFilePath =  $(this).find('option:selected').attr('id');
         if (selectedFilePath === '') {
             return;
@@ -660,10 +663,10 @@
 
         $.ajax({
             method: "POST",
-            url: "/api/csv-extract", 
+            url: "/api/csv-extract",
             data: formData,
-            processData: false, 
-            contentType: false, 
+            processData: false,
+            contentType: false,
             success: function(res) {
                 console.log(res)
                 if (!res.success) {
@@ -673,20 +676,55 @@
                 }
 
                 const csvHeadersSelect = $('#csvHeaders');
-                csvHeadersSelect.empty(); 
+                csvHeadersSelect.empty();
 
                 const headers = res.data.headers;
+                console.log(headers);
                 csvHeadersSelect.append('<option value=""> </option>');
+                source_headers.push(headers);
+
                 headers.forEach(header => {
                     csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
                 });
-                    // updateCsvHeadersOptions('', headers)  
-                   
+                    // updateCsvHeadersOptions('', headers)
+
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 // Handle the AJAX error if needed
                 console.error('AJAX Error:', textStatus, errorThrown);
                 $('#csvHeaders').html('<option value="">-- Choose --</option>');
+            }
+        });
+    });
+
+    $('#submit').on('click', function() {
+        const formData = new FormData();
+        formData.append('_token', '{{ csrf_token() }}');
+
+        // Append each header to the form data
+        // csvHeadersSelect.each(function() {
+        //     const header = $(this).val(); // Get the value of the selected option
+        //     if (header) {
+        //         formData.append('csv_headers[]', header); // Append to form data if not empty
+        //     }
+        // });
+        var array = [];
+
+            // $("#csvHeaders").each(function(){
+            //     array.push(this.value);
+            // });
+
+        $.ajax({
+            method: "POST",
+            url: "{{ route('store-campaign') }}",
+            data: {
+                _token: '{{ csrf_token() }}',
+                'csv_headers': source_headers,
+            },
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log(response);
             }
         });
     });
@@ -761,11 +799,11 @@
         }
     });
     // next button dependency section ends
-       
+
 
 </script>
-        
 
-        
-       
+
+
+
 @endsection
