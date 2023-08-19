@@ -105,7 +105,9 @@ class SheetsController extends Controller
                 }
 
                 $client = new Client();
-                $client->setAccessToken($accessCode);
+                $accessToken = $client->fetchAccessTokenWithAuthCode($accessCode);
+
+                $client->setAccessToken($accessToken);
 
                 $refreshToken = $client->getRefreshToken();
 
@@ -117,7 +119,7 @@ class SheetsController extends Controller
                     'owner_id' => $request->user()->id,
                     'auth_type' => 'google_oauth',
                     'key_type' => 'access_token',
-                    'key_value' => $accessCode,
+                    'key_value' => $accessToken,
                     'refresh_token' => $refreshToken
                 ));
 
