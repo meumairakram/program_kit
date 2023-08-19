@@ -208,8 +208,10 @@ class SheetsController extends Controller
         
         }
 
+        var_dump($accessToken); die();
 
         $client = $this->getClient();
+
         $client->setAccessToken($accessToken);
 
         $service = new Sheets($client);
