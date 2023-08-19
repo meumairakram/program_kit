@@ -167,6 +167,10 @@ class SheetsController extends Controller
 
         $client->setAccessToken($authToken);
 
+        if($client->isAccessTokenExpired()) {
+            $client->refreshToken($client->getRefreshToken());
+        }
+
         return $client;
     
     }
@@ -180,7 +184,9 @@ class SheetsController extends Controller
         $service = new Sheets($client);
         // $spreadSheetProps = new SpreadsheetProperties(['title' => $title]);
 
-        var_dump($client->isAccessTokenExpired());
+        //var_dump($client->isAccessTokenExpired());
+
+        
 
 
         $spreadSheet = new Spreadsheet([
