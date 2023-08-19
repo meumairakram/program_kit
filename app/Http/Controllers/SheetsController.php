@@ -48,17 +48,7 @@ class SheetsController extends Controller
 
         if(!count($getAccessTokens)) {
         
-            $client = new Client(array(
-                'application_name' => env("GOOGLE_APPLICATION_NAME"),
-                "client_id" => env("GOOGLE_CLIENT_ID"),
-                "client_secret" => env("GOOGLE_CLIENT_SECRET"),
-                // "redirect_uri" => $redirect_uri,
-                "redirect_uri" => 'https://pkit.codeivo.com/sheets/init',
-                "scopes" => [\Google\Service\Sheets::DRIVE, \Google\Service\Sheets::SPREADSHEETS],
-                "access_type" => "online",
-                "approval_prompt" => "auto"
-
-            ));
+            $client = $this->getClient();
 
             return redirect($client->createAuthUrl());
         
@@ -74,6 +64,9 @@ class SheetsController extends Controller
 
 
     }
+
+
+
 
 
 
@@ -104,7 +97,9 @@ class SheetsController extends Controller
                     die();
                 }
 
-                $client = new Client();
+
+                $client = $this->getClient();
+                
                 $accessToken = $client->fetchAccessTokenWithAuthCode($accessCode);
                 var_dump($accessToken); die();
                 // $client->setAccessToken($accessToken);
@@ -163,24 +158,38 @@ class SheetsController extends Controller
 
     public function getClient() {
 
-        $authToken = $this->getUserAccessToken();
+        // $authToken = $this->getUserAccessToken();
 
-        if(!$authToken) {
+        // if(!$authToken) {
 
-            redirect('/sheets/init');
+        //     redirect('/sheets/init');
         
-        }
+        // }
 
-        $client = new Client();
+       
         
+        // if($authToken) {
+            
+        //     $client->setAccessToken($authToken->key_value);
+        
+        // }
 
-        $client->setAccessToken($authToken->key_value);
 
+        // if($client->isAccessTokenExpired()) {
+        //     $client->fetchAccessTokenWithRefreshToken($authToken->refresh_token);
+        // }
 
+        $client = new Client(array(
+                'application_name' => env("GOOGLE_APPLICATION_NAME"),
+                "client_id" => env("GOOGLE_CLIENT_ID"),
+                "client_secret" => env("GOOGLE_CLIENT_SECRET"),
+                // "redirect_uri" => $redirect_uri,
+                "redirect_uri" => 'https://pkit.codeivo.com/sheets/init',
+                "scopes" => [\Google\Service\Sheets::DRIVE, \Google\Service\Sheets::SPREADSHEETS],
+                "access_type" => "online",
+                "approval_prompt" => "auto"
 
-        if($client->isAccessTokenExpired()) {
-            $client->fetchAccessTokenWithRefreshToken($authToken->refresh_token);
-        }
+        ));
 
         return $client;
     
