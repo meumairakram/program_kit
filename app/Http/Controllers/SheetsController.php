@@ -177,8 +177,12 @@ class SheetsController extends Controller
 
         $client = $this->getClient();
         $service = new Sheets($client);
-        $spreadSheetProps = new SpreadsheetProperties(['title' => $title]);
-        $spreadSheet = new SpreadSheet($spreadSheetProps);
+        // $spreadSheetProps = new SpreadsheetProperties(['title' => $title]);
+        $spreadSheet = new Spreadsheet([
+            'properties' => [
+                'title' => $title
+            ]
+        ]);
         // var_dump($spreadSheetProps);
 
         var_dump($service->spreadsheets->create($spreadSheet, ['fields' => 'spreadsheetId']));
