@@ -106,6 +106,7 @@ class SheetsController extends Controller
 
                 $refreshToken = $client->getRefreshToken();
 
+                var_dump($refreshToken);
                 
                 // match recieved scopes 
                 // $client->fetchAccessTokenWithRefreshToken()
