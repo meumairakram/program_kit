@@ -102,7 +102,13 @@ class SheetsController extends Controller
 
                 $accessToken = $client->fetchAccessTokenWithAuthCode($accessCode);
 
-                var_dump($accessToken); die();
+                if(!isset($accessToken['access_token']) && isset($accessToken['error'])) {
+                
+                        var_dump($accessToken['error']); die();
+                }
+
+                // array(5) { ["access_token"]=> string(220) "ya29.a0AfB_byBJyBIfo-Jx5sPr16gJh1CsFqYFHyuvtIh6jZnpAXZK-fXJ0HOC4Z0R_OpB2KmM207huQYFQasePqoYsU-QyMyF0p--p6n3CbEcP-97jYIN8jx3_IKCyDF5EuFL8X5yVi4QEot0Vc009CnmXsyruxV1wphX8mIKEAaCgYKAfcSARISFQHsvYlsUtUcEJJPwVphWBjH1-qw7Q0173" ["expires_in"]=> int(3599) ["scope"]=> string(82) "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets" ["token_type"]=> string(6) "Bearer" ["created"]=> int(1692480935) }
+
                 // save code recieved
                 $saveAuthToken = AuthTokens::create(array(
                     'owner_id' => $request->user()->id,
