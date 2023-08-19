@@ -7,7 +7,7 @@ use Revolution\Google\Sheets\Facades\Google;
 use Google\Client;
 // use Sheets\Facades\Sheets;
 use App\Models\AuthTokens;
-use Google\Service\Sheets\SpreadSheet;
+use Google\Service\Sheets\Spreadsheet;
 use Google\Service\Sheets\SpreadsheetProperties;
 use Google\Service\Sheets;
 
@@ -182,7 +182,7 @@ class SheetsController extends Controller
         // var_dump($spreadSheetProps);
 
         var_dump($service->spreadsheets->create($spreadSheet, ['fields' => 'spreadsheetId']));
-    
+
         // $client = new Client()
     
     }
