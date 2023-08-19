@@ -104,14 +104,21 @@ class SheetsController extends Controller
                     die();
                 }
 
+                $client = new Client();
+                $client->setAccessToken($accessCode);
+
+                $refreshToken = $client->getRefreshToken();
+
                 // match recieved scopes 
+                // $client->fetchAccessTokenWithRefreshToken()
 
                 // save code recieved
                 $saveAuthToken = AuthTokens::create(array(
                     'owner_id' => $request->user()->id,
                     'auth_type' => 'google_oauth',
                     'key_type' => 'access_token',
-                    'key_value' => $accessCode
+                    'key_value' => $accessCode,
+                    'refresh_token' => $refreshToken
                 ));
 
                 $saveAuthToken->save();
@@ -146,7 +153,7 @@ class SheetsController extends Controller
             return false;
         }
 
-        return $accessTokens->first()->key_value;
+        return $accessTokens->first();
     
     }
 
@@ -165,10 +172,12 @@ class SheetsController extends Controller
         $client = new Client();
         
 
-        $client->setAccessToken($authToken);
+        $client->setAccessToken($authToken->key_value);
+
+
 
         if($client->isAccessTokenExpired()) {
-            $client->refreshToken($client->getRefreshToken());
+            $client->fetchAccessTokenWithRefreshToken($authToken->refresh_token);
         }
 
         return $client;
@@ -185,9 +194,6 @@ class SheetsController extends Controller
         // $spreadSheetProps = new SpreadsheetProperties(['title' => $title]);
 
         //var_dump($client->isAccessTokenExpired());
-
-        
-
 
         $spreadSheet = new Spreadsheet([
             'properties' => [
