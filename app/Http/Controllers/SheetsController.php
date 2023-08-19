@@ -208,27 +208,24 @@ class SheetsController extends Controller
         
         }
 
-        // var_dump($accessToken); die();
-
         $client = $this->getClient();
 
         $client->setAccessToken($accessToken->key_value);
 
+
+        var_dump($client->getRefreshToken()); die();
+
+
         $service = new Sheets($client);
-        // $spreadSheetProps = new SpreadsheetProperties(['title' => $title]);
-
-        //var_dump($client->isAccessTokenExpired());
-
+     
         $spreadSheet = new Spreadsheet([
             'properties' => [
                 'title' => $title
             ]
         ]);
-        // var_dump($spreadSheetProps);
+
 
         var_dump($service->spreadsheets->create($spreadSheet, ['fields' => 'spreadsheetId']));
-
-        // $client = new Client()
     
     }
 
