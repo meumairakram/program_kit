@@ -101,11 +101,18 @@ class SheetsController extends Controller
                 $client = $this->getClient();
 
                 $accessToken = $client->fetchAccessTokenWithAuthCode($accessCode);
+                $refreshToken = "Not available";
+
+                if(isset($accessToken['refresh_token'])) {
+                    $refreshToken = $accessToken['refresh_token'];
+                }
 
                 if(!isset($accessToken['access_token']) && isset($accessToken['error'])) {
                 
                         var_dump($accessToken['error']); die();
                 }
+
+
 
                 // array(5) { ["access_token"]=> string(220) "ya29.a0AfB_byBJyBIfo-Jx5sPr16gJh1CsFqYFHyuvtIh6jZnpAXZK-fXJ0HOC4Z0R_OpB2KmM207huQYFQasePqoYsU-QyMyF0p--p6n3CbEcP-97jYIN8jx3_IKCyDF5EuFL8X5yVi4QEot0Vc009CnmXsyruxV1wphX8mIKEAaCgYKAfcSARISFQHsvYlsUtUcEJJPwVphWBjH1-qw7Q0173" ["expires_in"]=> int(3599) ["scope"]=> string(82) "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets" ["token_type"]=> string(6) "Bearer" ["created"]=> int(1692480935) }
 
@@ -115,7 +122,7 @@ class SheetsController extends Controller
                     'auth_type' => 'google_oauth',
                     'key_type' => 'access_token',
                     'key_value' => $accessToken['access_token'],
-                    // 'refresh_token' => $refreshToken
+                    'refresh_token' => $refreshToken
                 ));
 
                 $saveAuthToken->save();
