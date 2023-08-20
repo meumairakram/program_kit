@@ -208,7 +208,6 @@ class SheetsController extends Controller
 
 
 
-
     public function createNewGoogleSheet($title) {
 
         $client = $this->initializeClientWithAccessToken();
