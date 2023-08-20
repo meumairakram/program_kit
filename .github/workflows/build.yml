@@ -23,3 +23,5 @@ jobs:
             cd pkit.codeivo.com
             git checkout staging_build
             git pull
+            composer update
+            php artisan migrate
