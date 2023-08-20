@@ -165,25 +165,24 @@ class SheetsController extends Controller
     public function getClient() {
 
         $client = new Client(array(
-                'application_name' => env("GOOGLE_APPLICATION_NAME"),
-                "client_id" => env("GOOGLE_CLIENT_ID"),
-                "client_secret" => env("GOOGLE_CLIENT_SECRET"),
-                // "redirect_uri" => $redirect_uri,
-                "redirect_uri" => 'https://pkit.codeivo.com/sheets/init',
-                "scopes" => [\Google\Service\Sheets::DRIVE, \Google\Service\Sheets::SPREADSHEETS],
-                "access_type" => "online",
-                "approval_prompt" => "auto"
+            'application_name' => env("GOOGLE_APPLICATION_NAME"),
+            "client_id" => env("GOOGLE_CLIENT_ID"),
+            "client_secret" => env("GOOGLE_CLIENT_SECRET"),
+            // "redirect_uri" => $redirect_uri,
+            "redirect_uri" => 'https://pkit.codeivo.com/sheets/init',
+            "scopes" => [\Google\Service\Sheets::DRIVE, \Google\Service\Sheets::SPREADSHEETS],
+            "access_type" => "online",
+            "approval_prompt" => "auto"
 
         ));
 
         return $client;
     
-    }
+    }   
 
 
-
-
-    public function createNewGoogleSheet($title) {
+        
+    public function initializeClientWithAccessToken() {
 
         $accessToken = $this->getUserAccessToken();
 
@@ -196,6 +195,23 @@ class SheetsController extends Controller
         $client = $this->getClient();
 
         $client->setAccessToken($accessToken->key_value);
+
+        if($client->isAccessTokenExpired()) {
+
+            return redirect($client->createAuthUrl());
+        
+        }
+
+        return $client;
+    
+    }
+
+
+
+
+    public function createNewGoogleSheet($title) {
+
+        $client = $this->initializeClientWithAccessToken();
 
         $service = new Sheets($client);
      
@@ -225,7 +241,7 @@ class SheetsController extends Controller
         
         $sheet_url = "https://docs.google.com/spreadsheets/d/" . $sheet_id . "/edit";
         
-        var_dump("Sheet craeted at: ". $sheet_url); die();
+        var_dump("Sheet created at: ". $sheet_url); die();
     
     }
 
