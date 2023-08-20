@@ -22,7 +22,7 @@
                         <div>
                             <h5 class="mb-0">All Websites</h5>
                         </div>
-                        <a href="{{url('add-website')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Add New</a>
+                        <a href="{{url('add-website')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Add Website</a>
                     </div>
                 </div>
 
