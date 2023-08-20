@@ -1,0 +1,25 @@
+name: Deploy to Staging Server
+
+on:
+  push:
+    branches:
+      - staging_build
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with: 
+          host: 173.249.24.142
+          username: daroshst
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd pkit.codeivo.com
+            git checkout staging_build
+            git pull
