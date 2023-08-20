@@ -50,6 +50,7 @@ class SheetsController extends Controller
 
             $client = $this->getClient();
 
+            session()->forget('post_auth_redirect');
             session(['post_auth_redirect' => $redirect_uri]);
 
             return redirect($client->createAuthUrl());
