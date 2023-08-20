@@ -32,16 +32,16 @@ class SheetsController extends Controller
 
         if($authCodeDetected) {
 
-            if(parse_url($request->url())['path'] == $redirect_path) {
+            // if(parse_url($request->url())['path'] == $redirect_path) {
 
-                return view('internal.account_auth_result')->with(["status" => "success"]);
+            return view('internal.account_auth_result')->with(["status" => "success"]);
 
-                die();
-            } 
+            die();
+            // } 
 
-            if(session()->has('post_auth_redirect')) {
-                return redirect(session()->get('post_auth_redirect') . '?google_auth=success');
-            }
+            // if(session()->has('post_auth_redirect')) {
+                // return redirect(session()->get('post_auth_redirect') . '?google_auth=success');
+            // }
         
         }
 
