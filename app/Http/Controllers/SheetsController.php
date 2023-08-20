@@ -19,7 +19,7 @@ class SheetsController extends Controller
     public function init(Request $request) {
 
         
-        $redirect_uri = $request->redirect_url && $request->redirect_url != "" ? $request->redirect_url : env("APP_URL") . "sheets/init";
+        $redirect_uri = $request->redirect_url && $request->redirect_url != "" ? $request->redirect_url : env("APP_URL") . "https://pkit.codeivo.com/sheets/init";
         $redirect_path = isset(parse_url($redirect_uri)['path']) ? parse_url($redirect_uri)['path'] : "";
 
 
