@@ -220,8 +220,12 @@ class SheetsController extends Controller
 
 
     public function testRoute(Request $request) {
-     
-        var_dump($this->createNewGoogleSheet("Testing new sheet 2230")); die();
+
+        $sheet_id = $this->createNewGoogleSheet("Created new sheet");
+        
+        $sheet_url = "https://docs.google.com/spreadsheets/d/" . $sheet_id . "/edit";
+        
+        var_dump("Sheet craeted at: ". $sheet_url); die();
     
     }
 
