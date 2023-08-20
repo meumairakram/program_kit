@@ -29,8 +29,6 @@ class SheetsController extends Controller
      
         $authCodeDetected = $this->detectAuthCodeAndSave($request);
 
-        // var_dump($request->path() ); die();
-
 
         if($authCodeDetected) {
 
@@ -39,28 +37,33 @@ class SheetsController extends Controller
                 die();
             } 
 
-            var_dump("REdirecting to" . $redirect_uri); die();
-            // return redirect($redirect_uri);
-        //    return redirect($redirect_uri);
+            if(session()->has('post_auth_redirect')) {
+                return redirect(session()->get('post_auth_redirect') . '?google_auth=success');
+            }
         
         }
 
 
         if(!count($getAccessTokens)) {
-        
+
             $client = $this->getClient();
 
+            session(['post_auth_redirect' => $redirect_uri]);
+
             return redirect($client->createAuthUrl());
-        
-        
+
         }
 
-        if(parse_url($request->url())['path'] == $redirect_path) {
-            echo "You google account is already connected.";
-            die();
-        }    
 
-        return redirect($redirect_uri);
+
+         if(parse_url($request->url())['path'] == $redirect_path) {
+                
+            echo "You google account is already connected.";    
+            die();
+        } 
+
+        
+        return redirect($redirect_uri . '?google_auth=success');
 
 
     }
@@ -112,10 +115,6 @@ class SheetsController extends Controller
                         var_dump($accessToken['error']); die();
                 }
 
-
-
-                // array(5) { ["access_token"]=> string(220) "ya29.a0AfB_byBJyBIfo-Jx5sPr16gJh1CsFqYFHyuvtIh6jZnpAXZK-fXJ0HOC4Z0R_OpB2KmM207huQYFQasePqoYsU-QyMyF0p--p6n3CbEcP-97jYIN8jx3_IKCyDF5EuFL8X5yVi4QEot0Vc009CnmXsyruxV1wphX8mIKEAaCgYKAfcSARISFQHsvYlsUtUcEJJPwVphWBjH1-qw7Q0173" ["expires_in"]=> int(3599) ["scope"]=> string(82) "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/spreadsheets" ["token_type"]=> string(6) "Bearer" ["created"]=> int(1692480935) }
-
                 // save code recieved
                 $saveAuthToken = AuthTokens::create(array(
                     'owner_id' => $request->user()->id,
@@ -128,8 +127,8 @@ class SheetsController extends Controller
                 $saveAuthToken->save();
 
             } 
+
             // Save access token to this user here.
-            var_dump("You are now connected");
             return true;
 
         }
@@ -165,20 +164,6 @@ class SheetsController extends Controller
 
     public function getClient() {
 
-       
-       
-        
-        // if($authToken) {
-            
-        //     $client->setAccessToken($authToken->key_value);
-        
-        // }
-
-
-        // if($client->isAccessTokenExpired()) {
-        //     $client->fetchAccessTokenWithRefreshToken($authToken->refresh_token);
-        // }
-
         $client = new Client(array(
                 'application_name' => env("GOOGLE_APPLICATION_NAME"),
                 "client_id" => env("GOOGLE_CLIENT_ID"),
@@ -203,18 +188,14 @@ class SheetsController extends Controller
         $accessToken = $this->getUserAccessToken();
 
         if(!$accessToken) {
-
+            
             redirect('/sheets/init');
-        
+
         }
 
         $client = $this->getClient();
 
         $client->setAccessToken($accessToken->key_value);
-
-
-        var_dump($client->getRefreshToken()); die();
-
 
         $service = new Sheets($client);
      
@@ -225,15 +206,22 @@ class SheetsController extends Controller
         ]);
 
 
-        var_dump($service->spreadsheets->create($spreadSheet, ['fields' => 'spreadsheetId']));
+        $created_sheet = $service->spreadsheets->create($spreadSheet, ['fields' => 'spreadsheetId']);
+
+        if($created_sheet) {
+
+            return $created_sheet->spreadsheetId;
+        } 
+
+        return false;
     
     }
 
 
 
     public function testRoute(Request $request) {
-      // var_dump($this->getUserAccessToken()); 
-        var_dump($this->createNewGoogleSheet("Testing new sheet")); die();
+     
+        var_dump($this->createNewGoogleSheet("Testing new sheet 2230")); die();
     
     }
 
