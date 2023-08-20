@@ -32,8 +32,16 @@ class DatasourcesController extends Controller {
 
     public function add_new() {
 
+        $accessTokens = auth()->user()->google_access_token()->where(['auth_type' => 'google_oauth']);
+
+        $google_account_connected = $accessTokens->count() > 0;
+
+        // var_dump($google_account_connected); die();
+
+
         return view('dashboard-pages/datasources/add-datasource',array(
-            
+            'google_account' => $google_account_connected
+            // 'google_account' => false
         ));
 
     }

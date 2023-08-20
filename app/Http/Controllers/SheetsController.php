@@ -33,7 +33,9 @@ class SheetsController extends Controller
         if($authCodeDetected) {
 
             if(parse_url($request->url())['path'] == $redirect_path) {
-                echo "You google account is now connected.";
+
+                return view('internal.account_auth_result')->with(["status" => "success"]);
+
                 die();
             } 
 
@@ -58,7 +60,8 @@ class SheetsController extends Controller
 
          if(parse_url($request->url())['path'] == $redirect_path) {
                 
-            echo "You google account is already connected.";    
+            return view('internal.account_auth_result')->with(["status" => "pre_connected"]);
+  
             die();
         } 
 
@@ -96,8 +99,10 @@ class SheetsController extends Controller
 
                 if(count($requiredScopesGranted) < 2) {
 
-                    var_dump("Authentication Failed! You need to provide both Google Sheets and Google Drives Access scopes in order for the app to work. Please click below and reauthenticate.");
-                    die();
+                    return view('internal.account_auth_result')->with(["status" => "custom_error", "error_text" => "Authentication Failed! You need to provide both Google Sheets and Google Drives Access scopes in order for the app to work. Please click below and reauthenticate."]);
+
+                    // var_dump("Authentication Failed! You need to provide both Google Sheets and Google Drives Access scopes in order for the app to work. Please click below and reauthenticate.");
+                    // die();
                 }
 
 
@@ -112,7 +117,9 @@ class SheetsController extends Controller
 
                 if(!isset($accessToken['access_token']) && isset($accessToken['error'])) {
                 
-                        var_dump($accessToken['error']); die();
+                        
+                        return view('internal.account_auth_result')->with(["status" => "custom_error", "error_text" => $accessToken['error']]);
+
                 }
 
                 // save code recieved
@@ -236,12 +243,13 @@ class SheetsController extends Controller
 
     public function testRoute(Request $request) {
 
-        $sheet_id = $this->createNewGoogleSheet("Created new sheet");
+        // $sheet_id = $this->createNewGoogleSheet("Created new sheet");
         
-        $sheet_url = "https://docs.google.com/spreadsheets/d/" . $sheet_id . "/edit";
+        // $sheet_url = "https://docs.google.com/spreadsheets/d/" . $sheet_id . "/edit";
         
-        var_dump("Sheet created at: ". $sheet_url); die();
-    
+        // var_dump("Sheet created at: ". $sheet_url); die();
+        
+        return view('internal.account_auth_result')->with(["status" => "error"]);
     }
 
 }

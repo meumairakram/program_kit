@@ -97,7 +97,7 @@
 
             <div class="card mb-4 uploadGoogleSheets d-none">
                 <div class="card-header pb-0 px-3">
-                    <h6 class="mb-0">Google sheets</h6>
+                    <h6 class="mb-0">Select Google sheet</h6>
                 </div>
                 <div class="card-body pt-4 p-3">
                     <div class="row"> 
@@ -105,9 +105,52 @@
                             <div class="form-group">
                                 <!-- <label for="user.location" class="form-control-label d-block mb-0">Upload sheet</label> -->
                                 <!-- <span class="text-xs mb-2 d-block ms-1">Upload your Google sheet</span>  -->
-                                <div class="d-flex justify-content-start">
-                                    <button type="button" class="btn btn-dark bg-gradient-dark gsheets">Create Google Sheet</button>
-                                </div>
+
+                                @if($google_account)   
+
+                                    <div class="">
+                                        
+                                        <div class="">
+                                            <label>Choose a Sheet</label>
+                                            <select class="form-control mb-4" name="sheet_id_connect" >
+                                                <option value="sheet_id">Sheet name 1</option>
+                                                <option value="sheet_id">Sheet name 1</option>
+                                                <option value="sheet_id">Sheet name 1</option>                                        
+                                            </select>
+                                        </div>
+
+                                        <span class="my-4 d-block">OR</span>
+
+                                        <div class="">
+                                            <label>Create a new one</label>
+                                            <input type="text" class="form-control" placeholder="Enter sheet title">
+                                        </div>
+
+                                        <button type="button" class="btn btn-dark bg-gradient-dark gsheets mt-4">Connect</button>
+                                    </div>
+
+                                @else   
+                                    <div class="row">
+                                        <div class="col-sm-12 px-4">
+
+                                            <h4>You need to connect your google account.</h4>
+                                            <span class="mt-2 d-block">To use sheets as datasource, you need to grant us access to manage google sheets on your account. Please click the button below to authorize</span>
+                                            <a  href="/sheets/init"
+                                                    onclick="window.open(this.href,'targetWindow',
+                                                                                    `toolbar=no,
+                                                                                        location=no,
+                                                                                        status=no,
+                                                                                        menubar=no,
+                                                                                        scrollbars=yes,
+                                                                                        resizable=yes,
+                                                                                        width=SomeSize,
+                                                                                        height=SomeSize`);
+                                                    return false;" type="button" class="btn btn-dark d-inline-block bg-gradient-dark gsheets mt-3">Connect Google account</a>
+                                        </div>
+
+                                    </div>
+                                @endif
+                            
                             </div>
                         </div>  
                     </div>
