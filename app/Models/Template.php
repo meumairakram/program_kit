@@ -12,6 +12,8 @@ class Template extends Model
     protected $fillable = [
         'template_id',
         'template',
-        'template_variables'
+        'template_variables',
+        'owner_id'
+
     ];
 }

@@ -12,6 +12,7 @@ class DataSourceField extends Model
     protected $fillable = [
         'data_source_id',
         'data_source',
-        'data_source_headers'
+        'data_source_headers',
+        'owner_id'
     ];
 }

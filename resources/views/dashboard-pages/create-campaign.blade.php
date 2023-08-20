@@ -198,7 +198,7 @@
                             </div>
 
                             <input type="hidden" name="template_name" id="templateName" value="">
-                            <input type="hidden" name="template_variables" id="templateVariables" value="">
+                            <textarea class="d-none" name="variables" id="templateTextArea" value=""></textarea>
 
                         </div>
                         <div class="d-flex justify-content-start">
@@ -247,6 +247,8 @@
                                 </div>
                             </div>
                                 <input type="hidden" name="data_source_name" id="dataSourceName" value="">
+                                <input type="hidden" name="data_source_id" id="dataSourceId" value="">
+                                <textarea class="d-none" name="data_source_headers" id="sourceTextArea" value=""></textarea>
 
                     </div>
                     <div class="d-flex justify-content-start">
@@ -574,6 +576,11 @@
         if (selectedType === '') {
             return;
         }
+        // $('#dataSource').on('change', function() {
+        //     const sourceId = $(this).val();
+        //     console.log(sourceId);
+        //
+        // });
 
         const formData = new FormData();
         formData.append('_token', '{{ csrf_token() }}');
@@ -602,8 +609,7 @@
                     console.log(variableText);
                     const variableDiv = `<div name="${variableText}" class="variable-div">${variableText}</div>`;
 
-                    // const templatevariable = variableDiv.attr('name');
-                    // $('#templateVariables').val(${variableText});
+
                     $('#tempVariablesInput').addClass('d-none')
                     const csvHeadersClone = $('#csvHeaders').clone();
 
@@ -614,27 +620,9 @@
                         $('<div>', { class: 'col-md-6 mb-2' }).append(csvHeadersClone)
                     );
                     $('#mapDataFields').append(rowDiv);
-                    // updateCsvHeadersOptions(variableDiv, [])
                 });
-
-                    $('#submit').on('click', function(){
-                        const formData = new FormData();
-                        formData.append('_token', '{{ csrf_token() }}');
-                        variableText.forEach(variable => {
-                            formData.append('template_variables[]', collectedVariables);
-                        });
-
-                        $.ajax({
-                            method: "POST",
-                            url: "/create-campaign",
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {
-                                console.log(response);
-                            }
-                        });
-                    });
+                console.log(collectedVariables);
+                    $('#templateTextArea').val(collectedVariables.join('\n'));
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -688,6 +676,8 @@
                 });
                     // updateCsvHeadersOptions('', headers)
 
+                    $('#sourceTextArea').val(headers.join('\n'));
+
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 // Handle the AJAX error if needed
@@ -697,37 +687,38 @@
         });
     });
 
-    $('#submit').on('click', function() {
-        const formData = new FormData();
-        formData.append('_token', '{{ csrf_token() }}');
+    {{--$('#submit').on('click', function()--}}
+    {{--{--}}
+    {{--    const formData = new FormData();--}}
+    {{--    formData.append('_token', '{{ csrf_token() }}');--}}
 
-        // Append each header to the form data
-        // csvHeadersSelect.each(function() {
-        //     const header = $(this).val(); // Get the value of the selected option
-        //     if (header) {
-        //         formData.append('csv_headers[]', header); // Append to form data if not empty
-        //     }
-        // });
-        var array = [];
+    {{--    // Append each header to the form data--}}
+    {{--    // csvHeadersSelect.each(function() {--}}
+    {{--    //     const header = $(this).val(); // Get the value of the selected option--}}
+    {{--    //     if (header) {--}}
+    {{--    //         formData.append('csv_headers[]', header); // Append to form data if not empty--}}
+    {{--    //     }--}}
+    {{--    // });--}}
+    {{--    var array = [];--}}
 
-            // $("#csvHeaders").each(function(){
-            //     array.push(this.value);
-            // });
+    {{--        // $("#csvHeaders").each(function(){--}}
+    {{--        //     array.push(this.value);--}}
+    {{--        // });--}}
 
-        $.ajax({
-            method: "POST",
-            url: "{{ route('store-campaign') }}",
-            data: {
-                _token: '{{ csrf_token() }}',
-                'csv_headers': source_headers,
-            },
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                console.log(response);
-            }
-        });
-    });
+    {{--    $.ajax({--}}
+    {{--        method: "POST",--}}
+    {{--        url: "{{ route('store-campaign') }}",--}}
+    {{--        data: {--}}
+    {{--            _token: '{{ csrf_token() }}',--}}
+    {{--            'csv_headers': source_headers,--}}
+    {{--        },--}}
+    {{--        processData: false,--}}
+    {{--        contentType: false,--}}
+    {{--        success: function(response) {--}}
+    {{--            console.log(response);--}}
+    {{--        }--}}
+    {{--    });--}}
+    {{--});--}}
 
 
     // next button dependency section starts

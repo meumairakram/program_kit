@@ -71,30 +71,23 @@ class CampaignController extends Controller {
         $campaign->owner_id = $user->id;
         $campaign->save();
 
-        $variables = '';
-        if ($request->has('template_variables') && is_array($request->input('template_variables'))) {
-            foreach ($request->input('template_variables') as $templateVariable) {
-                $variables = $templateVariable;
-            }
-        }
+//        return $request;
 
         $template = new Template();
         $template->template_id = $attributes['wp_template_id'];
         $template->template = $request->template_name;
-        $template->template_variables = $request->input('template_variables');
+        $template->template_variables = $request['variables'];
         $template->owner_id = $user->id;
         $template->save();
 
-        $csvHeaders = $request->input('csv_headers');
-        foreach ($csvHeaders as $header) {
 
-            $dataSource = new DataSourceField();
-            $dataSource->data_source_id = $attributes['data_source_id'];
-            $dataSource->data_source = $request->data_source_name;
-            $dataSource->data_source_headers = $header;
-            $dataSource->owner_id = $user->id;
-            $dataSource->save();
-        }
+        $dataSource = new DataSourceField();
+        $dataSource->data_source_id = $attributes['data_source_id'];
+        $dataSource->data_source = $request->data_source_name;
+        $dataSource->data_source_headers = $request->data_source_headers;
+        $dataSource->owner_id = $user->id;
+        $dataSource->save();
+
 
         // title
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');
@@ -109,12 +102,15 @@ class CampaignController extends Controller {
         $campaign = DB::table('campaigns')
             ->join('data_source_fields', 'campaigns.data_source_id', '=', 'data_source_fields.data_source_id')
             ->join('templates', 'campaigns.wp_template_id', '=', 'templates.template_id')
+            ->join('user_websites', 'campaigns.website_id', '=', 'user_websites.id')
             ->where('campaigns.id', $id)
             ->select(
                 'data_source_fields.data_source as dataSourceName',
                 'data_source_fields.data_source_headers as data_source_headers',
                 'templates.template as templateName',
-                'templates.template_variables as template_variables',
+                'templates.template_variables as variables',
+                'user_websites.website_name as website_name',
+                'user_websites.website_url as website_url',
                 'campaigns.*'
             )
             ->first();
@@ -128,6 +124,7 @@ class CampaignController extends Controller {
         if(!Auth::check()) {
            // User not logged in
         }
+        $campaignid = Campaign::where('id', $request->id)->first();
 
         $user = Auth::user();
         $campaign =  Campaign::find($request->id);
@@ -142,19 +139,21 @@ class CampaignController extends Controller {
         $campaign->owner_id = $user->id;
         $campaign->save();
 
+        $templateid= Template::where('template_id', $campaignid->wp_template_id)->where('owner_id', $user->id)->first();
 
-        $template = Template::find($request->id);
+        $template = Template::find($templateid->id);
         $template->template_id = $request->wp_template_id;;
         $template->template = $request->template_name;
-        $template->template_variables = $request->input('template_variables');
+        $template->template_variables = $request->variables;
         $template->owner_id = $user->id;
         $template->save();
 
+        $datasourceid = DataSourceField::where('data_source_id', $campaignid->data_source_id)->where('owner_id', $user->id)->first();
 
-        $dataSource = DataSourceField::find($request->id);
+        $dataSource = DataSourceField::find($datasourceid->id);
         $dataSource->data_source_id = $request->data_source_id;
         $dataSource->data_source = $request->data_source_name;
-        $dataSource->data_source_headers = $request->input('csv_headers');
+        $dataSource->data_source_headers = $request->data_source_headers;
         $dataSource->owner_id = $user->id;
         $dataSource->save();
 

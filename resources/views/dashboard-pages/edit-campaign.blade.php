@@ -138,7 +138,7 @@
                                     <label for="user.phone" class="form-control-label">Select Website</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control web_sec_required" name="website_id"  value="" id="selectWebSite">
-                                            <option value="{{$campaign->website_id}}">{{$campaign->website_id}}</option>
+                                            <option value="{{$campaign->website_id}}">{{$campaign->website_name}} || {{$campaign->website_url}}</option>
 
                                             <!-- @foreach($allWebsites as $website)
                                                 <option value="{{ $website->id }}">{{$website->website_name}} ({{$website->website_url}})</option>
@@ -195,7 +195,7 @@
                             </div>
 
                              <input type="hidden" name="template_name" id="templateName" value="{{$campaign->templateName}}">
-                             <input type="hidden" name="template_variables" id="templateVariables" value="{{$campaign->template_variables}}">
+                             <textarea class="d-none" name="variables" id="templateTextArea" value="{{$campaign->variables}}">{{$campaign->variables}}</textarea>
 
                         </div>
                         <div class="d-flex justify-content-start">
@@ -245,6 +245,8 @@
                             </div>
 
                             <input type="hidden" name="data_source_name" id="dataSourceName" value="">
+                            <input type="hidden" name="data_source_id" id="dataSourceId" value="">
+                            <textarea class="d-none" name="data_source_headers" id="sourceTextArea" value="{{$campaign->data_source_headers}}">{{$campaign->data_source_headers}}</textarea>
 
                     </div>
                     <div class="d-flex justify-content-start">
@@ -281,8 +283,8 @@
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <input class="form-control" type="text" id="tempVariablesInput" name="template"  value="{{$campaign->template_variables}}">
-                                            <!-- <select class="form-control" name="template_field"  value="{{$campaign->template_variables}}">
+                                            <input class="form-control" type="text" id="tempVariablesInput" name="template"  value="{{$campaign->variables}}">
+                                            <!-- <select class="form-control" name="template_field"  value="{{$campaign->variables}}">
                                                 <option value="wordpress">Some name (CSV)</option>
                                                 <option value="wordpress">Some Name (Google Sheet)</option>
                                                 <option value="wordpress">Bubble</option>
@@ -477,7 +479,6 @@
 
                     postType.on('change', function() {
                         const postTypeId = $(this).val();
-                        // alert(postTypeId);
                         $('#postType').val(postTypeId);
                     });
                 },
@@ -528,7 +529,7 @@
                     template.on('change', function() {
                         const templateId = $(this).val();
                         const templateName = $(this).find('option:selected').attr('name');
-                        alert(templateName);
+
                         $('#template').val(templateId);
                         $('#templateName').val(templateName);
                     });
@@ -569,13 +570,18 @@
                 }
 
                 const variables = response.data.variables;
+                const collectedVariables = [];
+
                 variables.forEach(variable => {
                     const variableText = variable.replace(/[{}"]/g, '');
+                    collectedVariables.push(variableText);
                     console.log(variableText);
-                    const variableDiv = `<div class="variable-div">${variableText}</div>`;
-                    $('#tempVariablesInput').addClass('d-none');
 
+                    const variableDiv = `<div class="variable-div">${variableText}</div>`;
+
+                    $('#tempVariablesInput').addClass('d-none');
                     const csvHeadersClone = $('#csvHeaders').clone();
+
                     const rowDiv = $('<div>', {
                         class: 'row'
                     }).append(
@@ -584,7 +590,11 @@
                     );
                     $('#mapDataFields').append(rowDiv);
                 });
+
+                $('#templateTextArea').val(collectedVariables.join('\n'));
+
             },
+
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error('AJAX Error:', textStatus, errorThrown);
                 $('#tempVariables').val(''); // Clear the input field
@@ -629,7 +639,11 @@
                 headers.forEach(header => {
                     csvHeadersSelect.append(`<option value="${header}">${header}</option>`);
                 });
+
+                $('#sourceTextArea').val(headers.join('\n'));
+
             },
+
             error: function(jqXHR, textStatus, errorThrown) {
                 // Handle the AJAX error if needed
                 console.error('AJAX Error:', textStatus, errorThrown);
