@@ -88,8 +88,6 @@ class CampaignController extends Controller {
         $dataSource->owner_id = $user->id;
         $dataSource->save();
 
-
-        // title
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');
         // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');
         // store-campaign
