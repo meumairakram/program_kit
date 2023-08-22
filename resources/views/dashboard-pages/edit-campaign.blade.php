@@ -435,7 +435,7 @@
                     const websites = response.websites;
                     websiteSelect.append('<option value=""> </option>');
                     websites.forEach(websites => {
-                        websiteSelect.append(`<option value="${websites.id}">Name: ${websites.website_name} | URL:${websites.website_url}</option>`);
+                        websiteSelect.append(`<option value="${websites.id}">${websites.website_name} | ${websites.website_url}</option>`);
                     });
                     // Update the hidden input value with the selected website ID
                     websiteSelect.on('change', function() {

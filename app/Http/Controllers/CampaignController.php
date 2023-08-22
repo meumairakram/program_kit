@@ -19,8 +19,22 @@ class CampaignController extends Controller {
     public function manage() {
 
         $current_user_id = Auth::user()->id;
-        $campaigns = Campaign::where('owner_id', $current_user_id)->get();
-
+//        $campaigns = Campaign::where('owner_id', $current_user_id)->get();
+        $campaigns = DB::table('campaigns')
+            ->join('user_datasources', 'campaigns.data_source_id', '=', 'user_datasources.id')
+            ->join('templates', 'campaigns.wp_template_id', '=', 'templates.template_id')
+            ->join('user_websites', 'campaigns.website_id', '=', 'user_websites.id')
+            ->where('campaigns.owner_id', $current_user_id)
+            ->select(
+                'user_datasources.name as dataSourceName',
+                'user_datasources.type as dataSourceType',
+                'templates.template as templateName',
+                'templates.template_variables as variables',
+                'user_websites.website_name as website_name',
+                'user_websites.website_url as website_url',
+                'campaigns.*'
+            )
+            ->get();
         return view('dashboard-pages/campaign-management',array(
             'campaigns' => $campaigns
         ));

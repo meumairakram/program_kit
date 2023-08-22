@@ -10,9 +10,9 @@
             <a href="https://www.creative-tim.com/live/soft-ui-dashboard-pro-laravel" target="_blank" class="text-white">here</a></strong>
             to see the PRO product!
         </span>
-    </div> -->  
+    </div> -->
 
-   
+
 
     <div class="row">
         <div class="col-12">
@@ -39,7 +39,7 @@
                         <table class="table align-items-center mb-0">
                             <thead>
 
-                               
+
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         ID
@@ -47,12 +47,18 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         Title
                                     </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Description
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Website URL
                                     </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Type
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Data Source
                                     </th>
+{{--                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">--}}
+{{--                                        Description--}}
+{{--                                    </th>--}}
+{{--                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">--}}
+{{--                                        Type--}}
+{{--                                    </th>--}}
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Status
                                     </th>
@@ -70,24 +76,30 @@
 
                                     <tr>
                                         <td class="ps-4">
-                                            <p class="text-xs font-weight-bold mb-0">{{$camp->id}}</p>
+                                            <p class="text-xs font-weight-bold mb-0">CP-{{$camp->id}}</p>
                                         </td>
-                                        <td>                                          
+                                        <td>
                                             <p class="text-xs font-weight-bold mb-0">{{$camp->title}}</p>
                                         </td>
-                                        <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{$camp->description}}</p>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{$camp->website_url}}</p>
                                         </td>
-                                        <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{$camp->type}}</p>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{$camp->dataSourceName}} ({{$camp->dataSourceType}})</p>
                                         </td>
+{{--                                        <td class="text-center">--}}
+{{--                                            <p class="text-xs font-weight-bold mb-0">{{$camp->description}}</p>--}}
+{{--                                        </td>--}}
+{{--                                        <td class="text-center">--}}
+{{--                                            <p class="text-xs font-weight-bold mb-0">{{$camp->type}}</p>--}}
+{{--                                        </td>--}}
                                         <td class="text-center">
                                             <p class="text-xs font-weight-bold mb-0">{{$camp->status}}</p>
                                         </td>
                                         <td class="text-center">
                                             <span class="text-secondary text-xs font-weight-bold">
                                                 @php
-                                                   echo ($camp->created_at)->format('m/d/Y');
+                                                   echo ($camp->created_at);
                                                 @endphp
 
                                             </span>
@@ -105,10 +117,10 @@
                                     </tr>
 
                                 @endforeach
-                                                        
-                                
 
-                                
+
+
+
                             </tbody>
                         </table>
                     </div>
@@ -117,5 +129,5 @@
         </div>
     </div>
 </div>
- 
+
 @endsection

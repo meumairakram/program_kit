@@ -10,9 +10,9 @@
             <a href="https://www.creative-tim.com/live/soft-ui-dashboard-pro-laravel" target="_blank" class="text-white">here</a></strong>
             to see the PRO product!
         </span>
-    </div> -->  
+    </div> -->
 
-   
+
 
     <div class="row">
         <div class="col-12">
@@ -51,7 +51,7 @@
                         <table class="table align-items-center mb-0">
                             <thead>
 
-                               
+
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         ID
@@ -82,9 +82,9 @@
 
                                     <tr>
                                         <td class="ps-4">
-                                            <p class="text-xs font-weight-bold mb-0">{{$web->id}}</p>
+                                            <p class="text-xs font-weight-bold mb-0">WS-{{$web->id}}</p>
                                         </td>
-                                        <td>                                          
+                                        <td>
                                             <p class="text-xs font-weight-bold mb-0">{{$web->website_name}}</p>
                                         </td>
                                         <td class="text-center">
@@ -117,10 +117,10 @@
                                     </tr>
 
                                 @endforeach
-                                                        
-                                
 
-                                
+
+
+
                             </tbody>
                         </table>
                     </div>
@@ -129,5 +129,5 @@
         </div>
     </div>
 </div>
- 
+
 @endsection

@@ -10,9 +10,9 @@
             <a href="https://www.creative-tim.com/live/soft-ui-dashboard-pro-laravel" target="_blank" class="text-white">here</a></strong>
             to see the PRO product!
         </span>
-    </div> -->  
+    </div> -->
 
-   
+
 
     <div class="row">
         <div class="col-12">
@@ -37,13 +37,13 @@
                     </div>
                 @endif
 
-                
+
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
                             <thead>
 
-                               
+
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         ID
@@ -55,7 +55,7 @@
                                         Type
                                     </th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        No. of Records 
+                                        No. of Records
                                     </th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Status
@@ -79,9 +79,9 @@
 
                                     <tr>
                                         <td class="ps-4">
-                                            <p class="text-xs font-weight-bold mb-0">{{$dsource->id}}</p>
+                                            <p class="text-xs font-weight-bold mb-0">DS-{{$dsource->id}}</p>
                                         </td>
-                                        <td>                                          
+                                        <td>
                                             <p class="text-xs font-weight-bold mb-0">{{$dsource->name}}</p>
                                         </td>
                                         <td class="text-center">
@@ -97,7 +97,7 @@
                                         <td class="text-center">
                                             <p class="text-xs font-weight-bold mb-0">{{$dsource->last_synced}}</p>
                                         </td>
-                                        
+
                                         <td class="text-center">
                                             <span class="text-secondary text-xs font-weight-bold">
                                                 @php
@@ -119,10 +119,10 @@
                                     </tr>
 
                                 @endforeach
-                                                        
-                                
 
-                                
+
+
+
                             </tbody>
                         </table>
                     </div>
@@ -131,5 +131,5 @@
         </div>
     </div>
 </div>
- 
+
 @endsection
