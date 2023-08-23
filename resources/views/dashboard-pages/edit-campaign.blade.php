@@ -89,22 +89,12 @@
                             </div>
 
                         </div>
-                        <div class="d-flex justify-content-start">
-                            <button type="button" id="nextButton" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
-                        </div>
-
-                        <div class="mt-3  alert alert-primary alert-dismissible fade show d-none firstError" role="alert">
-                            <span class="alert-text text-white">You have to fill all the required fields to proceed next.</span>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                                <i class="fa fa-close" aria-hidden="true"></i>
-                            </button>
-                        </div>
 
                 </div>
             </div>
 
 
-            <div class="card mb-4 d-none website">
+            <div class="card mb-4 website">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Choose Website</h6>
                 </div>
@@ -198,23 +188,14 @@
                              <textarea class="d-none" name="variables" id="templateTextArea" value="{{$campaign->variables}}">{{$campaign->variables}}</textarea>
 
                         </div>
-                        <div class="d-flex justify-content-start">
-                                <button type="button" id="webNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
-                        </div>
 
-                        <div class="mt-3  alert alert-primary alert-dismissible fade show d-none secondError" role="alert">
-                            <span class="alert-text text-white">You have to fill 'Website' section completely to proceed next.</span>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                                <i class="fa fa-close" aria-hidden="true"></i>
-                            </button>
-                        </div>
                 </div>
             </div>
 
 
 
 
-            <div class="card mb-4 d-none datasource">
+            <div class="card mb-4 datasource">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Connect/Choose Data Source</h6>
                 </div>
@@ -249,23 +230,14 @@
                             <textarea class="d-none" name="data_source_headers" id="sourceTextArea" value="{{$campaign->data_source_headers}}">{{$campaign->data_source_headers}}</textarea>
 
                     </div>
-                    <div class="d-flex justify-content-start">
-                        <button type="button" id="datasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
-                    </div>
 
-                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none thirdError" role="alert">
-                        <span class="alert-text text-white">You have to fill 'Data Source' section completely to proceed next.</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                            <i class="fa fa-close" aria-hidden="true"></i>
-                        </button>
-                    </div>
 
                 </div>
             </div>
 
 
 
-            <div class="card mb-4 d-none mapdata">
+            <div class="card mb-4 mapdata">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Map Data Fields</h6>
                 </div>
@@ -359,22 +331,13 @@
 
                         </div>
                     </div>
-                    <div class="d-flex justify-content-start">
-                        <button type="button" id="mapdataNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
-                    </div>
-
-                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none fourthError" role="alert">
-                        <span class="alert-text text-white">You have to fill 'Map Data' section completely to proceed next.</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                            <i class="fa fa-close" aria-hidden="true"></i>
-                        </button>
-                    </div>
+                   
 
                 </div>
             </div>
 
 
-            <div class="card d-none SaveAndStart">
+            <div class="card SaveAndStart">
 
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Lets save and start</h6>
@@ -652,74 +615,8 @@
         });
     });
 
-     // next button dependency section starts
-     $('#nextButton').on('click', function(e) {
-        e.preventDefault();
-        var isValid = true;
-        $('.first_sec_required').each(function() {
-            if ($(this).val() === '') {
-                isValid = false;
-            }
-        });
-        if(isValid == true){
-            $('.website').removeClass('d-none');
-            $('.firstError').addClass('d-none');
-        }
-        else{
-            $('.firstError').removeClass('d-none');
-        }
-    });
-
-    $('#webNext').on('click', function(e) {
-        e.preventDefault();
-        var isValid = true;
-        $('.web_sec_required').each(function() {
-            if ($(this).val() === '') {
-                isValid = false;
-            }
-        });
-        if(isValid == true){
-            $('.datasource').removeClass('d-none');
-            $('.secondError').addClass('d-none');
-        }
-        else{
-            $('.secondError').removeClass('d-none');
-        }
-    });
-
-    $('#datasourceNext').on('click', function(e) {
-        e.preventDefault();
-        var isValid = true;
-        $('.datasource_sec_required').each(function() {
-            if ($(this).val() === '') {
-                isValid = false;
-            }
-        });
-        if(isValid == true){
-            $('.mapdata').removeClass('d-none');
-            $('.thirdError').addClass('d-none');
-        }
-        else{
-            $('.thirdError').removeClass('d-none');
-        }
-    });
-
-    $('#mapdataNext').on('click', function(e) {
-        e.preventDefault();
-        var isValid = true;
-        $('.mapdata_sec_required').each(function() {
-            if ($(this).val() === '') {
-                isValid = false;
-            }
-        });
-        if(isValid == true){
-            $('.SaveAndStart').removeClass('d-none');
-            $('.fourthError').addClass('d-none');
-        }
-        else{
-            $('.fourthError').removeClass('d-none');
-        }
-    });
+    // next button dependency section starts
+     
     // next button dependency section ends
 
 </script>
