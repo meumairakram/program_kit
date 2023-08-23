@@ -226,9 +226,25 @@
 
                     <div class="row">
 
-                            <div class="col-md-6">
+                        <div class="col-md-6">
+                            <div class="card-header pb-0 px-3">
+                                <h6 class="mb-0">Add Data source</h6>
+                            </div>
+                            <div class="form-group">
+                                <div class="container @error('user.phone')border border-danger rounded-3 @enderror">
+                                    <button type="button" id="add_new_ds" class="btn bg-gradient-primary btn-md mt-4 mb-4">Add new</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="card-header pb-0 px-3">
+                                <h6 class="mb-0">Choose existing Data source</h6>
+                            </div>
+                            <div class="card-body">
                                 <div class="form-group">
-                                    <label for="user.phone" class="form-control-label">Data source</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control datasource_sec_required" name="data_source_id" id="dataSource">
                                             <option value="">-- Choose --</option>
@@ -246,16 +262,107 @@
                                     </div>
                                 </div>
                             </div>
-                                <input type="hidden" name="data_source_name" id="dataSourceName" value="">
-                                <input type="hidden" name="data_source_id" id="dataSourceId" value="">
-                                <textarea class="d-none" name="data_source_headers" id="sourceTextArea" value=""></textarea>
+                            
+                        </div>
+                       
+                            <input type="hidden" name="data_source_name" id="dataSourceName" value="">
+                            <input type="hidden" name="data_source_id" id="dataSourceId" value="">
+                            <textarea class="d-none" name="data_source_headers" id="sourceTextArea" value=""></textarea>
 
                     </div>
+
                     <div class="d-flex justify-content-start">
-                        <button type="button" id="datasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                        <button type="button" id="datasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4 d-none">Next</button>
                     </div>
 
                     <div class="mt-3  alert alert-primary alert-dismissible fade show d-none thirdError" role="alert">
+                        <span class="alert-text text-white">You have to fill 'Data Source' section completely to proceed next.</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="card mb-4 d-none newdatasource">
+                <div class="card-header pb-0 px-3">
+                    <h6 class="mb-0">Connect new Data Source</h6>
+                </div>
+
+                <div class="card-body pt-4 p-3">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="user.phone" class="form-control-label">Type</label>
+                                <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                    <select class="form-control" name="type" id="selectType">
+                                        <option value="csv"> </option>
+                                        <option value="csv">CSV</option>
+                                        <option value="airtable">Airtable</option>
+                                        <option value="google_sheet">Google sheet</option>
+                                    </select>
+                                    
+                                    @error('type')
+                                            <p class="text-danger text-xs mt-2">{{ $message }}</p>
+                                    @enderror
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 uploadCSV d-none">
+                           <div class="card mb-4">
+                                <div class="card-header pb-0 px-3">
+                                    <h6 class="mb-0">Upload your database</h6>
+                                </div>
+                                <div class="card-body pt-4 p-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="user.location" class="form-control-label d-block mb-0">Upload file</label>
+                                                <span class="text-xs mb-2 d-block ms-1">Upload your csv</span> 
+                                                <div class="@error('user.location') border border-danger rounded-3 @enderror">
+                                                    <input class="form-control" type="file" placeholder="Location" id="name" name="csv_file" value="">
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 uploadGoogleSheets d-none">
+                            <div class="card mb-4">
+                                <div class="card-header pb-0 px-3">
+                                    <h6 class="mb-0">Google sheets</h6>
+                                </div>
+                                <div class="card-body pt-4 p-3">
+                                    <div class="row"> 
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="d-flex justify-content-start">
+                                                    <button type="button" class="btn btn-dark bg-gradient-dark gsheets">Create Google Sheet</button>
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex justify-content-start">
+                        <button type="button" id="newDatasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                    </div>
+
+                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none fourthError" role="alert">
                         <span class="alert-text text-white">You have to fill 'Data Source' section completely to proceed next.</span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                             <i class="fa fa-close" aria-hidden="true"></i>
@@ -366,7 +473,7 @@
                         <button type="button" id="mapdataNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
                     </div>
 
-                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none fourthError" role="alert">
+                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none fifthError" role="alert">
                         <span class="alert-text text-white">You have to fill 'Map Data' section completely to proceed next.</span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                             <i class="fa fa-close" aria-hidden="true"></i>
@@ -636,6 +743,8 @@
     var source_headers = [];
     document.getElementById('dataSource').addEventListener('change', function(e)
     {
+        $('#datasourceNext').removeClass('d-none');
+
         const csvHeadersSelectId = this.value;
         $('#csvHeaders').val(csvHeadersSelectId);
         const dataSource = $(this).find('option:selected').attr('name');
@@ -687,38 +796,53 @@
         });
     });
 
-    {{--$('#submit').on('click', function()--}}
-    {{--{--}}
-    {{--    const formData = new FormData();--}}
-    {{--    formData.append('_token', '{{ csrf_token() }}');--}}
+    // $('#submit').on('click', function()
+    // {
+    //     const formData = new FormData();
+    //     formData.append('_token', '{{ csrf_token() }}');
 
-    {{--    // Append each header to the form data--}}
-    {{--    // csvHeadersSelect.each(function() {--}}
-    {{--    //     const header = $(this).val(); // Get the value of the selected option--}}
-    {{--    //     if (header) {--}}
-    {{--    //         formData.append('csv_headers[]', header); // Append to form data if not empty--}}
-    {{--    //     }--}}
-    {{--    // });--}}
-    {{--    var array = [];--}}
+    //    // Append each header to the form data
+    //    // csvHeadersSelect.each(function() {
+    //     //     const header = $(this).val(); // Get the value of the selected option
+    //    //     if (header) {
+    //     //         formData.append('csv_headers[]', header); // Append to form data if not empty
+    //    //     }
+    //    // });
+    //     var array = [];
 
-    {{--        // $("#csvHeaders").each(function(){--}}
-    {{--        //     array.push(this.value);--}}
-    {{--        // });--}}
+    //        // $("#csvHeaders").each(function(){
+    //       //     array.push(this.value);
+    //      // });
 
-    {{--    $.ajax({--}}
-    {{--        method: "POST",--}}
-    {{--        url: "{{ route('store-campaign') }}",--}}
-    {{--        data: {--}}
-    {{--            _token: '{{ csrf_token() }}',--}}
-    {{--            'csv_headers': source_headers,--}}
-    {{--        },--}}
-    {{--        processData: false,--}}
-    {{--        contentType: false,--}}
-    {{--        success: function(response) {--}}
-    {{--            console.log(response);--}}
-    {{--        }--}}
-    {{--    });--}}
-    {{--});--}}
+    //     $.ajax({
+    //        method: "POST",
+    //         url: "{{ route('store-campaign') }}",
+    //        data: {
+    //           _token: '{{ csrf_token() }}',
+    //           'csv_headers': source_headers,
+    //       },
+    //        processData: false,
+    //         contentType: false,
+    //       success: function(response) {
+    //            console.log(response);
+    //       }
+    //    });
+    // });
+
+
+        // handle sections based on selected type
+        document.getElementById('selectType').addEventListener('change', function(e) 
+        {
+            var selectedValue = $(this).val();
+            if(selectedValue == 'csv'){
+                $('.uploadCSV').removeClass('d-none');
+                $('.uploadGoogleSheets').addClass('d-none');
+            }
+            else if(selectedValue == 'google_sheet'){
+                $('.uploadGoogleSheets').removeClass('d-none');
+                $('.uploadCSV').addClass('d-none');
+            }
+        });
 
 
     // next button dependency section starts
@@ -773,6 +897,32 @@
         }
     });
 
+    $('#add_new_ds').on('click', function(e) {
+        e.preventDefault();
+       
+        $('.newdatasource').removeClass('d-none');
+        
+    });
+
+    $('#newDatasourceNext').on('click', function(e) {
+        e.preventDefault();
+        $('.mapdata').removeClass('d-none');
+
+        // var isValid = true;
+        // $('.datasource_sec_required').each(function() {
+        //     if ($(this).val() === '') {
+        //         isValid = false;
+        //     }
+        // });
+        // if(isValid == true){
+        //     $('.mapdata').removeClass('d-none');
+        //     $('.fourthError').addClass('d-none');
+        // }
+        // else{
+        //     $('.fourthError').removeClass('d-none');
+        // }
+    });
+
     $('#mapdataNext').on('click', function(e) {
         e.preventDefault();
         var isValid = true;
@@ -783,10 +933,10 @@
         });
         if(isValid == true){
             $('.SaveAndStart').removeClass('d-none');
-            $('.fourthError').addClass('d-none');
+            $('.fifthError').addClass('d-none');
         }
         else{
-            $('.fourthError').removeClass('d-none');
+            $('.fifthError').removeClass('d-none');
         }
     });
     // next button dependency section ends
