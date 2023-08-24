@@ -413,7 +413,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <select class="form-control csv-headers" name="source_Headers" id="csvHeaders">
-                                                <option value="">-- Select Data Source First --</option>
+                                                <option value=""> </option>
                                             </select>
                                             <!-- <select class="form-control" name="website">
                                                 <option value="wordpress">Some name (CSV)</option>
@@ -656,38 +656,17 @@
     });
 
 
-    // Updated function to handle CSV headers and variables
-    // function updateCsvHeadersOptions(variableDiv, headers) {
-    //     const csvHeadersClone = $('#csvHeaders').clone();
-    //     const rowDiv = $('<div>', {
-    //         class: 'row'
-    //     }).append(
-    //         $('<div>', { class: 'col-md-6 mb-2' }).append(variableDiv),
-    //         $('<div>', { class: 'col-md-6 mb-2' }).append(function() {
-    //             const csvHeadersDiv = $('<div>');
-    //             headers.forEach(header => {
-    //                 csvHeadersDiv.append($(`<option value="${header}">${header}</option>`));
-    //             });
+    // Template variables section
+    const variableData = [];
+    const templateTextArea = $('#templateTextArea');
+    const mapDataFields = $('#mapDataFields');
 
-    //             return csvHeadersClone.append(csvHeadersDiv); // Append the headers div to cloned select
-    //         })
-    //     );
-    //     $('#mapDataFields').append(rowDiv);
-    // }
-
-    // geting template Variables
-    document.getElementById('template').addEventListener('change', function(e)
-    {
+    document.getElementById('template').addEventListener('change', function(e) {
         const selectedType = this.value;
         console.log(selectedType);
         if (selectedType === '') {
             return;
         }
-        // $('#dataSource').on('change', function() {
-        //     const sourceId = $(this).val();
-        //     console.log(sourceId);
-        //
-        // });
 
         const formData = new FormData();
         formData.append('_token', '{{ csrf_token() }}');
@@ -714,32 +693,38 @@
                     const variableText = variable.replace(/[{}"]/g, '');
                     collectedVariables.push(variableText);
                     console.log(variableText);
+                    
                     const variableDiv = `<div name="${variableText}" class="variable-div">${variableText}</div>`;
+                    variableData.push(variableDiv);
+                });
+
+                templateTextArea.val(collectedVariables.join('\n'));
+                const tempVariablesInput = $('#tempVariablesInput').addClass('d-none');
 
 
-                    $('#tempVariablesInput').addClass('d-none')
-                    const csvHeadersClone = $('#csvHeaders').clone();
+                // Clear and populate mapDataFields with the variableData
+                variableData.forEach(variableDiv => {
+                    const csvHeadersSelect = $('#csvHeaders').clone();
+
+                    source_headers.forEach(header => {
+                            const csv = csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
+                    });
 
                     const rowDiv = $('<div>', {
                         class: 'row'
                     }).append(
-                        $('<div>', { class: 'col-md-6 mb-2' }).append(variableDiv),
-                        $('<div>', { class: 'col-md-6 mb-2' }).append(csvHeadersClone)
+                        $('<div>', { class: 'col-md-6 mt-2' }).append(variableDiv),
+                        $('<div>', { class: 'col-md-6 mt-2' }).append(csvHeadersSelect)
                     );
-                    $('#mapDataFields').append(rowDiv);
+                    
+                    mapDataFields.append(rowDiv);
                 });
-                console.log(collectedVariables);
-                    $('#templateTextArea').val(collectedVariables.join('\n'));
-
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX Error:', textStatus, errorThrown);
-                $('#tempVariables').val(''); // Clear the input field
             }
         });
     });
 
-    // data source
+
+    // Existing data source
     var source_headers = [];
     document.getElementById('dataSource').addEventListener('change', function(e)
     {
@@ -781,7 +766,7 @@
                 source_headers.push(headers);
 
                 headers.forEach(header => {
-                    csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
+                   const csvdata = csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));   
                 });
                     // updateCsvHeadersOptions('', headers)
 
@@ -796,39 +781,47 @@
         });
     });
 
-    // $('#submit').on('click', function()
-    // {
-    //     const formData = new FormData();
-    //     formData.append('_token', '{{ csrf_token() }}');
 
-    //    // Append each header to the form data
-    //    // csvHeadersSelect.each(function() {
-    //     //     const header = $(this).val(); // Get the value of the selected option
-    //    //     if (header) {
-    //     //         formData.append('csv_headers[]', header); // Append to form data if not empty
-    //    //     }
-    //    // });
-    //     var array = [];
+    // New data source
+    $('input[name="csv_file"]').change(function(e) {
+        var formValues = new FormData();
+        formValues.append('csv_file', e.target.files[0]);
+        formValues.append('name',"Umair");
 
-    //        // $("#csvHeaders").each(function(){
-    //       //     array.push(this.value);
-    //      // });
+        jQuery.ajax({
+            method: "POST",
+            url: "/api/csv-preview",
+            data: formValues,
+            processData: false,
+            contentType: false, 
+            success: function(res) {
+                console.log(res)
+                if (!res.success) {
+                    console.error('Error: ', res.message);
+                    $('#csvHeaders').html('<option value="">Nothing Fetched</option>');
+                    return;
+                }
 
-    //     $.ajax({
-    //        method: "POST",
-    //         url: "{{ route('store-campaign') }}",
-    //        data: {
-    //           _token: '{{ csrf_token() }}',
-    //           'csv_headers': source_headers,
-    //       },
-    //        processData: false,
-    //         contentType: false,
-    //       success: function(response) {
-    //            console.log(response);
-    //       }
-    //    });
-    // });
+                const csvHeadersSelect = $('#csvHeaders');
+                csvHeadersSelect.empty();
 
+                const headers = res.data.headers;
+                console.log(headers);
+                csvHeadersSelect.append('<option value=""> </option>');
+                source_headers.push(headers);
+
+                headers.forEach(header => {
+                    csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
+                });
+                    $('#sourceTextArea').val(headers.join('\n'));
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX Error:', textStatus, errorThrown);
+                $('#csvHeaders').html('<option value="">-- Choose --</option>');
+            }
+        
+        })
+    })
 
         // handle sections based on selected type
         document.getElementById('selectType').addEventListener('change', function(e) 
