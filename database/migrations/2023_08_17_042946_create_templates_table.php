@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('templates', function (Blueprint $table) {
             $table->id();
-            $table->int('campaign_id'); 
+            $table->bigInteger('campaign_id'); 
             $table->text('template'); 
             $table->text('template_variables');
             $table->timestamps();

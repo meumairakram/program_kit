@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('data_source_fields', function (Blueprint $table) {
             $table->id();
-            $table->int('campaign_id'); 
+            $table->bigInteger('campaign_id'); 
             $table->text('data_source'); 
             $table->text('data_source_headers');
             $table->timestamps();
