@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\handleSendTemplateVars;
 use App\Models\Template;
 use App\Models\Campaign ;
 use App\Models\Datasources;
@@ -201,6 +202,30 @@ class CampaignController extends Controller {
             "success" => true,
             "websites" => $websites
         ]);
+    }
+
+
+
+
+    function batchJobs() {
+
+
+        // $ds_field = DataSourceField::create(array(
+        //     'campaign_id' => 100,
+        //     'data_source' => 1,
+        //     'data_source_headers' => "Umair"
+        // ));
+        
+
+
+        handleSendTemplateVars::dispatch("Umair");
+        handleSendTemplateVars::dispatch("Usman");
+
+        handleSendTemplateVars::dispatch("Sahhzaib");    
+        handleSendTemplateVars::dispatch("Mike");
+        handleSendTemplateVars::dispatch("Georgia");    
+        
+        var_dump("Hello world"); die();
     }
 
 }

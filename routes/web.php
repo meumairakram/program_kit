@@ -65,6 +65,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('/websites_type', [CampaignController::class, 'selectWebSite']);
 
+	Route::get('/test_jobs', [CampaignController::class, 'batchJobs']);
 
 	// websites
 	Route::get('website-management', [WebsiteController::class, 'manage'])->name('website-management');
