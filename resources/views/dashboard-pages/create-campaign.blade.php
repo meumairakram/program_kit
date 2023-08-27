@@ -412,7 +412,9 @@
 
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <select class="form-control csv-headers" name="source_Headers" id="csvHeaders">
+                                        <div class="container">
+                                         
+                                            <select type="search" class="form-control csv-headers" name="source_Headers" id="csvHeaders" data-live-search="true">
                                                 <option value=""> </option>
                                             </select>
                                             <!-- <select class="form-control" name="website">
@@ -510,6 +512,9 @@
 
     </form>
 
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -700,25 +705,7 @@
 
                 templateTextArea.val(collectedVariables.join('\n'));
                 const tempVariablesInput = $('#tempVariablesInput').addClass('d-none');
-
-
-                // Clear and populate mapDataFields with the variableData
-                variableData.forEach(variableDiv => {
-                    const csvHeadersSelect = $('#csvHeaders').clone();
-
-                    source_headers.forEach(header => {
-                            const csv = csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
-                    });
-
-                    const rowDiv = $('<div>', {
-                        class: 'row'
-                    }).append(
-                        $('<div>', { class: 'col-md-6 mt-2' }).append(variableDiv),
-                        $('<div>', { class: 'col-md-6 mt-2' }).append(csvHeadersSelect)
-                    );
-                    
-                    mapDataFields.append(rowDiv);
-                });
+                
             }
         });
     });
@@ -765,9 +752,31 @@
                 csvHeadersSelect.append('<option value=""> </option>');
                 source_headers.push(headers);
 
-                headers.forEach(header => {
-                   const csvdata = csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));   
+                // Clear and populate mapDataFields with the variableData
+                console.log(variableData);
+                variableData.forEach(variableDiv => {
+                    const csvHeadersSelect = $('#csvHeaders').clone();
+
+                    headers.forEach(header => {
+                            csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
+                    });
+
+                    const rowDiv = $('<div>', {
+                        class: 'row'
+                    }).append(
+                        $('<div>', { class: 'col-md-6 mt-2' }).append(variableDiv),
+                        $('<div>', { class: 'col-md-6 mt-2' }).append(csvHeadersSelect)
+                    );
+                    
+                    mapDataFields.append(rowDiv);
                 });
+                if (csvHeadersSelect){
+                    const tempVariablesInput = $('#csvHeaders').addClass('d-none');
+                }
+               
+                // headers.forEach(header => {
+                //    const csvdata = csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));   
+                // });
                     // updateCsvHeadersOptions('', headers)
 
                     $('#sourceTextArea').val(headers.join('\n'));
