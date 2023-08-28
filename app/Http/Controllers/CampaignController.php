@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use DB;
+use App\Models\CampMap;
 use App\Models\Template;
 use App\Models\Campaign ;
 use App\Models\Datasources;
 use App\Models\WebsitesInfo;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\DataSourceField;
-use DB;
+use Illuminate\Support\Facades\Auth;
 
 class CampaignController extends Controller {
     //
@@ -56,8 +57,9 @@ class CampaignController extends Controller {
 
     }
 
-    public function store(Request $request) {
-
+    public function store(Request $request) 
+    {
+        // return $request;
         $attributes  = $request->validate([
             'title' => ['required'],
             'description' => [],
@@ -100,7 +102,19 @@ class CampaignController extends Controller {
         $dataSource->data_source = $request->data_source_name;
         $dataSource->data_source_headers = $request->data_source_headers;
         $dataSource->owner_id = $user->id;
-        $dataSource->save();
+        $dataSource->save(); 
+
+        $variableArray = $request->input('variableArray');
+        $sourceArray = $request->input('sourceArray');
+        $campaignId = $attributes['data_source_id']; 
+
+        
+            $campMap = new CampMap();
+            $campMap->campaign_id = $campaignId;
+            $campMap->field_header = $sourceArray;
+            $campMap->template_variable = $variableArray;
+            $campMap->save();
+        
 
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');
         // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');

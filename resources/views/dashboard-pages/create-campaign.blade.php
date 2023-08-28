@@ -266,8 +266,10 @@
                         </div>
                        
                             <input type="hidden" name="data_source_name" id="dataSourceName" value="">
-                            <input type="hidden" name="data_source_id" id="dataSourceId" value="">
+                            <!-- <input type="hidden" name="data_source_id" id="dataSourceId" value=""> -->
                             <textarea class="d-none" name="data_source_headers" id="sourceTextArea" value=""></textarea>
+                            <input type="hidden" id="variableArrayInput" name="variableArray" value="">
+                            <input type="hidden" id="datasourceArrayInput" name="sourceArray" value="">
 
                     </div>
 
@@ -413,15 +415,15 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                         <div class="container">
-                                         
-                                            <select type="search" class="form-control csv-headers" name="source_Headers" id="csvHeaders" data-live-search="true">
+                                            <select type="search" class="form-control csv-headers" name="sourceHeader" id="csvHeaders" data-live-search="true">
                                                 <option value=""> </option>
                                             </select>
-                                            <!-- <select class="form-control" name="website">
-                                                <option value="wordpress">Some name (CSV)</option>
-                                                <option value="wordpress">Some Name (Google Sheet)</option>
-                                                <option value="wordpress">Bubble</option>
-                                            </select> -->
+                                            <!-- <div class="search"> -->
+                                                <!-- <input class="search" type="text" placeholder="Search.." id="myInput"> -->
+                                                <!-- <ul class="options">
+                                                    <li></li>
+                                                </ul> -->
+                                            <!-- </div> -->
                                         </div>
 
                                     </div>
@@ -513,8 +515,6 @@
     </form>
 
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -700,7 +700,8 @@
                     console.log(variableText);
                     
                     const variableDiv = `<div name="${variableText}" class="variable-div">${variableText}</div>`;
-                    variableData.push(variableDiv);
+                    variableData.push(variableText);
+                    $('#tempVariablesInput').val(variableText);
                 });
 
                 templateTextArea.val(collectedVariables.join('\n'));
@@ -710,7 +711,8 @@
         });
     });
 
-
+    const sourceData = [];
+    const variableArrayData = [];
     // Existing data source
     var source_headers = [];
     document.getElementById('dataSource').addEventListener('change', function(e)
@@ -748,15 +750,14 @@
                 csvHeadersSelect.empty();
 
                 const headers = res.data.headers;
-                console.log(headers);
                 csvHeadersSelect.append('<option value=""> </option>');
                 source_headers.push(headers);
-
                 // Clear and populate mapDataFields with the variableData
                 console.log(variableData);
                 variableData.forEach(variableDiv => {
                     const csvHeadersSelect = $('#csvHeaders').clone();
-
+                    // csvHeadersSelect.prepend(newOption);
+                     
                     headers.forEach(header => {
                             csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
                     });
@@ -769,11 +770,24 @@
                     );
                     
                     mapDataFields.append(rowDiv);
+
+                    csvHeadersSelect.on('change', function() {
+                        const csvSelectedVal = $(this).val();
+                        sourceData.push(csvSelectedVal);
+                        console.log(sourceData);
+
+                        $('#datasourceArrayInput').val(sourceData);
+                    });
+                    
+                    variableArrayData.push(variableDiv);
                 });
+                console.log(variableArrayData);
+                    $('#variableArrayInput').val(variableArrayData);
+
                 if (csvHeadersSelect){
                     const tempVariablesInput = $('#csvHeaders').addClass('d-none');
+                    // const searchInput = $('.search').addClass('d-none');
                 }
-               
                 // headers.forEach(header => {
                 //    const csvdata = csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));   
                 // });
@@ -789,6 +803,26 @@
             }
         });
     });
+
+    // $('#submit').on('click', function() {
+    //     console.log(storedData);
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '/create-campaign',
+    //         data: {
+    //             dataArray: storedData,
+    //             _token: '{{ csrf_token() }}'
+    //         },
+    //         // data: JSON.stringify({ dataArray: storedData, _token: '{{ csrf_token() }}' }), 
+    //         contentType: 'application/json',
+    //         success: function(response) {
+    //             console.log(response.message);
+    //         },
+    //         error: function(err) {
+    //             console.error(err);
+    //         }
+    //     });
+    // });
 
 
     // New data source
