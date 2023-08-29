@@ -59,9 +59,10 @@ class CampaignController extends Controller {
 
     public function store(Request $request) 
     {
+        // return $request->input('storeArrayData');
         // return $request;
         $attributes  = $request->validate([
-            'title' => ['required'],
+            'title' => [''],
             'description' => [],
             'website_type' => [''],
             'website_id' => [''],
@@ -87,7 +88,7 @@ class CampaignController extends Controller {
         $campaign->owner_id = $user->id;
         $campaign->save();
 
-//        return $request;
+    //    return $request;
 
         $template = new Template();
         $template->template_id = $attributes['wp_template_id'];
@@ -104,16 +105,22 @@ class CampaignController extends Controller {
         $dataSource->owner_id = $user->id;
         $dataSource->save(); 
 
-        $variableArray = $request->input('variableArray');
-        $sourceArray = $request->input('sourceArray');
-        $campaignId = $attributes['data_source_id']; 
-
+        $storeArrayData = $request['storeArrayData'];
+        $campaignId = $request->input('campaign_id'); // Change this to match the correct input field name
         
-            $campMap = new CampMap();
-            $campMap->campaign_id = $campaignId;
-            $campMap->field_header = $sourceArray;
-            $campMap->template_variable = $variableArray;
-            $campMap->save();
+        if (is_array($storeArrayData) || is_object($storeArrayData)){
+
+            foreach ($storeArrayData as $key => $data) {
+                $campMap = new CampMap();
+                $campMap->campaign_id = $campaignId;
+                $campMap->field_header = $data[1];
+                $campMap->template_variable = $data[0];
+                $campMap->save();
+            }
+        }
+        else{
+            return response()->json(['message' => 'it should be array'], 200);
+        }       
         
 
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');

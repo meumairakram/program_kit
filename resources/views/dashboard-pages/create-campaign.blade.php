@@ -713,6 +713,7 @@
 
     const sourceData = [];
     const variableArrayData = [];
+    const storeArrayData = [];
     // Existing data source
     var source_headers = [];
     document.getElementById('dataSource').addEventListener('change', function(e)
@@ -753,7 +754,7 @@
                 csvHeadersSelect.append('<option value=""> </option>');
                 source_headers.push(headers);
                 // Clear and populate mapDataFields with the variableData
-                console.log(variableData);
+                // console.log(variableData);
                 variableData.forEach(variableDiv => {
                     const csvHeadersSelect = $('#csvHeaders').clone();
                     // csvHeadersSelect.prepend(newOption);
@@ -773,16 +774,18 @@
 
                     csvHeadersSelect.on('change', function() {
                         const csvSelectedVal = $(this).val();
-                        sourceData.push(csvSelectedVal);
-                        console.log(sourceData);
-
-                        $('#datasourceArrayInput').val(sourceData);
+                        // sourceData.push(csvSelectedVal);
+                        storeArrayData.push([variableDiv, csvSelectedVal]);
+                        console.log(storeArrayData);
+                        // alert(storeArrayData);
+                        // $('#datasourceArrayInput').val(sourceData);
                     });
                     
-                    variableArrayData.push(variableDiv);
+                    // variableArrayData.push(storeArrayData);
+                    
                 });
-                console.log(variableArrayData);
-                    $('#variableArrayInput').val(variableArrayData);
+                // console.log(variableArrayData);
+                    $('#variableArrayInput').val(storeArrayData);
 
                 if (csvHeadersSelect){
                     const tempVariablesInput = $('#csvHeaders').addClass('d-none');
@@ -804,25 +807,27 @@
         });
     });
 
-    // $('#submit').on('click', function() {
-    //     console.log(storedData);
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/create-campaign',
-    //         data: {
-    //             dataArray: storedData,
-    //             _token: '{{ csrf_token() }}'
-    //         },
-    //         // data: JSON.stringify({ dataArray: storedData, _token: '{{ csrf_token() }}' }), 
-    //         contentType: 'application/json',
-    //         success: function(response) {
-    //             console.log(response.message);
-    //         },
-    //         error: function(err) {
-    //             console.error(err);
-    //         }
-    //     });
-    // });
+    $('#mapdataNext').on('click', function() {
+        // alert(storeArrayData);
+        const formData = new FormData();
+        formData.append('_token', '{{ csrf_token() }}');
+        formData.append('storeArrayData', JSON.stringify(storeArrayData));
+
+        $.ajax({
+            method: 'POST',
+            // url: '/api/storeArrayData',
+            url: '{{route('store-campaign')}}',
+            data: formData,
+            processData: false,
+            contentType: false, 
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(err) {
+                console.error(err);
+            }
+        });
+    });
 
 
     // New data source
