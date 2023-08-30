@@ -61,66 +61,68 @@ class CampaignController extends Controller {
     {
         // return $request->input('storeArrayData');
         // return $request;
-        $attributes  = $request->validate([
-            'title' => [''],
-            'description' => [],
-            'website_type' => [''],
-            'website_id' => [''],
-            'post_type' => [''],
-            'wp_template_id' => [''],
-            'data_source_id' => [''],
-        ]);
+        // $attributes  = $request->validate([
+        //     'title' => [''],
+        //     'description' => [],
+        //     'website_type' => [''],
+        //     'website_id' => [''],
+        //     'post_type' => [''],
+        //     'wp_template_id' => [''],
+        //     'data_source_id' => [''],
+        // ]);
 
         if(!Auth::check()) {
             // User not logged in
         }
 
-        $user = Auth::user();
-        $campaign = new Campaign();
-        $campaign->title = $attributes['title'];
-        $campaign->description = $attributes['description'];
-        $campaign->website_type = $attributes['website_type'];
-        $campaign->website_id = $attributes['website_id'];
-        $campaign->post_type = $attributes['post_type'];
-        $campaign->wp_template_id = $attributes['wp_template_id'];
-        $campaign->data_source_id = $attributes['data_source_id'];
-        $campaign->status = 'ready';
-        $campaign->owner_id = $user->id;
-        $campaign->save();
+        // $user = Auth::user();
+        // $campaign = new Campaign();
+        // $campaign->title = $attributes['title'];
+        // $campaign->description = $attributes['description'];
+        // $campaign->website_type = $attributes['website_type'];
+        // $campaign->website_id = $attributes['website_id'];
+        // $campaign->post_type = $attributes['post_type'];
+        // $campaign->wp_template_id = $attributes['wp_template_id'];
+        // $campaign->data_source_id = $attributes['data_source_id'];
+        // $campaign->status = 'ready';
+        // $campaign->owner_id = $user->id;
+        // $campaign->save();
 
     //    return $request;
 
-        $template = new Template();
-        $template->template_id = $attributes['wp_template_id'];
-        $template->template = $request->template_name;
-        $template->template_variables = $request['variables'];
-        $template->owner_id = $user->id;
-        $template->save();
+        // $template = new Template();
+        // $template->template_id = $attributes['wp_template_id'];
+        // $template->template = $request->template_name;
+        // $template->template_variables = $request['variables'];
+        // $template->owner_id = $user->id;
+        // $template->save();
 
 
-        $dataSource = new DataSourceField();
-        $dataSource->data_source_id = $attributes['data_source_id'];
-        $dataSource->data_source = $request->data_source_name;
-        $dataSource->data_source_headers = $request->data_source_headers;
-        $dataSource->owner_id = $user->id;
-        $dataSource->save(); 
+        // $dataSource = new DataSourceField();
+        // $dataSource->data_source_id = $attributes['data_source_id'];
+        // $dataSource->data_source = $request->data_source_name;
+        // $dataSource->data_source_headers = $request->data_source_headers;
+        // $dataSource->owner_id = $user->id;
+        // $dataSource->save(); 
 
-        $storeArrayData = $request['storeArrayData'];
-        $campaignId = $request->input('campaign_id'); // Change this to match the correct input field name
-        
-        if (is_array($storeArrayData) || is_object($storeArrayData)){
+        // return  array_slice(array_column($request->input('storeArrayData'), 'variableDiv'));
+        $storeArrayData = $request->input('storeArrayData');
+        $variableDivValues = [];
+        $variableDivValues = $storeArrayData;
+        $variableDivValues;
+        // if (is_array($storeArrayData) || is_object($storeArrayData)){
 
-            foreach ($storeArrayData as $key => $data) {
+            foreach ($variableDivValues as $key => $data) {
                 $campMap = new CampMap();
-                $campMap->campaign_id = $campaignId;
-                $campMap->field_header = $data[1];
-                $campMap->template_variable = $data[0];
+                $campMap->campaign_id = $request->input('campaign_id');
+                $campMap->field_header = $data['csvSelectedVal'];
+                $campMap->template_variable = $data['variableDiv'];
                 $campMap->save();
             }
-        }
-        else{
-            return response()->json(['message' => 'it should be array'], 200);
-        }       
+        // }
+        // else{
+        //     return response()->json(['message' => 'it should be array'], 200);
+        // }       
         
 
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');

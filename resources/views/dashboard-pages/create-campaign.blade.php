@@ -774,17 +774,12 @@
 
                     csvHeadersSelect.on('change', function() {
                         const csvSelectedVal = $(this).val();
-                        // sourceData.push(csvSelectedVal);
-                        storeArrayData.push([variableDiv, csvSelectedVal]);
+                        storeArrayData.push({variableDiv, csvSelectedVal});
                         console.log(storeArrayData);
-                        // alert(storeArrayData);
-                        // $('#datasourceArrayInput').val(sourceData);
                     });
                     
-                    // variableArrayData.push(storeArrayData);
                     
                 });
-                // console.log(variableArrayData);
                     $('#variableArrayInput').val(storeArrayData);
 
                 if (csvHeadersSelect){
@@ -807,12 +802,14 @@
         });
     });
 
-    $('#mapdataNext').on('click', function() {
-        // alert(storeArrayData);
+    $('#mapdataNext').on('click', function() 
+    {
+        // const formattedArray = storeArrayData.map(item => [item[0].replace(/"/g, ''), item[1].replace(/"/g, '')]);
+    
         const formData = new FormData();
         formData.append('_token', '{{ csrf_token() }}');
         formData.append('storeArrayData', JSON.stringify(storeArrayData));
-
+        console.log(formData);
         $.ajax({
             method: 'POST',
             // url: '/api/storeArrayData',
