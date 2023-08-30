@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use DB;
+use App\Models\CampMap;
 use App\Models\Template;
 use App\Models\Campaign ;
 use App\Models\Datasources;
 use App\Models\WebsitesInfo;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\DataSourceField;
-use DB;
+use Illuminate\Support\Facades\Auth;
 
 class CampaignController extends Controller {
     //
@@ -56,10 +57,12 @@ class CampaignController extends Controller {
 
     }
 
-    public function store(Request $request) {
-
+    public function store(Request $request) 
+    {
+        // return $request->input('storeArrayData');
+        // return $request;
         $attributes  = $request->validate([
-            'title' => ['required'],
+            'title' => [''],
             'description' => [],
             'website_type' => [''],
             'website_id' => [''],
@@ -85,7 +88,7 @@ class CampaignController extends Controller {
         $campaign->owner_id = $user->id;
         $campaign->save();
 
-//        return $request;
+    //    return $request;
 
         $template = new Template();
         $template->template_id = $attributes['wp_template_id'];
@@ -100,7 +103,25 @@ class CampaignController extends Controller {
         $dataSource->data_source = $request->data_source_name;
         $dataSource->data_source_headers = $request->data_source_headers;
         $dataSource->owner_id = $user->id;
-        $dataSource->save();
+        $dataSource->save(); 
+
+        $storeArrayData = $request['storeArrayData'];
+        $campaignId = $request->input('campaign_id'); // Change this to match the correct input field name
+        
+        if (is_array($storeArrayData) || is_object($storeArrayData)){
+
+            foreach ($storeArrayData as $key => $data) {
+                $campMap = new CampMap();
+                $campMap->campaign_id = $campaignId;
+                $campMap->field_header = $data[1];
+                $campMap->template_variable = $data[0];
+                $campMap->save();
+            }
+        }
+        else{
+            return response()->json(['message' => 'it should be array'], 200);
+        }       
+        
 
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');
         // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');
