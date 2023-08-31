@@ -118,6 +118,19 @@
 
 
             <div class="card mb-4 data-preview d-none">
+                <div class="container-fluid">
+                    <div class="row pb-0 px-3 pt-3">
+                        <div class="col-md-6">
+                            <h6 class="mb-0">Primary Key</h6>
+                            <div class="primaryKey"></div>
+                            <select type="search" class="form-control csv-headers" name="sourceHeader" id="csvHeaders" data-live-search="true">
+                                <option value=""> </option>
+                            </select>
+                            <input type="hidden" id="primary_id" name="primaryKey" value="">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Preview your Database</h6>
                 </div>
@@ -256,13 +269,14 @@
                         $('.data-preview tbody tr').html("");
 
 
-                        var headersToPreview = headers.length < 7 ? headers : headers.splice(0, 6)
+                        var headersToPreview = headers.length < 7 ? headers : headers.splice(0, 6);
+
+                        const csvHeadersSelect = $('#csvHeaders');
+                        csvHeadersSelect.empty();
 
                         headersToPreview.forEach(function(item, index) {
-    
-    
                             $('.data-preview thead tr').append(`<th>${item}</th>`);
-                        
+                            csvHeadersSelect.append($(`<option value="${item}">${item}</option>`));
                         });
 
                         
@@ -278,17 +292,24 @@
                             $('.data-preview tbody').append(elemRow);
 
                             // elemRow
-                        
                         })
-
-
-                        // console.log(res);
+                        const randomUniqueNumber = generateRandomUniqueNumber();
+                        console.log(randomUniqueNumber);
+                        $('.primaryKey').append('"' + randomUniqueNumber +'"');
+                        $('#primary_id').val(randomUniqueNumber);
                     }
                 })
 
             })
         
         })
+
+        function generateRandomUniqueNumber() {
+            const timestamp = new Date().getTime(); // Current timestamp in milliseconds
+            const randomPart = Math.floor(Math.random() * 100000000); // Random number between 0 and 99999999
+            const uniqueNumber = parseInt(`${timestamp}${randomPart}`, 10) % 100000000; // Ensure 8 digits
+            return uniqueNumber.toString().padStart(8, '0'); // Pad with zeros if necessary
+        }
 
         // handle sections based on selected type
         document.getElementById('selectType').addEventListener('change', function(e) 

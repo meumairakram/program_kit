@@ -786,42 +786,14 @@
                     const tempVariablesInput = $('#csvHeaders').addClass('d-none');
                     // const searchInput = $('.search').addClass('d-none');
                 }
-                // headers.forEach(header => {
-                //    const csvdata = csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));   
-                // });
-                    // updateCsvHeadersOptions('', headers)
 
-                    $('#sourceTextArea').val(headers.join('\n'));
+                $('#sourceTextArea').val(headers.join('\n'));
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 // Handle the AJAX error if needed
                 console.error('AJAX Error:', textStatus, errorThrown);
                 $('#csvHeaders').html('<option value="">-- Choose --</option>');
-            }
-        });
-    });
-
-    $('#mapdataNext').on('click', function() 
-    {
-        // const formattedArray = storeArrayData.map(item => [item[0].replace(/"/g, ''), item[1].replace(/"/g, '')]);
-    
-        const formData = new FormData();
-        formData.append('_token', '{{ csrf_token() }}');
-        formData.append('storeArrayData', JSON.stringify(storeArrayData));
-        console.log(formData);
-        $.ajax({
-            method: 'POST',
-            // url: '/api/storeArrayData',
-            url: '{{route('store-campaign')}}',
-            data: formData,
-            processData: false,
-            contentType: false, 
-            success: function(response) {
-                console.log(response);
-            },
-            error: function(err) {
-                console.error(err);
             }
         });
     });

@@ -107,9 +107,15 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{ url('edit-datasource')}}/{{$dsource->id}}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit DataSource">
-                                                <i class="fas fa-user-edit text-secondary"></i>
-                                            </a>
+                                            @php
+                                                $dsourceExistsInCampaign = $sourcesCampaign->contains('data_source_id', $dsource->id);
+                                            @endphp
+
+                                            @if ($dsourceExistsInCampaign)
+                                                <a href="{{ url('edit-datasource')}}/{{$dsource->id}}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit DataSource">
+                                                    <i class="fas fa-user-edit text-secondary"></i>
+                                                </a>
+                                            @endif
                                             <span>
                                             <a href="{{ url('delete-datasource')}}/{{$dsource->id}}" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Delete DataSource">
                                                 <i class="cursor-pointer fas fa-trash text-secondary"></i>
