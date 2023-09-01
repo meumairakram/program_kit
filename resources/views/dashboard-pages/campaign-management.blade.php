@@ -18,11 +18,25 @@
         <div class="col-12">
             <div class="card mb-4 mx-4">
                 <div class="card-header pb-4">
-                    <div class="d-flex flex-row justify-content-between">
-                        <div>
+                    <div class="row flex-row justify-content-between">
+                        <div class="col-3">
                             <h5 class="mb-0">All Campaigns</h5>
                         </div>
-                        <a href="{{url('create-campaign')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Create New</a>
+
+                        <!-- <div class="col-2 input-group">
+                            <span class="input-group-text text-body" id="searchInput"><i class="fas fa-search" aria-hidden="true"></i></span>
+                            <input class="form-control" id="search" type="text" placeholder="Search here...">
+
+                        </div> -->
+
+                        <div class="col-2">
+                            <input class="form-control" id="myInput" type="text" placeholder="Filter Data">
+                        </div>
+
+                        <div class="col-3">
+                            <a href="{{url('create-campaign')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Create New</a>
+                        </div>
+
                     </div>
                 </div>
                 @if(session('message'))
@@ -53,12 +67,6 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         Data Source
                                     </th>
-{{--                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">--}}
-{{--                                        Description--}}
-{{--                                    </th>--}}
-{{--                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">--}}
-{{--                                        Type--}}
-{{--                                    </th>--}}
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Status
                                     </th>
@@ -70,10 +78,9 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
 
+                            <tbody id="myTable">
                                 @foreach ($campaigns as $camp)
-
                                     <tr>
                                         <td class="ps-4">
                                             <p class="text-xs font-weight-bold mb-0">CP-{{$camp->id}}</p>
@@ -87,13 +94,8 @@
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">{{$camp->dataSourceName}} ({{$camp->dataSourceType}})</p>
                                         </td>
-{{--                                        <td class="text-center">--}}
-{{--                                            <p class="text-xs font-weight-bold mb-0">{{$camp->description}}</p>--}}
-{{--                                        </td>--}}
-{{--                                        <td class="text-center">--}}
-{{--                                            <p class="text-xs font-weight-bold mb-0">{{$camp->type}}</p>--}}
-{{--                                        </td>--}}
-                                        <td class="text-center">
+
+                                        <td >
                                             <p class="text-xs font-weight-bold mb-0">{{$camp->status}}</p>
                                         </td>
                                         <td class="text-center">
@@ -115,13 +117,9 @@
                                             </span>
                                         </td>
                                     </tr>
-
                                 @endforeach
-
-
-
-
                             </tbody>
+
                         </table>
                     </div>
                 </div>
@@ -130,4 +128,34 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function(){   
+
+        $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function() {
+                var status = $(this).find("td:eq(4)").text().toLowerCase(); // Index 4 corresponds to the "status" column
+                $(this).toggle(status.indexOf(value) > -1);
+            });
+        });
+
+
+        $("#searchInput").on("click", function() {
+            var value = $('#search').val().toLowerCase();
+            $("#myTable tr").filter(function() {
+            var websiteUrl = $(this).find("td:eq(2)").text().toLowerCase(); // Index 2 corresponds to website_url column
+            var title = $(this).find("td:eq(1)").text().toLowerCase(); // Index 1 corresponds to title column
+            $(this).toggle(websiteUrl.indexOf(value) > -1 || title.indexOf(value) > -1);
+            });
+        });
+
+    });
+</script>
+
+
+
 @endsection
+
+
