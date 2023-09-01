@@ -18,26 +18,32 @@
         <div class="col-12">
             <div class="card mb-4 mx-4">
                 <div class="card-header pb-4">
-                    <div class="row flex-row justify-content-between">
-                        <div class="col-3">
+
+                    <div class="row">
+                        <div class="col-3 p-0">
                             <h5 class="mb-0">All Campaigns</h5>
                         </div>
-
-                        <!-- <div class="col-2 input-group">
-                            <span class="input-group-text text-body" id="searchInput"><i class="fas fa-search" aria-hidden="true"></i></span>
-                            <input class="form-control" id="search" type="text" placeholder="Search here...">
-
-                        </div> -->
-
+                        <div class="col-2 p-0 align-left">
+                            <div class="input-group">
+                                <input class="form-control" id="search" type="text" value="search" placeholder="Search here..." style="height: 40px">
+                                    <span class="">
+                                        <button class="btn btn-outline-secondary bg-white ms-n3" id="searchInput" type="button" style="height: 40px">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </span>
+                            </div>
+                        </div>
                         <div class="col-2">
+                        </div>
+
+                        <div class="col-2 text-end">
                             <input class="form-control" id="myInput" type="text" placeholder="Filter Data">
                         </div>
-
-                        <div class="col-3">
+                        <div class="col-3 text-end">
                             <a href="{{url('create-campaign')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Create New</a>
                         </div>
-
                     </div>
+
                 </div>
                 @if(session('message'))
                     <div class="m-3  alert alert-success alert-dismissible fade show" id="alert-success" role="alert">
@@ -95,7 +101,7 @@
                                             <p class="text-xs font-weight-bold mb-0">{{$camp->dataSourceName}} ({{$camp->dataSourceType}})</p>
                                         </td>
 
-                                        <td >
+                                        <td class="text-center">
                                             <p class="text-xs font-weight-bold mb-0">{{$camp->status}}</p>
                                         </td>
                                         <td class="text-center">
