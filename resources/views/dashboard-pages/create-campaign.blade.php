@@ -394,7 +394,13 @@
 
                                     <div class="row">
                                         <div class="col-md-12" id="tempVariables">
-                                            <input class="form-control" value="" type="text" id="tempVariablesInput" name="template_variables">
+                                            
+                                            <!-- Get Template variables here -->
+
+
+                                            
+                                            
+                                            <!-- <input class="form-control" value="" type="text" id="tempVariablesInput" name="template_variables"> -->
                                             <!-- <select class="form-control" name="website">
                                                 <option value="wordpress">Some name (CSV)</option>
                                                 <option value="wordpress">Some Name (Google Sheet)</option>
@@ -669,6 +675,7 @@
     document.getElementById('template').addEventListener('change', function(e) {
         const selectedType = this.value;
         console.log(selectedType);
+
         if (selectedType === '') {
             return;
         }
@@ -684,7 +691,9 @@
             processData: false,
             contentType: false,
             success: function(response) {
+                
                 console.log(response)
+                
                 if (!response.success) {
                     console.error('Error: ', response.message);
                     $('#tempVariables').val('');
@@ -694,22 +703,26 @@
                 const variables = response.data.variables;
                 const collectedVariables = [];
 
+                
+
                 variables.forEach(variable => {
                     const variableText = variable.replace(/[{}"]/g, '');
                     collectedVariables.push(variableText);
-                    console.log(variableText);
+                  
                     
                     const variableDiv = `<div name="${variableText}" class="variable-div">${variableText}</div>`;
                     variableData.push(variableText);
                     $('#tempVariablesInput').val(variableText);
                 });
 
-                templateTextArea.val(collectedVariables.join('\n'));
-                const tempVariablesInput = $('#tempVariablesInput').addClass('d-none');
+                // templateTextArea.val(collectedVariables.join('\n'));
+                // const tempVariablesInput = $('#tempVariablesInput').addClass('d-none');
                 
             }
         });
     });
+
+
 
     const sourceData = [];
     const variableArrayData = [];
@@ -807,6 +820,8 @@
         });
     });
 
+
+
     $('#mapdataNext').on('click', function() {
         // alert(storeArrayData);
         const formData = new FormData();
@@ -828,6 +843,8 @@
             }
         });
     });
+
+
 
 
     // New data source

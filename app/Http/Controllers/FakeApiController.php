@@ -21,11 +21,9 @@ class FakeApiController extends Controller {
             'success' => true,
             'data' => array(
                 'post_types' => array('post','page','product')
-            
             )
         );
-
-
+        
         // respond with $data as json
         return response()->json($data);
 
