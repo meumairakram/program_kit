@@ -787,59 +787,26 @@
 
                     csvHeadersSelect.on('change', function() {
                         const csvSelectedVal = $(this).val();
-                        // sourceData.push(csvSelectedVal);
-                        storeArrayData.push([variableDiv, csvSelectedVal]);
+                        storeArrayData.push({variableDiv, csvSelectedVal});
                         console.log(storeArrayData);
-                        // alert(storeArrayData);
-                        // $('#datasourceArrayInput').val(sourceData);
                     });
                     
-                    // variableArrayData.push(storeArrayData);
                     
                 });
-                // console.log(variableArrayData);
                     $('#variableArrayInput').val(storeArrayData);
 
                 if (csvHeadersSelect){
                     const tempVariablesInput = $('#csvHeaders').addClass('d-none');
                     // const searchInput = $('.search').addClass('d-none');
                 }
-                // headers.forEach(header => {
-                //    const csvdata = csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));   
-                // });
-                    // updateCsvHeadersOptions('', headers)
 
-                    $('#sourceTextArea').val(headers.join('\n'));
+                $('#sourceTextArea').val(headers.join('\n'));
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 // Handle the AJAX error if needed
                 console.error('AJAX Error:', textStatus, errorThrown);
                 $('#csvHeaders').html('<option value="">-- Choose --</option>');
-            }
-        });
-    });
-
-
-
-    $('#mapdataNext').on('click', function() {
-        // alert(storeArrayData);
-        const formData = new FormData();
-        formData.append('_token', '{{ csrf_token() }}');
-        formData.append('storeArrayData', JSON.stringify(storeArrayData));
-
-        $.ajax({
-            method: 'POST',
-            // url: '/api/storeArrayData',
-            url: '{{route('store-campaign')}}',
-            data: formData,
-            processData: false,
-            contentType: false, 
-            success: function(response) {
-                console.log(response);
-            },
-            error: function(err) {
-                console.error(err);
             }
         });
     });

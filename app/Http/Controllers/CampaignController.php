@@ -59,8 +59,8 @@ class CampaignController extends Controller {
 
     public function store(Request $request) 
     {
-        // return $request->input('storeArrayData');
-        // return $request;
+        return $request->input('storeArrayData');
+        return $request;
         $attributes  = $request->validate([
             'title' => [''],
             'description' => [],
@@ -105,16 +105,18 @@ class CampaignController extends Controller {
         $dataSource->owner_id = $user->id;
         $dataSource->save(); 
 
-        $storeArrayData = $request['storeArrayData'];
-        $campaignId = $request->input('campaign_id'); // Change this to match the correct input field name
-        
+        // return  array_slice(array_column($request->input('storeArrayData'), 'variableDiv'));
+        $storeArrayData = $request->input('storeArrayData');
+        $variableDivValues = [];
+        $variableDivValues = $storeArrayData;
+        $variableDivValues;
         if (is_array($storeArrayData) || is_object($storeArrayData)){
 
-            foreach ($storeArrayData as $key => $data) {
+            foreach ($variableDivValues as $key => $data) {
                 $campMap = new CampMap();
-                $campMap->campaign_id = $campaignId;
-                $campMap->field_header = $data[1];
-                $campMap->template_variable = $data[0];
+                $campMap->campaign_id = $request->input('campaign_id');
+                $campMap->field_header = $data['csvSelectedVal'];
+                $campMap->template_variable = $data['variableDiv'];
                 $campMap->save();
             }
         }
