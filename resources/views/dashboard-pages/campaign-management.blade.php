@@ -19,28 +19,30 @@
             <div class="card mb-4 mx-4">
                 <div class="card-header pb-4">
 
-                    <div class="row">
-                        <div class="col-3 p-0">
+                    <div class="d-flex flex-row justify-content-between">
+                        <div>
                             <h5 class="mb-0">All Campaigns</h5>
                         </div>
-                        <div class="col-2 p-0 align-left">
-                            <div class="input-group">
-                                <input class="form-control" id="search" type="text" value="search" placeholder="Search here..." style="height: 40px">
-                                    <span class="">
-                                        <button class="btn btn-outline-secondary bg-white ms-n3" id="searchInput" type="button" style="height: 40px">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </span>
+                        <a href="{{url('create-campaign')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Create New</a>
+                    </div>
+
+                    <div class="row pt-3px">
+                        <div class="col-3 p-0 align-left">
+                            <div class="ms-md-3 pe-md-3 d-flex align-items-center">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="search" value="" placeholder="Search here...">
+                                    <span class="input-group-text text-body" id="searchInput"><i class="fas fa-search" aria-hidden="true"></i></span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-2">
-                        </div>
-
-                        <div class="col-2 text-end">
-                            <input class="form-control" id="myInput" type="text" placeholder="Filter Data">
-                        </div>
+                   
                         <div class="col-3 text-end">
-                            <a href="{{url('create-campaign')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Create New</a>
+                            <select class="form-control" name="filter" id="myInput" value="Filter Data" placeholder="Filter Data">
+                                <option value="">Filter Data</option>
+                                <option value="Paused">Paused</option>
+                                <option value="Active">Active</option>
+                                <option value="ready">Ready</option>
+                            </select>
                         </div>
                     </div>
 
@@ -86,7 +88,7 @@
                             </thead>
 
                             <tbody id="myTable">
-                                @foreach ($campaigns as $camp)
+                                @foreach($campaigns as $camp)
                                     <tr>
                                         <td class="ps-4">
                                             <p class="text-xs font-weight-bold mb-0">CP-{{$camp->id}}</p>
@@ -133,13 +135,12 @@
         </div>
     </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     $(document).ready(function(){   
 
-        $("#myInput").on("keyup", function() {
+        $("#myInput").on("change", function() {
             var value = $(this).val().toLowerCase();
             $("#myTable tr").filter(function() {
                 var status = $(this).find("td:eq(4)").text().toLowerCase(); // Index 4 corresponds to the "status" column
