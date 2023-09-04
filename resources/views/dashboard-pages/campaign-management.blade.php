@@ -27,22 +27,18 @@
                     </div>
 
                     <div class="row pt-3px">
-                        <div class="col-2 p-0 align-left">
-                            <div class="input-group">
-                                <input class="form-control" id="search" type="text" value="" placeholder="Search here..." style="height: 33px">
-                                
-                                    <span class="" >
-                                        <!-- <span class="input-group-text text-body" id="searchInput" style="height: 33px"><i class="fas fa-search" aria-hidden="true"></i></span> -->
-                                        <button class="btn btn-outline-secondary bg-white ms-n3" id="searchInput" type="button" style="height: 33px; width:3px">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </span>
+                        <div class="col-3 p-0 align-left">
+                            <div class="ms-md-3 pe-md-3 d-flex align-items-center">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="search" value="" placeholder="Search here...">
+                                    <span class="input-group-text text-body" id="searchInput"><i class="fas fa-search" aria-hidden="true"></i></span>
+                                </div>
                             </div>
                         </div>
                    
-                        <div class="col-2 text-end">
-                            <select class="form-control" name="filter" id="myInput" placeholder="Filter Data" style="height: 33px">
-                                <option value=""> </option>
+                        <div class="col-3 text-end">
+                            <select class="form-control" name="filter" id="myInput" value="Filter Data" placeholder="Filter Data">
+                                <option value="">Filter Data</option>
                                 <option value="Paused">Paused</option>
                                 <option value="Active">Active</option>
                                 <option value="ready">Ready</option>
