@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\FakeApiController;
+
+use App\Http\Controllers\ApiHandler;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -80,6 +82,8 @@ Route::post('/csv-extract', function(Request $request) {
 
 });
 
+
+Route::post('/get_datasource_mapping', [ApiHandler::class, 'getDatasourceMapData']);
 
 
 

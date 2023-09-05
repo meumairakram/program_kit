@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\DataSourceField;
 use Illuminate\Support\Facades\Auth;
 
+
 class CampaignController extends Controller {
     //
 
@@ -62,8 +63,7 @@ class CampaignController extends Controller {
 
     public function store(Request $request) 
     {
-        return $request->input('storeArrayData');
-        return $request;
+       
         $attributes  = $request->validate([
             'title' => [''],
             'description' => [],
@@ -72,6 +72,7 @@ class CampaignController extends Controller {
             'post_type' => [''],
             'wp_template_id' => [''],
             'data_source_id' => [''],
+            'data_maps_json' => ['required']
         ]);
 
         if(!Auth::check()) {
@@ -82,54 +83,39 @@ class CampaignController extends Controller {
         $campaign = new Campaign();
         $campaign->title = $attributes['title'];
         $campaign->description = $attributes['description'];
-        $campaign->website_type = $attributes['website_type'];
+        $campaign->type = $attributes['website_type'];
         $campaign->website_id = $attributes['website_id'];
-        $campaign->post_type = $attributes['post_type'];
+      //  $campaign->post_type = $attributes['post_type'];
         $campaign->wp_template_id = $attributes['wp_template_id'];
         $campaign->data_source_id = $attributes['data_source_id'];
         $campaign->status = 'ready';
         $campaign->owner_id = $user->id;
         $campaign->save();
 
-    //    return $request;
 
-        $template = new Template();
-        $template->template_id = $attributes['wp_template_id'];
-        $template->template = $request->template_name;
-        $template->template_variables = $request['variables'];
-        $template->owner_id = $user->id;
-        $template->save();
+        $source_maps_fields = array();
+        $data_maps = json_decode($request->input('data_maps_json', true));
 
+        foreach($data_maps as $map) {
 
-        $dataSource = new DataSourceField();
-        $dataSource->data_source_id = $attributes['data_source_id'];
-        $dataSource->data_source = $request->data_source_name;
-        $dataSource->data_source_headers = $request->data_source_headers;
-        $dataSource->owner_id = $user->id;
-        $dataSource->save(); 
+            $variable_name = $map[0];
+            $header_name = $map[1];
 
-        // return  array_slice(array_column($request->input('storeArrayData'), 'variableDiv'));
-        $storeArrayData = $request->input('storeArrayData');
-        $variableDivValues = [];
-        $variableDivValues = $storeArrayData;
-        $variableDivValues;
-        if (is_array($storeArrayData) || is_object($storeArrayData)){
+            $source_maps_fields[] = array(
 
-            foreach ($variableDivValues as $key => $data) {
-                $campMap = new CampMap();
-                $campMap->campaign_id = $request->input('campaign_id');
-                $campMap->field_header = $data['csvSelectedVal'];
-                $campMap->template_variable = $data['variableDiv'];
-                $campMap->save();
-            }
+                'campaign_id' => $campaign->id,
+                'data_source' => $variable_name,
+                'data_source_headers' => $header_name,  
+            
+            );
         }
-        else{
-            return response()->json(['message' => 'it should be array'], 200);
-        }       
+
+
+        // Create data source fields mapping
+        DataSourceField::insert($source_maps_fields);
         
 
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');
-        // return view('dashboard-pages/campaign-management')->with('success', 'Campaign created successfully.');
         // store-campaign
     }
 

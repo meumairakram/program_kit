@@ -112,7 +112,7 @@
             </div>
 
 
-            <div class="card mb-4 d-none website">
+            <div class="card mb-4 website">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Choose Website</h6>
                 </div>
@@ -217,7 +217,7 @@
 
 
 
-            <div class="card mb-4 d-none datasource">
+            <div class="card mb-4 datasource">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Connect/Choose Data Source</h6>
                 </div>
@@ -226,7 +226,7 @@
 
                     <div class="row">
 
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="card-header pb-0 px-3">
                                 <h6 class="mb-0">Add Data source</h6>
                             </div>
@@ -236,24 +236,32 @@
 
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
 
                         <div class="col-md-6">
-                            <div class="card-header pb-0 px-3">
-                                <h6 class="mb-0">Choose existing Data source</h6>
-                            </div>
-                            <div class="card-body">
+                            <!-- <div class="card-header pb-0 px-3"> -->
+                                <!-- <h6 class="mb-0">Choose existing Data source</h6> -->
+                            <!-- </div> -->
+                            <!-- <div class="card-body"> -->
                                 <div class="form-group">
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control datasource_sec_required" name="data_source_id" id="dataSource">
-                                            <option value="">-- Choose --</option>
+                                            <option value="">-- Choose a Source --</option>
 
                                             @foreach($allDatasources as $ds)
-                                                <option value="{{ $ds->id }}" id="{{ $ds->file_path }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
+                                                <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
                                             @endforeach
 
                                         </select>
+
+                                        <div class="text-end mt-1">
+                                            <span style="font-size: 0.8rem;">61 records</span>
+                                        </div>
+
+                                        <div class="mt-4">
+                                            <button class="btn">Add new datasource</button>
+                                        </div>
 
                                         @error('type')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -261,7 +269,7 @@
 
                                     </div>
                                 </div>
-                            </div>
+                            <!-- </div> -->
                             
                         </div>
                        
@@ -376,7 +384,7 @@
 
 
 
-            <div class="card mb-4 d-none mapdata">
+            <div class="card mb-4 mapdata">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Map Data Fields</h6>
                 </div>
@@ -385,98 +393,27 @@
 
                     <div class="row">
 
-                        <div class="col-md-8 offset-md-2">
-
-                            <div class="row" id="mapDataFields">
-                                <div class="col-md-6">
-
-                                    <span class="text-bold">Template fields</span>
-
-                                    <div class="row">
-                                        <div class="col-md-12" id="tempVariables">
-                                            
-                                            <!-- Get Template variables here -->
-
-
-                                            
-                                            
-                                            <!-- <input class="form-control" value="" type="text" id="tempVariablesInput" name="template_variables"> -->
-                                            <!-- <select class="form-control" name="website">
-                                                <option value="wordpress">Some name (CSV)</option>
-                                                <option value="wordpress">Some Name (Google Sheet)</option>
-                                                <option value="wordpress">Bubble</option>
-                                            </select> -->
-                                        </div>
-
-                                    </div>
-
-
-
-                                </div>
-
-
-                                <div class="col-md-6">
-                                    <span class="text-bold">Source field</span>
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                        <div class="container">
-                                            <select type="search" class="form-control csv-headers" name="sourceHeader" id="csvHeaders" data-live-search="true">
-                                                <option value=""> </option>
-                                            </select>
-                                            <!-- <div class="search"> -->
-                                                <!-- <input class="search" type="text" placeholder="Search.." id="myInput"> -->
-                                                <!-- <ul class="options">
-                                                    <li></li>
-                                                </ul> -->
-                                            <!-- </div> -->
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <!-- <table class="table table-bordered">
+                        <div class="col-12">
+                            <table class="data-map-table table table-hover">
                                 <thead>
                                     <tr>
-                                        <td>Template field</td>
-                                        <td>Data source field</td>
-
+                                        <th>Variable</th>
+                                        <th>Data source header</th>
+                                        <th>Preview</th>
                                     </tr>
 
                                 </thead>
 
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <select class="form-control" name="website">
-                                                <option value="wordpress">Some name (CSV)</option>
-                                                <option value="wordpress">Some Name (Google Sheet)</option>
-                                                <option value="wordpress">Bubble</option>
-                                            </select>
-                                        </td>
-
-                                       <td>
-                                            <select class="form-control" name="website">
-                                                <option value="wordpress">Empty</option>
-                                                <option value="wordpress">Default value</option>
-                                                <option value="wordpress">Bubble</option>
-                                            </select>
-                                        </td>
-
-
-                                    </tr>
-
+                                
+                                
+                                
                                 </tbody>
 
-
-
-                            </table> -->
-
-
+                            </table>
 
                         </div>
+                        
                     </div>
 
                     <div class="d-flex justify-content-start">
@@ -508,7 +445,8 @@
                         <div class="col-md-6">
 
                             <div class="d-flex justify-content-start">
-                                <button type="submit" id="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4">Save &amp; Start Sync</button>
+                                <input type="hidden" name="data_maps_json" value="" />  
+                                <button type="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4 submit-form-btn">Save &amp; Start Sync</button>
                             </div>
                         </div>
 
@@ -525,6 +463,10 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+
+
+    // initialize window variable
+    window.pkit = {};
 
     // website type
     document.getElementById('websiteType').addEventListener('change', function(e)
@@ -545,7 +487,7 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    console.log(response)
+                
                     if (!response.success) {
                         console.error('Error: ', response.message);
                         $('#selectWebSite').html('<option value=""> </option>');
@@ -673,9 +615,9 @@
     const mapDataFields = $('#mapDataFields');
 
     document.getElementById('template').addEventListener('change', function(e) {
+        
         const selectedType = this.value;
-        console.log(selectedType);
-
+        
         if (selectedType === '') {
             return;
         }
@@ -692,33 +634,23 @@
             contentType: false,
             success: function(response) {
                 
-                console.log(response)
-                
                 if (!response.success) {
                     console.error('Error: ', response.message);
                     $('#tempVariables').val('');
                     return;
                 }
 
-                const variables = response.data.variables;
-                const collectedVariables = [];
+                window.pkit.template_vars = response.data;
 
-                
 
-                variables.forEach(variable => {
-                    const variableText = variable.replace(/[{}"]/g, '');
-                    collectedVariables.push(variableText);
-                  
-                    
-                    const variableDiv = `<div name="${variableText}" class="variable-div">${variableText}</div>`;
-                    variableData.push(variableText);
-                    $('#tempVariablesInput').val(variableText);
-                });
+                if("template_vars" in window.pkit && "datasource_info" in window.pkit) {
 
-                // templateTextArea.val(collectedVariables.join('\n'));
-                // const tempVariablesInput = $('#tempVariablesInput').addClass('d-none');
+                    createDataMap();
+                }
                 
             }
+
+
         });
     });
 
@@ -729,86 +661,134 @@
     const storeArrayData = [];
     // Existing data source
     var source_headers = [];
-    document.getElementById('dataSource').addEventListener('change', function(e)
-    {
-        $('#datasourceNext').removeClass('d-none');
+    document.getElementById('dataSource').addEventListener('change', function(e) {
+        
 
-        const csvHeadersSelectId = this.value;
-        $('#csvHeaders').val(csvHeadersSelectId);
-        const dataSource = $(this).find('option:selected').attr('name');
-        $('#dataSourceName').val(dataSource);
+        var selectedDSId = $(this).val();
 
-        const selectedFilePath =  $(this).find('option:selected').attr('id');
-        if (selectedFilePath === '') {
-            return;
-        }
+        if(selectedDSId == "") {
+            alert("Data source cannot be null");
+            return ;
+        }   
 
         const formData = new FormData();
-        formData.append('csv_file', selectedFilePath);
+        formData.append('ds_id', selectedDSId);
 
         $.ajax({
-            method: "POST",
-            url: "/api/csv-extract",
+            url: '/api/get_datasource_mapping',
             data: formData,
             processData: false,
             contentType: false,
-            success: function(res) {
-                console.log(res)
-                if (!res.success) {
-                    console.error('Error: ', res.message);
-                    $('#csvHeaders').html('<option value="">Nothing Fetched</option>');
-                    return;
+            method:"POST",
+            success:function(res) {
+
+                if(res.success) {
+                
+                    window.pkit.datasource_info = res.data;
+
+
+                    if("template_vars" in window.pkit && "datasource_info" in window.pkit) {
+
+                        createDataMap();
+                    }
+                    // create template variable fields
+                
+                } else {
+
+                    alert("Whoops! there is a problem fetching this Data source.");
+                    console.log("Problem with datasource information", res);
+                
                 }
 
-                const csvHeadersSelect = $('#csvHeaders');
-                csvHeadersSelect.empty();
 
-                const headers = res.data.headers;
-                csvHeadersSelect.append('<option value=""> </option>');
-                source_headers.push(headers);
-                // Clear and populate mapDataFields with the variableData
-                // console.log(variableData);
-                variableData.forEach(variableDiv => {
-                    const csvHeadersSelect = $('#csvHeaders').clone();
-                    // csvHeadersSelect.prepend(newOption);
-                     
-                    headers.forEach(header => {
-                            csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
-                    });
-
-                    const rowDiv = $('<div>', {
-                        class: 'row'
-                    }).append(
-                        $('<div>', { class: 'col-md-6 mt-2' }).append(variableDiv),
-                        $('<div>', { class: 'col-md-6 mt-2' }).append(csvHeadersSelect)
-                    );
-                    
-                    mapDataFields.append(rowDiv);
-
-                    csvHeadersSelect.on('change', function() {
-                        const csvSelectedVal = $(this).val();
-                        storeArrayData.push({variableDiv, csvSelectedVal});
-                        console.log(storeArrayData);
-                    });
-                    
-                    
-                });
-                    $('#variableArrayInput').val(storeArrayData);
-
-                if (csvHeadersSelect){
-                    const tempVariablesInput = $('#csvHeaders').addClass('d-none');
-                    // const searchInput = $('.search').addClass('d-none');
-                }
-
-                $('#sourceTextArea').val(headers.join('\n'));
-
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                // Handle the AJAX error if needed
-                console.error('AJAX Error:', textStatus, errorThrown);
-                $('#csvHeaders').html('<option value="">-- Choose --</option>');
+                
+                console.log(res);
+            
             }
-        });
+        })
+
+
+
+        // $('#datasourceNext').removeClass('d-none');
+
+        // const csvHeadersSelectId = this.value;
+        // $('#csvHeaders').val(csvHeadersSelectId);
+        // const dataSource = $(this).find('option:selected').attr('name');
+        // $('#dataSourceName').val(dataSource);
+
+        // const selectedFilePath =  $(this).find('option:selected').attr('id');
+        // if (selectedFilePath === '') {
+        //     return;
+        // }
+
+        // const formData = new FormData();
+        // formData.append('csv_file', selectedFilePath);
+
+        // $.ajax({
+        //     method: "POST",
+        //     url: "/api/csv-extract",
+        //     data: formData,
+        //     processData: false,
+        //     contentType: false,
+        //     success: function(res) {
+        //         console.log(res)
+        //         if (!res.success) {
+        //             console.error('Error: ', res.message);
+        //             $('#csvHeaders').html('<option value="">Nothing Fetched</option>');
+        //             return;
+        //         }
+
+        //         const csvHeadersSelect = $('#csvHeaders');
+        //         csvHeadersSelect.empty();
+
+        //         const headers = res.data.headers;
+        //         csvHeadersSelect.append('<option value=""> </option>');
+        //         source_headers.push(headers);
+        //         // Clear and populate mapDataFields with the variableData
+        //         // console.log(variableData);
+        //         variableData.forEach(variableDiv => {
+        //             const csvHeadersSelect = $('#csvHeaders').clone();
+        //             // csvHeadersSelect.prepend(newOption);
+                     
+        //             headers.forEach(header => {
+        //                     csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
+        //             });
+
+        //             const rowDiv = $('<div>', {
+        //                 class: 'row'
+        //             }).append(
+        //                 $('<div>', { class: 'col-md-6 mt-2' }).append(variableDiv),
+        //                 $('<div>', { class: 'col-md-6 mt-2' }).append(csvHeadersSelect)
+        //             );
+                    
+        //             mapDataFields.append(rowDiv);
+
+        //             csvHeadersSelect.on('change', function() {
+        //                 const csvSelectedVal = $(this).val();
+        //                 storeArrayData.push({variableDiv, csvSelectedVal});
+        //                 console.log(storeArrayData);
+        //             });
+                    
+                    
+        //         });
+        //             $('#variableArrayInput').val(storeArrayData);
+
+        //         if (csvHeadersSelect){
+        //             const tempVariablesInput = $('#csvHeaders').addClass('d-none');
+        //             // const searchInput = $('.search').addClass('d-none');
+        //         }
+
+        //         $('#sourceTextArea').val(headers.join('\n'));
+
+        //     },
+        //     error: function(jqXHR, textStatus, errorThrown) {
+        //         // Handle the AJAX error if needed
+        //         console.error('AJAX Error:', textStatus, errorThrown);
+        //         $('#csvHeaders').html('<option value="">-- Choose --</option>');
+        //     }
+        // });
+
+
     });
 
 
@@ -966,6 +946,155 @@
     });
     // next button dependency section ends
 
+
+
+
+    function createDataMap() {
+
+        var template_vars = window.pkit.template_vars;
+        
+        var tbodyContainer = $('.data-map-table tbody');
+        
+        tbodyContainer.html('');
+        //  $('.source_fields_holder').html('');
+
+        if("variables" in template_vars) {
+
+            var totalVars = template_vars.length;
+
+            template_vars.variables.forEach(function(temp_var, index) {
+
+                selectDropdown = $(`<select name="source_${index}" var_name="${temp_var}_selector" class="map_source_options form-control"></select>`)
+
+
+                var tableRow = $(`<tr class="var_index_${index}"></tr>`);
+
+
+                tableRow.append(`<td class="var_name"><span>${temp_var}</span></td>`);
+
+                var sourceSelectorCol = $(`<td class="var_source"></td>`).append(selectDropdown).append($(`<input type="hidden" name="${temp_var}" value="" />`));
+
+                tableRow.append(sourceSelectorCol);
+                
+                
+                tableRow.append(`<td class="var_preview"><span>Select a source header</span></td>`);
+
+               tbodyContainer.append(tableRow);
+            
+            });
+            
+            loadOptionsinFieldMaps()
+        
+        
+        }
+        
+    }
+
+
+
+    function loadOptionsinFieldMaps() {
+
+
+        var dataSource = window.pkit.datasource_info;
+
+        var dsOptions = [];
+        
+
+        if("headers" in dataSource) {
+
+            dsOptions.push($(`<option value="">-- Select header --</option>`));
+
+            dataSource.headers.forEach(function(header, index) {
+
+                dsOptions.push($(`<option header_index="${index}" value="${header}">${header}</option>`)); 
+            
+            })
+        
+        }
+
+
+        $('select.map_source_options').append(dsOptions);
+
+        $('select.map_source_options').change(handleDatasourceHeaderChange);
+        // 
+
+
+    
+    }
+
+
+    function handleDatasourceHeaderChange(e) {
+
+        e.preventDefault();
+
+            
+        var selectedHeader = $(this).val();
+        var headerIndex = $(this).find(`[value="${selectedHeader}"]`).attr('header_index');
+
+        if(!headerIndex) {
+            $(this).parents('tr').find('td.var_preview span').html('Select a source header');
+            console.log("Header Index not matched");
+        
+        }
+
+        if(!("pkit" in  window) || !("datasource_info" in window.pkit) || !("preview_rows" in window.pkit.datasource_info) || window.pkit.datasource_info.preview_rows.length < 1) {
+
+            console.log("Invalid data available");
+            return false;
+        
+        }
+
+        var firstRow = window.pkit.datasource_info.preview_rows[0];
+
+        var previewData = firstRow[headerIndex];
+
+        $(this).parents('td').find('input[type="hidden"]').val(selectedHeader);
+        $(this).parents('tr').find('td.var_preview span').html(previewData);
+
+    
+    }
+
+
+
+    function prepareDataMapJSON() {
+    
+        var dataMapJson = [];
+
+        $('.var_source').find('[type="hidden"]').each(function(index, item) {
+
+            var dataObj = [];
+            
+            dataObj.push($(item).attr('name'));
+            dataObj.push($(item).val());
+
+            dataMapJson.push(dataObj);
+
+        });
+
+        var mappingJson = JSON.stringify(dataMapJson);
+
+        $('[name="data_maps_json"]').val(mappingJson);
+
+        return mappingJson;
+    }
+
+
+    function handleFormSubmit(e) {
+
+        e.preventDefault();
+        
+        prepareDataMapJSON();
+
+        $(this).parents('form').submit();
+    }
+
+
+    $(function() {
+    
+        $('.submit-form-btn').click(handleFormSubmit);
+    
+    })
+ 
 
 </script>
 
