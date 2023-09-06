@@ -686,7 +686,6 @@
                 
                     window.pkit.datasource_info = res.data;
 
-
                     if("template_vars" in window.pkit && "datasource_info" in window.pkit) {
 
                         createDataMap();
@@ -963,16 +962,16 @@
             var totalVars = template_vars.length;
 
             template_vars.variables.forEach(function(temp_var, index) {
-
-                selectDropdown = $(`<select name="source_${index}" var_name="${temp_var}_selector" class="map_source_options form-control"></select>`)
+                var modifiedVariable = temp_var.replace(/[{}"]/g, ''); 
+                selectDropdown = $(`<select name="source_${index}" var_name="${modifiedVariable}_selector" class="map_source_options form-control"></select>`)
 
 
                 var tableRow = $(`<tr class="var_index_${index}"></tr>`);
 
 
-                tableRow.append(`<td class="var_name"><span>${temp_var}</span></td>`);
+                tableRow.append(`<td class="var_name"><span>${modifiedVariable}</span></td>`);
 
-                var sourceSelectorCol = $(`<td class="var_source"></td>`).append(selectDropdown).append($(`<input type="hidden" name="${temp_var}" value="" />`));
+                var sourceSelectorCol = $(`<td class="var_source"></td>`).append(selectDropdown).append($(`<input type="hidden" name="${modifiedVariable}" value="" />`));
 
                 tableRow.append(sourceSelectorCol);
                 
