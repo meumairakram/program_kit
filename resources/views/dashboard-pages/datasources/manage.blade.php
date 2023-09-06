@@ -24,6 +24,26 @@
                         </div>
                         <a href="{{url('add-datasource')}}" class="btn bg-gradient-primary btn-sm mb-0" type="button">+&nbsp; Connect new</a>
                     </div>
+
+                    <div class="row pt-3px">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="user.phone" class="form-control-label ms-md-0 ">Search by Name or ID</label>
+                                <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                    <div class="ms-md-0 pe-md-3 d-flex align-items-center">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="search" value="" placeholder="Search here...">
+                                            <span class="input-group-text text-body" id="searchInput"><i class="fas fa-search" aria-hidden="true"></i></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
 
 
@@ -73,7 +93,7 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="myTable">
 
                                 @foreach ($datasources as $dsource)
 
@@ -127,8 +147,6 @@
                                 @endforeach
 
 
-
-
                             </tbody>
                         </table>
                     </div>
@@ -137,5 +155,30 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function(){   
+
+        $("#searchInput").on("click", function() {
+            var value = $('#search').val().toLowerCase();
+            $("#myTable tr").filter(function() {
+                var id = $(this).find("td:eq(0)").text().toLowerCase(); // Search by the first column (id)
+                var name = $(this).find("td:eq(1)").text().toLowerCase(); // Search by the second column (name)
+                $(this).toggle(id.indexOf(value) > -1 || name.indexOf(value) > -1);
+            });
+        });
+
+        $("#search").on("input", function() {
+            var value = $('#search').val().toLowerCase();
+            if (value === "") {
+                $("#myTable tr").show();
+            }
+        });
+
+
+    });
+</script>
 
 @endsection
