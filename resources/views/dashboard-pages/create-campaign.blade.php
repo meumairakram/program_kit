@@ -246,22 +246,72 @@
                             <!-- <div class="card-body"> -->
                                 <div class="form-group">
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control datasource_sec_required" name="data_source_id" id="dataSource">
-                                            <option value="">-- Choose a Source --</option>
 
-                                            @foreach($allDatasources as $ds)
-                                                <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
-                                            @endforeach
+                                        <div class="existing-datasource">
+                                            <select class="form-control datasource_sec_required" name="data_source_id" id="dataSource">
+                                                <option value="">-- Choose a Source --</option>
 
-                                        </select>
+                                                @foreach($allDatasources as $ds)
+                                                    <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
+                                                @endforeach
 
-                                        <div class="text-end mt-1">
-                                            <span style="font-size: 0.8rem;">61 records</span>
+                                            </select>
+
+                                            <div class="text-end mt-1">
+                                                <span style="font-size: 0.8rem;">61 records</span>
+                                            </div>
+
+                                            <div class="mt-2">
+                                                <button class="btn ds-new">Add new datasource</button>
+                                            </div>
+
                                         </div>
 
-                                        <div class="mt-4">
-                                            <button class="btn">Add new datasource</button>
+                                        <div class="new-datasource" style="display:none;">
+                                            
+
+                                            <div class="col-12">
+                                                <span class="h6">New Data source type:</span>
+
+                                                <div class="row mt-3">
+                                                    <div class="col-6 datasource-type-select g-sheet">
+                                                        <div class="ds-type-inner p-4">
+                                                            <div class="icon-holder">
+                                                                <i class="fas fa-file-excel"></i>
+                                                            </div>
+                                                            <span class="d-block text-bold">Google Sheet</span>
+
+                                                            <div class="d-block action-btn mt-1">
+                                                                <span>Connect</span><i class="fas fa-arrow-right"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-6 datasource-type-select csv">
+                                                        <div class="ds-type-inner p-4">
+                                                            <div class="icon-holder">
+                                                                <i class="fas fa-file-csv"></i>
+                                                            </div>
+                                                            <span  class="d-block text-bold">CSV File</span>
+
+                                                            <div class="d-block action-btn mt-1">
+                                                                <span>Upload</span><i class="fas fa-arrow-right"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="mt-4">
+                                                <button class="btn ds-existing">Use existing datasource</button>
+                                            </div>
+                                        
                                         </div>
+
+                                        
 
                                         @error('type')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
@@ -1092,9 +1142,31 @@
     $(function() {
     
         $('.submit-form-btn').click(handleFormSubmit);
+
+
+        $('.btn.ds-existing').click(function(e) {
+            e.preventDefault();
+            $('.new-datasource').css('display', 'none');
+            $('.existing-datasource').fadeIn(50);
+        
+        })
+
+        $('.btn.ds-new').click(function(e) {
+
+            e.preventDefault()
+
+            $('.existing-datasource').css('display', 'none');
+            $('.new-datasource').fadeIn(50);
+        
+        })
+
     
     })
  
+
+
+
+    
 
 </script>
 
