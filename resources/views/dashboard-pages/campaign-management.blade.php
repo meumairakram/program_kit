@@ -27,23 +27,36 @@
                     </div>
 
                     <div class="row pt-3px">
-                        <div class="col-3 p-0 align-left">
-                            <div class="ms-md-3 pe-md-3 d-flex align-items-center">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="search" value="" placeholder="Search here...">
-                                    <span class="input-group-text text-body" id="searchInput"><i class="fas fa-search" aria-hidden="true"></i></span>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="user.phone" class="form-control-label ms-md-0 ">Search by Title and Website_url</label>
+                                    <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                        <div class="ms-md-0 pe-md-3 d-flex align-items-center">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="search" value="" placeholder="Search here...">
+                                                <span class="input-group-text text-body" id="searchInput"><i class="fas fa-search" aria-hidden="true"></i></span>
+                                            </div>
+                                        </div>
+                        
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                    
-                        <div class="col-3 text-end">
-                            <select class="form-control" name="filter" id="myInput" value="Filter Data" placeholder="Filter Data">
-                                <option value="">Filter Data</option>
-                                <option value="Paused">Paused</option>
-                                <option value="Active">Active</option>
-                                <option value="ready">Ready</option>
-                            </select>
-                        </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="user.phone" class="form-control-label">Filter by Status</label>
+                                    <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                    <select class="form-control" name="filter" id="myInput" value="Filter Data" placeholder="Filter Data">
+                                        <option value="">Filter</option>
+                                        <option value="Paused">Paused</option>
+                                        <option value="Active">Active</option>
+                                        <option value="ready">Ready</option>
+                                    </select>
+                        
+                                    </div>
+                                </div>
+                            </div>
                     </div>
 
                 </div>
@@ -157,6 +170,14 @@
             $(this).toggle(websiteUrl.indexOf(value) > -1 || title.indexOf(value) > -1);
             });
         });
+
+        $("#search").on("input", function() {
+            var value = $('#search').val().toLowerCase();
+            if (value === "") {
+                $("#myTable tr").show();
+            }
+        });
+
 
     });
 </script>
