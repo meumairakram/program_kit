@@ -206,28 +206,38 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="user.phone" class="form-control-label">Data source</label>
-                                    <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control datasource_sec_required" name="data_source_id" id="dataSource"  value="{{$campaign->data_source_id}}">
-                                            <option value="{{$campaign->data_source_id}}">{{$campaign->dataSourceName}}</option>
+                                        <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                            <select class="form-control datasource_sec_required" name="data_source_id" id="dataSource" value="{{$campaign->data_source_id}}">
+                                                <option value="{{$campaign->data_source_id}}">{{$campaign->dataSourceName}}</option>
 
-                                            @foreach($allDatasources as $ds)
-                                                <option value="{{ $ds->id }}" id="{{ $ds->file_path }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
-                                            @endforeach
+                                                @foreach($allDatasources as $ds)
+                                                    <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
+                                                @endforeach
 
-                                        </select>
+                                            </select>
 
-                                        @error('type')
-                                                <p class="text-danger text-xs mt-2">{{ $message }}</p>
-                                        @enderror
+                                            <div class="text-end mt-1">
+                                                <span style="font-size: 0.8rem;">61 records</span>
+                                            </div>
 
-                                    </div>
+                                            <div class="mt-4">
+                                                <button class="btn">Add new datasource</button>
+                                            </div>
+
+                                            @error('type')
+                                                    <p class="text-danger text-xs mt-2">{{ $message }}</p>
+                                            @enderror
+
+                                        </div>
                                 </div>
                             </div>
+
 
                             <input type="hidden" name="data_source_name" id="dataSourceName" value="">
                             <input type="hidden" name="data_source_id" id="dataSourceId" value="">
                             <textarea class="d-none" name="data_source_headers" id="sourceTextArea" value="{{$campaign->data_source_headers}}">{{$campaign->data_source_headers}}</textarea>
+                            <input type="hidden" id="variableArrayInput" name="variableArray" value="">
+                            <input type="hidden" id="datasourceArrayInput" name="sourceArray" value="">
 
                     </div>
 
@@ -235,9 +245,128 @@
                 </div>
             </div>
 
+            <div class="card mb-4 d-none newdatasource">
+                <div class="card-header pb-0 px-3">
+                    <h6 class="mb-0">Connect new Data Source</h6>
+                </div>
+
+                <div class="card-body pt-4 p-3">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="user.phone" class="form-control-label">Type</label>
+                                <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                    <select class="form-control" name="type" id="selectType">
+                                        <option value="csv"> </option>
+                                        <option value="csv">CSV</option>
+                                        <option value="airtable">Airtable</option>
+                                        <option value="google_sheet">Google sheet</option>
+                                    </select>
+                                    
+                                    @error('type')
+                                            <p class="text-danger text-xs mt-2">{{ $message }}</p>
+                                    @enderror
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 uploadCSV d-none">
+                           <div class="card mb-4">
+                                <div class="card-header pb-0 px-3">
+                                    <h6 class="mb-0">Upload your database</h6>
+                                </div>
+                                <div class="card-body pt-4 p-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="user.location" class="form-control-label d-block mb-0">Upload file</label>
+                                                <span class="text-xs mb-2 d-block ms-1">Upload your csv</span> 
+                                                <div class="@error('user.location') border border-danger rounded-3 @enderror">
+                                                    <input class="form-control" type="file" placeholder="Location" id="name" name="csv_file" value="">
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 uploadGoogleSheets d-none">
+                            <div class="card mb-4">
+                                <div class="card-header pb-0 px-3">
+                                    <h6 class="mb-0">Google sheets</h6>
+                                </div>
+                                <div class="card-body pt-4 p-3">
+                                    <div class="row"> 
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="d-flex justify-content-start">
+                                                    <button type="button" class="btn btn-dark bg-gradient-dark gsheets">Create Google Sheet</button>
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex justify-content-start">
+                        <button type="button" id="newDatasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
+                    </div>
+
+                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none fourthError" role="alert">
+                        <span class="alert-text text-white">You have to fill 'Data Source' section completely to proceed next.</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
 
 
             <div class="card mb-4 mapdata">
+                <div class="card-header pb-0 px-3">
+                    <h6 class="mb-0">Map Data Fields</h6>
+                </div>
+
+                <div class="card-body pt-4 p-3">
+
+                    <div class="row">
+
+                        <div class="col-12">
+                            <table class="data-map-table table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Variable</th>
+                                        <th>Data source header</th>
+                                        <th>Preview</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+                                
+                                
+                                
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- <div class="card mb-4 mapdata">
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Map Data Fields</h6>
                 </div>
@@ -256,11 +385,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <input class="form-control" type="text" id="tempVariablesInput" name="template"  value="{{$campaign->variables}}">
-                                            <!-- <select class="form-control" name="template_field"  value="{{$campaign->variables}}">
-                                                <option value="wordpress">Some name (CSV)</option>
-                                                <option value="wordpress">Some Name (Google Sheet)</option>
-                                                <option value="wordpress">Bubble</option>
-                                            </select> -->
+                                        
                                         </div>
 
                                     </div>
@@ -278,11 +403,7 @@
                                             <select class="form-control csv-headers" name="source_field" id="csvHeaders"  value="{{$campaign->data_source_headers}}">
                                                 <option value="{{$campaign->data_source_headers}}">{{$campaign->data_source_headers}}</option>
                                             </select>
-                                            <!-- <select class="form-control" name="website">
-                                                <option value="wordpress">Some name (CSV)</option>
-                                                <option value="wordpress">Some Name (Google Sheet)</option>
-                                                <option value="wordpress">Bubble</option>
-                                            </select> -->
+                                         
                                         </div>
 
                                     </div>
@@ -290,51 +411,12 @@
 
                             </div>
 
-                            <!-- <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <td>Template field</td>
-                                        <td>Data source field</td>
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <select class="form-control" name="website">
-                                                <option value="wordpress">Some name (CSV)</option>
-                                                <option value="wordpress">Some Name (Google Sheet)</option>
-                                                <option value="wordpress">Bubble</option>
-                                            </select>
-                                        </td>
-
-                                       <td>
-                                            <select class="form-control" name="website">
-                                                <option value="wordpress">Empty</option>
-                                                <option value="wordpress">Default value</option>
-                                                <option value="wordpress">Bubble</option>
-                                            </select>
-                                        </td>
-
-
-                                    </tr>
-
-                                </tbody>
-
-
-
-                            </table> -->
-
-
-
                         </div>
                     </div>
                    
 
                 </div>
-            </div>
+            </div> -->
 
 
             <div class="card SaveAndStart">
@@ -363,7 +445,7 @@
 
     </form>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     // website type
@@ -619,7 +701,7 @@
      
     // next button dependency section ends
 
-</script>
+</script> -->
 
 
 

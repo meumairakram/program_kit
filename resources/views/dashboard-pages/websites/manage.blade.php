@@ -114,7 +114,14 @@
                                             <p class="text-xs font-weight-bold mb-0">{{$web->website_url}}</p>
                                         </td>
                                         <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{$web->is_authenticated}}</p>
+                                            @if ($web->is_authenticated == "Verified")
+                                                <p class="text-xs font-weight-bold mb-0 text-secondary-success">Verified</p>
+                                            @elseif($web->is_authenticated == "Unverified")
+                                                <p class="text-xs font-weight-bold mb-0 text-secondary-danger">Unverified</p>
+                                            @else
+                                                <p class="text-xs font-weight-bold mb-0 text-secondary-pending">Pending</p>
+                                            @endif
+
                                         </td>
                                         <td class="text-center">
                                             <span class="text-secondary text-xs font-weight-bold">
@@ -140,9 +147,6 @@
                                     </tr>
 
                                 @endforeach
-
-
-
 
                             </tbody>
                         </table>

@@ -26,6 +26,7 @@ class CampaignController extends Controller {
             ->leftjoin('user_datasources', 'campaigns.data_source_id', 'user_datasources.id')
             ->leftjoin('templates', 'campaigns.wp_template_id','templates.template_id')
             ->leftjoin('user_websites', 'campaigns.website_id', 'user_websites.id')
+            ->where("user_websites.is_authenticated", "Verified")
             ->where('campaigns.owner_id', $current_user_id)
             ->select(
                 'campaigns.*',
@@ -208,7 +209,7 @@ class CampaignController extends Controller {
         }
 
         $current_user_id = Auth::user()->id;
-        $websites = WebsitesInfo::where("owner_id", "=", $current_user_id)->where("type", $type)->get();
+        $websites = WebsitesInfo::where("owner_id", "=", $current_user_id)->where("type", $type)->where("is_authenticated", "Verified")->get();
         return response()->json([
             "success" => true,
             "websites" => $websites
