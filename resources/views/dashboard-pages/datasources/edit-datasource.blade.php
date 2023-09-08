@@ -80,14 +80,14 @@
 
             <div class="card mb-4 uploadCSV d-none">
                 <div class="card-header pb-0 px-3">
-                    <h6 class="mb-0">Upload your database</h6>
+                    <h6 class="mb-0">Update your database</h6>
                 </div>
                 <div class="card-body pt-4 p-3">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="user.location" class="form-control-label d-block mb-0">Upload file</label>
-                                <span class="text-xs mb-2 d-block ms-1">Upload your csv</span> 
+                                <label for="user.location" class="form-control-label d-block mb-0">Update file</label>
+                                <span class="text-xs mb-2 d-block ms-1">Update your csv</span> 
                                 <div class="@error('user.location') border border-danger rounded-3 @enderror">
                                     <input class="form-control" type="file" placeholder="{{$datasource->name}}({{$datasource->type}})" id="name" name="csv_file" value="{{$datasource->file_path}}">
                                 </div>
