@@ -270,11 +270,11 @@
                                         <div class="new-datasource" style="display:none;">
                                             
 
-                                            <div class="col-12">
+                                            <div class="col-12" id="new_ds_type">
                                                 <span class="h6">New Data source type:</span>
 
                                                 <div class="row mt-3">
-                                                    <div class="col-6 datasource-type-select g-sheet">
+                                                    <div class="col-6 datasource-type-select g-sheet" style="cursor:pointer;">
                                                         <div class="ds-type-inner p-4">
                                                             <div class="icon-holder">
                                                                 <i class="fas fa-file-excel"></i>
@@ -287,7 +287,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-6 datasource-type-select csv">
+                                                    <div class="col-6 datasource-type-select csv" style="cursor:pointer;">
                                                         <div class="ds-type-inner p-4">
                                                             <div class="icon-holder">
                                                                 <i class="fas fa-file-csv"></i>
@@ -304,6 +304,19 @@
                                             </div>
 
 
+                                            <div class="col-sm-12" id="google_sheet_type">
+                                                
+                                                
+
+
+
+                                            </div>
+
+
+
+
+
+
 
                                             <div class="mt-4">
                                                 <button class="btn ds-existing">Use existing datasource</button>
@@ -311,7 +324,9 @@
                                         
                                         </div>
 
-                                        
+
+                                        <input type="hidden" name="datasource_choice" value="existing">
+
 
                                         @error('type')
                                                 <p class="text-danger text-xs mt-2">{{ $message }}</p>
