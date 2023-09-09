@@ -7,6 +7,7 @@ use App\Models\CampMap;
 use App\Models\Template;
 use App\Models\Campaign ;
 use App\Models\Datasources;
+use App\Models\AuthTokens;
 use App\Models\WebsitesInfo;
 use Illuminate\Http\Request;
 use App\Models\DataSourceField;
@@ -56,8 +57,11 @@ class CampaignController extends Controller {
 
         $allDatasources = Datasources::where("owner_id", "=", $current_user_id)->get();
 
+        $get_auth_token = AuthTokens::where('owner_id', '=', $current_user_id)->first();
+        $google_acc_connected = $get_auth_token ? true : false;
 
-        return view('dashboard-pages/create-campaign',compact(["allWebsites", "allDatasources"]));
+
+        return view('dashboard-pages/create-campaign',compact(["allWebsites", "allDatasources", "google_acc_connected"]));
 
     }
 

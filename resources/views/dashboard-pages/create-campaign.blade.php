@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <form class="container-fluid py-4" action="{{ route('store-campaign') }}" method="POST" role="form text-left">
+    <form x-data='$store.create_campaign_store' class="container-fluid py-4" action="{{ route('store-campaign') }}" method="POST" role="form text-left">
             <div class="card mb-4">
                 <div class="card-header pb-0 px-3">
                     <div class="d-flex align-items-center justify-content-between">
@@ -247,82 +247,119 @@
                                 <div class="form-group">
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
 
-                                        <div class="existing-datasource">
-                                            <select class="form-control datasource_sec_required" name="data_source_id" id="dataSource">
-                                                <option value="">-- Choose a Source --</option>
+                                        <template x-if="ds_source_type == 'existing'">
+                                            <div class="existing-datasource">
+                                                <select @change="set_ds_id" class="form-control datasource_sec_required" name="data_source_id" id="dataSource">
+                                                    <option value="">-- Choose a Source --</option>
 
-                                                @foreach($allDatasources as $ds)
-                                                    <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
-                                                @endforeach
+                                                    @foreach($allDatasources as $ds)
+                                                        <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
+                                                    @endforeach
 
-                                            </select>
+                                                </select>
 
-                                            <div class="text-end mt-1">
-                                                <span style="font-size: 0.8rem;">61 records</span>
+                                                <div class="text-end mt-1">
+                                                    <span style="font-size: 0.8rem;">61 records</span>
+                                                </div>
+
+                                                <div class="mt-2">
+                                                    <button class="btn ds-new" @click='(e) => { switch_ds_type(e, "new") }'>Add new datasource</button>
+                                                </div>
+
                                             </div>
 
-                                            <div class="mt-2">
-                                                <button class="btn ds-new">Add new datasource</button>
-                                            </div>
+                                        </template>
 
-                                        </div>
 
-                                        <div class="new-datasource" style="display:none;">
-                                            
 
-                                            <div class="col-12" id="new_ds_type">
-                                                <span class="h6">New Data source type:</span>
 
-                                                <div class="row mt-3">
-                                                    <div class="col-6 datasource-type-select g-sheet" style="cursor:pointer;">
-                                                        <div class="ds-type-inner p-4">
-                                                            <div class="icon-holder">
-                                                                <i class="fas fa-file-excel"></i>
-                                                            </div>
-                                                            <span class="d-block text-bold">Google Sheet</span>
+                                        <template x-if="ds_source_type == 'new'">
+                                            <div class="new-datasource">
+                                                
 
-                                                            <div class="d-block action-btn mt-1">
-                                                                <span>Connect</span><i class="fas fa-arrow-right"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                <div class="col-12" id="new_ds_type">
+                                                    <span class="h6">New Data source type:</span>
 
-                                                    <div class="col-6 datasource-type-select csv" style="cursor:pointer;">
-                                                        <div class="ds-type-inner p-4">
-                                                            <div class="icon-holder">
-                                                                <i class="fas fa-file-csv"></i>
-                                                            </div>
-                                                            <span  class="d-block text-bold">CSV File</span>
+                                                    <div class="row mt-3">
+                                                        <div class="col-6 datasource-type-select g-sheet" style="cursor:pointer;">
+                                                            <div class="ds-type-inner p-4">
+                                                                <div class="icon-holder">
+                                                                    <i class="fas fa-file-excel"></i>
+                                                                </div>
+                                                                <span class="d-block text-bold">Google Sheet</span>
 
-                                                            <div class="d-block action-btn mt-1">
-                                                                <span>Upload</span><i class="fas fa-arrow-right"></i>
+                                                                <div class="d-block action-btn mt-1">
+                                                                    <span x-text="google_acc_connected ? 'Launch' : 'Connect'"></span><i class="fas fa-arrow-right"></i>
+                                                                </div>
                                                             </div>
                                                         </div>
+
+                                                        <div class="col-6 datasource-type-select csv" style="cursor:pointer;">
+                                                            <div class="ds-type-inner p-4">
+                                                                <div class="icon-holder">
+                                                                    <i class="fas fa-file-csv"></i>
+                                                                </div>
+                                                                <span  class="d-block text-bold">CSV File</span>
+
+                                                                <div class="d-block action-btn mt-1">
+                                                                    <span>Upload</span><i class="fas fa-arrow-right"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
+                                                </div>
+
+
+                                                <div class="col-sm-12 mt-3" id="google_sheet_type">
+                                                    
+                                                    @if($google_acc_connected) 
+                                                        
+                                                        <div class="from-group">
+                                                            
+                                                            <label>Name your new Google Sheet (Put a unique one)</label>
+                                                            
+                                                            <div class="">
+                                                                <input type="text" class="form-control" name="new_sheet_name" /> 
+
+                                                                <div class="mt-2">
+                                                                    <button class="btn btn-secondary">Create Sheet</button>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    
+                                                    @else
+
+                                                        <h6>Seems like your google account is not connected</h6>
+                                                        <span> Lets connect your Google account first</span>
+                                                        
+                                                        <div class="mt-3">
+
+                                                            <a target="blank" href="/sheets/init"  class="btn secondary">Connect Google Account</a>
+
+                                                        </div>
+                                                        
+                                                    @endif
+
+
 
                                                 </div>
+
+
+
+
+
+
+
+                                                <div class="mt-4">
+                                                    <button class="btn ds-existing" @click='(e) => { switch_ds_type(e, "existing") }'>Use existing datasource</button>
+                                                </div>
+                                            
                                             </div>
 
-
-                                            <div class="col-sm-12" id="google_sheet_type">
-                                                
-                                                
-
-
-
-                                            </div>
-
-
-
-
-
-
-
-                                            <div class="mt-4">
-                                                <button class="btn ds-existing">Use existing datasource</button>
-                                            </div>
-                                        
-                                        </div>
+                                        </template>
 
 
                                         <input type="hidden" name="datasource_choice" value="existing">
@@ -1158,21 +1195,21 @@
         $('.submit-form-btn').click(handleFormSubmit);
 
 
-        $('.btn.ds-existing').click(function(e) {
-            e.preventDefault();
-            $('.new-datasource').css('display', 'none');
-            $('.existing-datasource').fadeIn(50);
+        // $('.btn.ds-existing').click(function(e) {
+        //     e.preventDefault();
+        //     $('.new-datasource').css('display', 'none');
+        //     $('.existing-datasource').fadeIn(50);
         
-        })
+        // })
 
-        $('.btn.ds-new').click(function(e) {
+        // $('.btn.ds-new').click(function(e) {
 
-            e.preventDefault()
+        //     e.preventDefault()
 
-            $('.existing-datasource').css('display', 'none');
-            $('.new-datasource').fadeIn(50);
+        //     $('.existing-datasource').css('display', 'none');
+        //     $('.new-datasource').fadeIn(50);
         
-        })
+        // })
 
     
     })
@@ -1185,6 +1222,24 @@
 </script>
 
 
+
+
+@endsection
+
+
+@section("javascript")
+    
+    <script>
+        
+        var google_acc_connected = @if($google_acc_connected) true @else false @endif ;
+
+    </script>
+
+
+
+    <script id="alpine_js" defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.0/dist/cdn.min.js"></script>
+
+    <script id="create_campaign_script" src="{{ asset('js/create_campaign_script.js') }}" ></script>
 
 
 @endsection
