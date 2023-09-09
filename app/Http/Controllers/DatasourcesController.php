@@ -102,8 +102,6 @@ class DatasourcesController extends Controller {
         $datasource->records_count = $recordCount;
         $datasource->file_path = $filePath; 
         $datasource->last_synced = now();
-
-
         $datasource->save();
 
         return redirect()->route('manage-datasources')->with('message', 'Data source added successfully!');
@@ -166,6 +164,8 @@ class DatasourcesController extends Controller {
         $datasource =  Datasources::find($request->id);
         $datasource->name = $request->input('name');
         $datasource->type = $request->input('type');
+        $datasource->source_header = $request->input('sourceHeader');
+        $datasource->primary_key = $request->input('primaryKey');
         $datasource->requires_mapping = false;
         $datasource->records_count = $recordCount;
         $datasource->file_path = $filePath; 

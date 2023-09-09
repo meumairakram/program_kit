@@ -419,7 +419,7 @@
             </div>
 
 
-            <div class="card d-none SaveAndStart">
+            <div class="card SaveAndStart">
 
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Lets save and start</h6>

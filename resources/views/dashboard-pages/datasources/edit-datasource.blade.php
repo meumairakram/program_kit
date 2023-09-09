@@ -121,7 +121,7 @@
                                 <label for="user.location" class="form-control-label d-block mb-0">Upload sheet</label>
                                 <span class="text-xs mb-2 d-block ms-1">Upload your Google sheet</span> 
                                 <div class="@error('user.location') border border-danger rounded-3 @enderror">
-                                    <input class="form-control" type="file" placeholder="Location" id="name" name="csv_file" value="">
+                                    <input class="form-control" type="file" placeholder="Location" id="name" name="google_sheet" value="">
                                 </div>
                             </div>
                         </div>  
@@ -132,9 +132,24 @@
             <input type="hidden" name="id" value="{{$datasource->id}}">
 
             <div class="card mb-4 data-preview d-none">
+
+                <div class="container-fluid">
+                    <div class="row pb-0 px-3 pt-3">
+                        <div class="col-md-6">
+                            <h6 class="mb-0">Primary Key</h6>
+                            <div class="primaryKey">{{ $datasource->primary_key }}</div>
+                            <select type="search" class="form-control csv-headers" name="sourceHeader" id="csvHeaders" data-live-search="true">
+                                <option value="{{ $datasource->source_header }}">{{ $datasource->source_header }} </option>
+                            </select>
+                            <input type="hidden" id="primary_id" name="primaryKey" value="">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Preview your Database</h6>
                 </div>
+
                 <div class="card-body pt-4 p-3">
                     <div class="row">
                         <div class="col-md-10">
@@ -208,23 +223,17 @@
                 
                 </div>
             </div>     
-    </form>     
+    </form>  
+    
+    <style>
+        tr td, tr th {
+            text-align:center;
+        }
+    </style>
 @endsection
 
 
 @section('javascript')
-<script>
-    $(document).ready(function() {
-        var selectedValue = $('#selectType').val(); 
-        if (selectedValue === 'csv') {
-            $('.uploadCSV').removeClass('d-none');
-            $('.uploadGoogleSheets').addClass('d-none');
-        } else if (selectedValue === 'google_sheet') {
-            $('.uploadGoogleSheets').removeClass('d-none');
-            $('.uploadCSV').addClass('d-none');
-        }
-    });
-</script>
 
 @if(isset($absolute_file_path))
     <script>
@@ -252,98 +261,27 @@
                 $('.data-preview tbody').append(elemRow);
             });
         });
+
+        $('[name="csv_file"]').on('change',function(){
+            var files = $('[name="csv_file"]')[0].files
+            const thumbnailPreviewTemplate =
+                `<div class="form-group" id="fileShow">
+                    <div class="alert bg-gray-200 border border-solid border-2 text-black alert-dismissible fade show" role="alert">
+                        <span class="alert-text">{{ $datasource->name }} ({{ $datasource->type }})</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close text-dark" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>`
+            let thumbnailTemplate = thumbnailPreviewTemplate
+            thumbnailTemplate = thumbnailTemplate.replace('{{$datasource->name}}',files[0].name)
+            thumbnailTemplate = thumbnailTemplate.replace('{{$datasource->type}}',$(this).data('type'))
+            thumbnailTemplate = thumbnailTemplate.replace('{{$datasource->id}}',$(this).data('id'))
+            $('#fileShow').html(thumbnailTemplate);
+        })
+        
     </script>
 @endif
 
-<script>
-        jQuery(function($) {
-            $('input[name="csv_file"]').change(function(e) {
-                var formValues = new FormData();
-                formValues.append('csv_file', e.target.files[0]);
-                formValues.append('name',"Umair");
-                jQuery.ajax({
-                    method: "POST",
-                    url: "/api/csv-preview",
-                    data: formValues,
-                    processData: false,
-                    contentType: false, // Set contentType to false to allow the browser to set the correct content type for the FormData object
-                    success: function(res) {
-                        if(!res.success ) {
-                            if(!$('.data-preview').hasClass('d-none')) {
-                                $('.data-preview').addClass('d-none');
-                                
-                            }
-                            $('.data-preview thead tr').html("");
-                            $('.data-preview tbody tr').html("");
-                        }
-                        var headers = res.data.headers;
-                        var rows = res.data.preview_rows;
-                        if(headers.length < 1){
-                            return false;
-                        }
-                        $('.data-preview').removeClass('d-none');
-                        $('.data-preview thead tr').html("");
-                        $('.data-preview tbody tr').html("");
-                        var headersToPreview = headers.length < 7 ? headers : headers.splice(0, 6)
-                        headersToPreview.forEach(function(item, index) {
-                            $('.data-preview thead tr').append(`<th>${item}</th>`);
-                        
-                        });
-
-                        rows.forEach(function(item, index) {
-                            elemRow = $('<tr></tr>');
-                            item.forEach(function(rowItem, rowIndex) {
-                                elemRow.append(`<td>${rowItem}</td>`)
-                            })
-                            
-                            $('.data-preview tbody').append(elemRow);
-                            // elemRow
-                        })
-                        // console.log(res);
-                    }
-                })
-            })
-        })
-
-        // show the document
-        $('[name="csv_file"]').on('change',function(){
-        var files = $('[name="csv_file"]')[0].files
-        const thumbnailPreviewTemplate =
-            `<div class="form-group" id="fileShow">
-                <div class="alert bg-gray-200 border border-solid border-2 text-black alert-dismissible fade show" role="alert">
-                    <span class="alert-text">{{ $datasource->name }} ({{ $datasource->type }})</span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                        <i class="fa fa-close text-dark" aria-hidden="true"></i>
-                    </button>
-                </div>
-            </div>`
-        let thumbnailTemplate = thumbnailPreviewTemplate
-        thumbnailTemplate = thumbnailTemplate.replace('{{$datasource->name}}',files[0].name)
-        thumbnailTemplate = thumbnailTemplate.replace('{{$datasource->type}}',$(this).data('type'))
-        thumbnailTemplate = thumbnailTemplate.replace('{{$datasource->id}}',$(this).data('id'))
-        $('#fileShow').html(thumbnailTemplate);
-    })
-
-    // handle sections based on selected type
-    document.getElementById('selectType').addEventListener('change', function(e) 
-    {
-        var selectedValue = $(this).val();
-        if(selectedValue == 'csv'){
-            $('.uploadCSV').removeClass('d-none');
-            $('.uploadGoogleSheets').addClass('d-none');
-        }
-        else if(selectedValue == 'google_sheet'){
-            $('.uploadGoogleSheets').removeClass('d-none');
-            $('.uploadCSV').addClass('d-none');
-        }
-    });
-
-</script>
-
-    <style>
-        tr td, tr th {
-            text-align:center;
-        }
-    </style>
 
 @endsection

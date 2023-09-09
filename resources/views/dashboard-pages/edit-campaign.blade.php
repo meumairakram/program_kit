@@ -232,9 +232,23 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-3">
+                                @if(isset($absolute_file_path))
+                                    <label for="user.location" class="form-control-label d-block mb-0">Existing file</label>
+                                    <div class="form-group" id="fileShow">
+                                        <div class="alert bg-gray-200 border border-solid border-2 text-black alert-dismissible fade show" role="alert">
+                                            <span class="alert-text">{{$campaign->dataSourceName}}</span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                                <i class="fa fa-close text-dark" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
 
                             <input type="hidden" name="data_source_name" id="dataSourceName" value="">
-                            <input type="hidden" name="data_source_id" id="dataSourceId" value="">
+                            <!-- <input type="hidden" name="data_source_id" id="dataSourceId" value=""> -->
                             <textarea class="d-none" name="data_source_headers" id="sourceTextArea" value="{{$campaign->data_source_headers}}">{{$campaign->data_source_headers}}</textarea>
                             <input type="hidden" id="variableArrayInput" name="variableArray" value="">
                             <input type="hidden" id="datasourceArrayInput" name="sourceArray" value="">
@@ -445,265 +459,36 @@
 
     </form>
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@endsection
 
-<script>
-    // website type
-    document.getElementById('websiteType').addEventListener('change', function(e)
-    {
-            const selectedType = this.value;
-            if (selectedType === '') {
-                return;
-            }
+@section('javascript')
 
-            const formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
-            formData.append('type', selectedType);
-
-            $.ajax({
-                method: "POST",
-                url: "/websites_type",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    console.log(response)
-                    if (!response.success) {
-                        console.error('Error: ', response.message);
-                        $('#selectWebSite').html('<option value=""> </option>');
-                        return;
-                    }
-
-                    const websiteSelect = $('#selectWebSite');
-                    websiteSelect.empty();
-
-                    const websites = response.websites;
-                    websiteSelect.append('<option value=""> </option>');
-                    websites.forEach(websites => {
-                        websiteSelect.append(`<option value="${websites.id}">${websites.website_name} | ${websites.website_url}</option>`);
-                    });
-                    // Update the hidden input value with the selected website ID
-                    websiteSelect.on('change', function() {
-                        const selectedWebsiteId = $(this).val();
-                        $('#selectWebSite').val(selectedWebsiteId);
-                    });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    // Handle the AJAX error if needed
-                    console.error('AJAX Error:', textStatus, errorThrown);
-                    $('#selectWebSite').html('<option value="">-- Select WebSite --</option>');
-                }
-            });
-    });
-
-      // getting post types by selecting website
-    document.getElementById('selectWebSite').addEventListener('change', function(e)
-    {
-            $.ajax({
-                method: "get",
-                url: "/api/get_post_types",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    console.log(response)
-                    if (!response.success) {
-                        console.error('Error: ', response.message);
-                        $('#postType').html('<option value=""> </option>');
-                        return;
-                    }
-
-                    const postType = $('#postType');
-                    postType.empty();
-
-                    const type = response.data.post_types; // Corrected access to the array
-                    postType.append('<option value=""> </option>');
-
-                    type.forEach(typeItem => { // Use typeItem as an element in the forEach loop
-                        postType.append(`<option value="${typeItem}">${typeItem}</option>`);
-                    });
-
-                    postType.on('change', function() {
-                        const postTypeId = $(this).val();
-                        $('#postType').val(postTypeId);
-                    });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    // Handle the AJAX error if needed
-                    console.error('AJAX Error:', textStatus, errorThrown);
-                    $('#postType').html('<option value="">-- Select WebSite --</option>');
-                }
-            });
-    });
-
-    // geting template by post type
-    document.getElementById('postType').addEventListener('change', function(e)
-    {
-            const selectedType = this.value;
-            if (selectedType === '') {
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
-            formData.append('post_type', selectedType);
-
-            $.ajax({
-                method: "POST",
-                url: "/api/get_templates_by_type",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    console.log(response)
-                    if (!response.success) {
-                        console.error('Error: ', response.message);
-                        $('#template').html('<option value=""> </option>');
-                        return;
-                    }
-
-                    const template = $('#template');
-                    template.empty();
-
-                    const get_templates_by_type = response.data.posts;
-                    template.append('<option value=""> </option>');
-
-                    get_templates_by_type.forEach(get_templates_by_type => {
-                        template.append(`<option name="${get_templates_by_type.title}" value="${get_templates_by_type.id}">${get_templates_by_type.title}</option>`);
-                    });
-
-                    template.on('change', function() {
-                        const templateId = $(this).val();
-                        const templateName = $(this).find('option:selected').attr('name');
-
-                        $('#template').val(templateId);
-                        $('#templateName').val(templateName);
-                    });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    // Handle the AJAX error if needed
-                    console.error('AJAX Error:', textStatus, errorThrown);
-                    $('#template').html('<option value="">-- Select WebSite --</option>');
-                }
-            });
-    });
-
-    // geting template Variables
-    document.getElementById('template').addEventListener('change', function(e)
-    {
-        const selectedType = this.value;
-        console.log(selectedType);
-        if (selectedType === '') {
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('_token', '{{ csrf_token() }}');
-        formData.append('post_id', selectedType);
-
-        $.ajax({
-            method: "POST",
-            url: "/api/get_template_vars",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                console.log(response)
-                if (!response.success) {
-                    console.error('Error: ', response.message);
-                    $('#tempVariables').val('');
-                    return;
-                }
-
-                const variables = response.data.variables;
-                const collectedVariables = [];
-
-                variables.forEach(variable => {
-                    const variableText = variable.replace(/[{}"]/g, '');
-                    collectedVariables.push(variableText);
-                    console.log(variableText);
-
-                    const variableDiv = `<div class="variable-div">${variableText}</div>`;
-
-                    $('#tempVariablesInput').addClass('d-none');
-                    const csvHeadersClone = $('#csvHeaders').clone();
-
-                    const rowDiv = $('<div>', {
-                        class: 'row'
-                    }).append(
-                        $('<div>', { class: 'col-md-6 mb-2' }).append(variableDiv),
-                        $('<div>', { class: 'col-md-6 mb-2' }).append(csvHeadersClone)
-                    );
-                    $('#mapDataFields').append(rowDiv);
-                });
-
-                $('#templateTextArea').val(collectedVariables.join('\n'));
-
-            },
-
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX Error:', textStatus, errorThrown);
-                $('#tempVariables').val(''); // Clear the input field
-            }
-        });
-    });
-
-    document.getElementById('dataSource').addEventListener('change', function(e) {
-
-        const csvHeadersSelectId = this.value;
-        $('#csvHeaders').val(csvHeadersSelectId);
-        const dataSource = $(this).find('option:selected').attr('name');
-        $('#dataSourceName').val(dataSource);
-
-        const selectedFilePath =  $(this).find('option:selected').attr('id');
-        if (selectedFilePath === '') {
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('csv_file', selectedFilePath);
-
-        $.ajax({
-            method: "POST",
-            url: "/api/csv-extract",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(res) {
-                console.log(res)
-                if (!res.success) {
-                    console.error('Error: ', res.message);
-                    $('#csvHeaders').html('<option value="">-- Choose --</option>');
-                    return;
-                }
-
-                const csvHeadersSelect = $('#csvHeaders');
-                csvHeadersSelect.empty();
-
-                const headers = res.data.headers;
-                csvHeadersSelect.append('<option value="">Choose Fields of selected file</option>');
-                headers.forEach(header => {
-                    csvHeadersSelect.append(`<option value="${header}">${header}</option>`);
-                });
-
-                $('#sourceTextArea').val(headers.join('\n'));
-
-            },
-
-            error: function(jqXHR, textStatus, errorThrown) {
-                // Handle the AJAX error if needed
-                console.error('AJAX Error:', textStatus, errorThrown);
-                $('#csvHeaders').html('<option value="">-- Choose --</option>');
-            }
-        });
-    });
-
-    // next button dependency section starts
+@if(isset($absolute_file_path))
+    <script>
      
-    // next button dependency section ends
-
-</script> -->
-
-
-
+        $('[id="dataSource"]').on('change',function(){
+            var selectedOption = $('[id="dataSource"] option:selected');
+            var dataSourceName = selectedOption.name();
+            var dataSourceId = selectedOption.val();
+        
+            alert(dataSourceId);
+            const thumbnailPreviewTemplate =
+                `<div class="form-group" id="fileShow">
+                    <div class="alert bg-gray-200 border border-solid border-2 text-black alert-dismissible fade show" role="alert">
+                        <span class="alert-text">{{$campaign->dataSourceName}} ({{$campaign->type}})</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close text-dark" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>`
+            let thumbnailTemplate = thumbnailPreviewTemplate
+            thumbnailTemplate = thumbnailTemplate.replace(dataSourceName,files[0].name)
+            thumbnailTemplate = thumbnailTemplate.replace(dataSourceId,$(this).data('id'))
+            $('#fileShow').html(thumbnailTemplate);
+        })
+        
+    </script>
+@endif
 
 @endsection
+
