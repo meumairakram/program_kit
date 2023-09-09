@@ -114,7 +114,14 @@
                                             <p class="text-xs font-weight-bold mb-0">{{$web->website_url}}</p>
                                         </td>
                                         <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{$web->is_authenticated}}</p>
+                                            @if ($web->is_authenticated == "Verified")
+                                                <p class="text-xs font-weight-bold mb-0 text-secondary-success">Verified</p>
+                                            @elseif($web->is_authenticated == "Unverified")
+                                                <p class="text-xs font-weight-bold mb-0 text-secondary-danger">Unverified</p>
+                                            @else
+                                                <p class="text-xs font-weight-bold mb-0 text-secondary-pending">Pending</p>
+                                            @endif
+
                                         </td>
                                         <td class="text-center">
                                             <span class="text-secondary text-xs font-weight-bold">
@@ -141,9 +148,6 @@
 
                                 @endforeach
 
-
-
-
                             </tbody>
                         </table>
                     </div>
@@ -153,29 +157,5 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function(){   
-
-        $("#searchInput").on("click", function() {
-            var value = $('#search').val().toLowerCase();
-            $("#myTable tr").filter(function() {
-                var id = $(this).find("td:eq(0)").text().toLowerCase(); // Search by the first column (id)
-                var name = $(this).find("td:eq(1)").text().toLowerCase(); // Search by the second column (name)
-                $(this).toggle(id.indexOf(value) > -1 || name.indexOf(value) > -1);
-            });
-        });
-
-        $("#search").on("input", function() {
-            var value = $('#search').val().toLowerCase();
-            if (value === "") {
-                $("#myTable tr").show();
-            }
-        });
-
-
-    });
-</script>
 
 @endsection

@@ -157,40 +157,6 @@
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function(){   
-
-        $("#myInput").on("change", function() {
-            var value = $(this).val().toLowerCase();
-            $("#myTable tr").filter(function() {
-                var status = $(this).find("td:eq(4)").text().toLowerCase(); // Index 4 corresponds to the "status" column
-                $(this).toggle(status.indexOf(value) > -1);
-            });
-        });
-
-
-        $("#searchInput").on("click", function() {
-            var value = $('#search').val().toLowerCase();
-            $("#myTable tr").filter(function() {
-            var websiteUrl = $(this).find("td:eq(2)").text().toLowerCase(); // Index 2 corresponds to website_url column
-            var title = $(this).find("td:eq(1)").text().toLowerCase(); // Index 1 corresponds to title column
-            $(this).toggle(websiteUrl.indexOf(value) > -1 || title.indexOf(value) > -1);
-            });
-        });
-
-        $("#search").on("input", function() {
-            var value = $('#search').val().toLowerCase();
-            if (value === "") {
-                $("#myTable tr").show();
-            }
-        });
-
-
-    });
-</script>
-
 
 
 @endsection
