@@ -226,18 +226,6 @@
 
                     <div class="row">
 
-                        <!-- <div class="col-md-6">
-                            <div class="card-header pb-0 px-3">
-                                <h6 class="mb-0">Add Data source</h6>
-                            </div>
-                            <div class="form-group">
-                                <div class="container @error('user.phone')border border-danger rounded-3 @enderror">
-                                    <button type="button" id="add_new_ds" class="btn bg-gradient-primary btn-md mt-4 mb-4">Add new</button>
-
-                                </div>
-                            </div>
-                        </div> -->
-
 
                         <div class="col-md-6">
                             <!-- <div class="card-header pb-0 px-3"> -->
@@ -533,7 +521,7 @@
             </div>
 
 
-            <div class="card d-none SaveAndStart">
+            <div class="card SaveAndStart">
 
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Lets save and start</h6>

@@ -171,29 +171,5 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function(){   
-
-        $("#searchInput").on("click", function() {
-            var value = $('#search').val().toLowerCase();
-            $("#myTable tr").filter(function() {
-                var id = $(this).find("td:eq(0)").text().toLowerCase(); // Search by the first column (id)
-                var name = $(this).find("td:eq(1)").text().toLowerCase(); // Search by the second column (name)
-                $(this).toggle(id.indexOf(value) > -1 || name.indexOf(value) > -1);
-            });
-        });
-
-        $("#search").on("input", function() {
-            var value = $('#search').val().toLowerCase();
-            if (value === "") {
-                $("#myTable tr").show();
-            }
-        });
-
-
-    });
-</script>
 
 @endsection
