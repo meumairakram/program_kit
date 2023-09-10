@@ -180,6 +180,8 @@ class SheetsController extends Controller {
 
         ));
 
+        $client->setAccessType('offline');
+
         return $client;
     
     }   
