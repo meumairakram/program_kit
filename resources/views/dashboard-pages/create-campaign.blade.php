@@ -262,14 +262,14 @@
 
 
                                         <template x-if="ds_source_type == 'new'">
+                                            
                                             <div class="new-datasource">
-                                                
-
-                                                <div class="col-12" id="new_ds_type">
+                                            
+                                                <div class="col-12" id="">
                                                     <span class="h6">New Data source type:</span>
 
-                                                    <div class="row mt-3">
-                                                        <div class="col-6 datasource-type-select g-sheet" style="cursor:pointer;">
+                                                    <div class="row mt-3" x-show="new_ds_type == null">
+                                                        <div class="col-6 datasource-type-select g-sheet" @click="set_new_ds_type('google_sheet')" style="cursor:pointer;">
                                                             <div class="ds-type-inner p-4">
                                                                 <div class="icon-holder">
                                                                     <i class="fas fa-file-excel"></i>
@@ -282,7 +282,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-6 datasource-type-select csv" style="cursor:pointer;">
+                                                        <div class="col-6 datasource-type-select csv" @click="set_new_ds_type('csv')" style="cursor:pointer;">
                                                             <div class="ds-type-inner p-4">
                                                                 <div class="icon-holder">
                                                                     <i class="fas fa-file-csv"></i>
@@ -298,46 +298,91 @@
                                                     </div>
                                                 </div>
 
+                                                
+                                                <template x-if="new_ds_type == 'google_sheet'">
 
-                                                <div class="col-sm-12 mt-3" id="google_sheet_type">
-                                                    
-                                                    @if($google_acc_connected) 
+                                                    <div class="col-sm-12 mt-3">
                                                         
-                                                        <div class="from-group">
-                                                            
-                                                            <label>Name your new Google Sheet (Put a unique one)</label>
-                                                            
-                                                            <div class="">
-                                                                <input type="text" class="form-control" name="new_sheet_name" /> 
-
-                                                                <div class="mt-2">
-                                                                    <button class="btn btn-secondary">Create Sheet</button>
-
+                                                        <template x-if="google_acc_connected">
+                                                            <div>
+                                                                <div class="form-group d-grid" style="grid-template-columns:1fr 1fr 1fr;">
+                                                                    <label class="form-check-label" x-bind:class="gsheet_type == 'existing_sheet' ? 'text-bold' : ''" for="flexSwitchCheckChecked">Use Existing Sheet</label>
+                                                                        <div class="form-check form-switch">
+                                                                            
+                                                                            <input class="form-check-input mx-auto" @change="set_google_sheet_type" style="border-color: rgba(58, 65, 111, 0.95);background-color: rgba(58, 65, 111, 0.95);" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+                                                                            
+                                                                        </div>
+                                                                    <label class="form-check-label" for="flexSwitchCheckChecked" x-bind:class="gsheet_type == 'new_sheet' ? 'text-bold' : ''">Create a new one</label>
                                                                 </div>
+
+
+                                                                <template x-if="gsheet_type == 'existing_sheet'">
+
+                                                                    <div class="from-group">
+
+                                                                        <label class="d-block">Lets choose a Google Sheet</label>
+
+                                                                        <select class="form-control" name="select_existing_sheet">
+
+                                                                            <option value="">Existing sheet options here</option>
+                                                                        </select>
+
+                                                                    </div>
+                                                                </template>
+
+
+                                                                <template x-if="gsheet_type == 'new_sheet'">
+                                                                    <div class="from-group">
+                                                                        
+                                                                        <label>Name your new Google Sheet (Put a unique one)</label>
+                                                                        
+                                                                        <div class="">
+                                                                            <input type="text" @change='new_sheet_name = $el.value' class="form-control" name="new_sheet_name" /> 
+
+                                                                            <div class="mt-2">
+                                                                                <button class="btn btn-secondary" @click="create_new_sheet_with_vars">Create Sheet</button>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </template>
+
                                                             </div>
-                                                        </div>
 
-                                                    
-                                                    @else
 
-                                                        <h6>Seems like your google account is not connected</h6>
-                                                        <span> Lets connect your Google account first</span>
+                                                        </template>
+
+
+                                                        <template x-if="!google_acc_connected">
+                                                            <h6>Seems like your google account is not connected</h6>
+                                                            <span> Lets connect your Google account first</span>
+                                                            
+                                                            <div class="mt-3">
+
+                                                                <a target="blank" href="/sheets/init"  class="btn secondary">Connect Google Account</a>
+
+                                                            </div>
+                                                        </template>
                                                         
-                                                        <div class="mt-3">
 
-                                                            <a target="blank" href="/sheets/init"  class="btn secondary">Connect Google Account</a>
-
-                                                        </div>
-                                                        
-                                                    @endif
+                                                    </div>
 
 
-
-                                                </div>
+                                                </template>
 
 
 
 
+                                                <template x-if="new_ds_type == 'csv'">
+
+                                                    <span>Upload a CSV File</span>
+
+
+
+
+
+
+                                                </template>
 
 
 
@@ -555,652 +600,652 @@
 <script>
 
 
-    // initialize window variable
-    window.pkit = {};
+    // // initialize window variable
+    // window.pkit = {};
 
-    // website type
-    document.getElementById('websiteType').addEventListener('change', function(e)
-    {
-            const selectedType = this.value;
-            if (selectedType === '') {
-                return;
-            }
+    // // website type
+    // document.getElementById('websiteType').addEventListener('change', function(e)
+    // {
+    //         const selectedType = this.value;
+    //         if (selectedType === '') {
+    //             return;
+    //         }
 
-            const formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
-            formData.append('type', selectedType);
+    //         const formData = new FormData();
+    //         formData.append('_token', '{{ csrf_token() }}');
+    //         formData.append('type', selectedType);
 
-            $.ajax({
-                method: "POST",
-                url: "/websites_type",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
+    //         $.ajax({
+    //             method: "POST",
+    //             url: "/websites_type",
+    //             data: formData,
+    //             processData: false,
+    //             contentType: false,
+    //             success: function(response) {
                 
-                    if (!response.success) {
-                        console.error('Error: ', response.message);
-                        $('#selectWebSite').html('<option value=""> </option>');
-                        return;
-                    }
+    //                 if (!response.success) {
+    //                     console.error('Error: ', response.message);
+    //                     $('#selectWebSite').html('<option value=""> </option>');
+    //                     return;
+    //                 }
 
-                    const websiteSelect = $('#selectWebSite');
-                    websiteSelect.empty();
+    //                 const websiteSelect = $('#selectWebSite');
+    //                 websiteSelect.empty();
 
-                    const websites = response.websites;
-                    websiteSelect.append('<option value=""> </option>');
-                    websites.forEach(websites => {
-                        websiteSelect.append(`<option value="${websites.id}">${websites.website_name} | ${websites.website_url}</option>`);
-                    });
+    //                 const websites = response.websites;
+    //                 websiteSelect.append('<option value=""> </option>');
+    //                 websites.forEach(websites => {
+    //                     websiteSelect.append(`<option value="${websites.id}">${websites.website_name} | ${websites.website_url}</option>`);
+    //                 });
 
-                    // Update the hidden input value with the selected website ID
-                    websiteSelect.on('change', function() {
-                        const selectedWebsiteId = $(this).val();
-                        $('#selectWebSite').val(selectedWebsiteId);
-                    });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    // Handle the AJAX error if needed
-                    console.error('AJAX Error:', textStatus, errorThrown);
-                    $('#selectWebSite').html('<option value="">-- Select WebSite --</option>');
-                }
-            });
-    });
+    //                 // Update the hidden input value with the selected website ID
+    //                 websiteSelect.on('change', function() {
+    //                     const selectedWebsiteId = $(this).val();
+    //                     $('#selectWebSite').val(selectedWebsiteId);
+    //                 });
+    //             },
+    //             error: function(jqXHR, textStatus, errorThrown) {
+    //                 // Handle the AJAX error if needed
+    //                 console.error('AJAX Error:', textStatus, errorThrown);
+    //                 $('#selectWebSite').html('<option value="">-- Select WebSite --</option>');
+    //             }
+    //         });
+    // });
 
-    // geting post types by selecting website
-    document.getElementById('selectWebSite').addEventListener('change', function(e)
-    {
-            $.ajax({
-                method: "get",
-                url: "/api/get_post_types",
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    console.log(response)
-                    if (!response.success) {
-                        console.error('Error: ', response.message);
-                        $('#postType').html('<option value=""> </option>');
-                        return;
-                    }
+    // // geting post types by selecting website
+    // document.getElementById('selectWebSite').addEventListener('change', function(e)
+    // {
+    //         $.ajax({
+    //             method: "get",
+    //             url: "/api/get_post_types",
+    //             processData: false,
+    //             contentType: false,
+    //             success: function(response) {
+    //                 console.log(response)
+    //                 if (!response.success) {
+    //                     console.error('Error: ', response.message);
+    //                     $('#postType').html('<option value=""> </option>');
+    //                     return;
+    //                 }
 
-                    const postType = $('#postType');
-                    postType.empty();
+    //                 const postType = $('#postType');
+    //                 postType.empty();
 
-                    const type = response.data.post_types; // Corrected access to the array
-                    postType.append('<option value=""> </option>');
+    //                 const type = response.data.post_types; // Corrected access to the array
+    //                 postType.append('<option value=""> </option>');
 
-                    type.forEach(typeItem => { // Use typeItem as an element in the forEach loop
-                        postType.append(`<option value="${typeItem}">${typeItem}</option>`);
-                    });
-                    postType.on('change', function() {
-                        const postTypeId = $(this).val();
-                        // alert(postTypeId);
-                        $('#postType').val(postTypeId);
-                    });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    // Handle the AJAX error if needed
-                    console.error('AJAX Error:', textStatus, errorThrown);
-                    $('#postType').html('<option value="">-- Select WebSite --</option>');
-                }
-            });
-    });
+    //                 type.forEach(typeItem => { // Use typeItem as an element in the forEach loop
+    //                     postType.append(`<option value="${typeItem}">${typeItem}</option>`);
+    //                 });
+    //                 postType.on('change', function() {
+    //                     const postTypeId = $(this).val();
+    //                     // alert(postTypeId);
+    //                     $('#postType').val(postTypeId);
+    //                 });
+    //             },
+    //             error: function(jqXHR, textStatus, errorThrown) {
+    //                 // Handle the AJAX error if needed
+    //                 console.error('AJAX Error:', textStatus, errorThrown);
+    //                 $('#postType').html('<option value="">-- Select WebSite --</option>');
+    //             }
+    //         });
+    // });
 
-    // geting template by post type
-    document.getElementById('postType').addEventListener('change', function(e)
-    {
-            const selectedType = this.value;
-            if (selectedType === '') {
-                return;
-            }
+    // // geting template by post type
+    // document.getElementById('postType').addEventListener('change', function(e)
+    // {
+    //         const selectedType = this.value;
+    //         if (selectedType === '') {
+    //             return;
+    //         }
 
-            const formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
-            formData.append('post_type', selectedType);
+    //         const formData = new FormData();
+    //         formData.append('_token', '{{ csrf_token() }}');
+    //         formData.append('post_type', selectedType);
 
-            $.ajax({
-                method: "POST",
-                url: "/api/get_templates_by_type",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    console.log(response)
-                    if (!response.success) {
-                        console.error('Error: ', response.message);
-                        $('#template').html('<option value=""> </option>');
-                        return;
-                    }
+    //         $.ajax({
+    //             method: "POST",
+    //             url: "/api/get_templates_by_type",
+    //             data: formData,
+    //             processData: false,
+    //             contentType: false,
+    //             success: function(response) {
+    //                 console.log(response)
+    //                 if (!response.success) {
+    //                     console.error('Error: ', response.message);
+    //                     $('#template').html('<option value=""> </option>');
+    //                     return;
+    //                 }
 
-                    const template = $('#template');
-                    template.empty();
+    //                 const template = $('#template');
+    //                 template.empty();
 
-                    const get_templates_by_type = response.data.posts;
-                    template.append('<option value=""> </option>');
+    //                 const get_templates_by_type = response.data.posts;
+    //                 template.append('<option value=""> </option>');
 
-                    get_templates_by_type.forEach(get_templates_by_type => {
-                        template.append(`<option name="${get_templates_by_type.title}" value="${get_templates_by_type.id}">${get_templates_by_type.title}</option>`);
-                    });
+    //                 get_templates_by_type.forEach(get_templates_by_type => {
+    //                     template.append(`<option name="${get_templates_by_type.title}" value="${get_templates_by_type.id}">${get_templates_by_type.title}</option>`);
+    //                 });
 
-                    template.on('change', function() {
-                        const templateId = $(this).val();
-                        const templateName = $(this).find('option:selected').attr('name');
-                        // alert(templateId);
-                        $('#template').val(templateId);
-                        $('#templateName').val(templateName);
-                    });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    // Handle the AJAX error if needed
-                    console.error('AJAX Error:', textStatus, errorThrown);
-                    $('#template').html('<option value="">-- Select WebSite --</option>');
-                }
-            });
-    });
+    //                 template.on('change', function() {
+    //                     const templateId = $(this).val();
+    //                     const templateName = $(this).find('option:selected').attr('name');
+    //                     // alert(templateId);
+    //                     $('#template').val(templateId);
+    //                     $('#templateName').val(templateName);
+    //                 });
+    //             },
+    //             error: function(jqXHR, textStatus, errorThrown) {
+    //                 // Handle the AJAX error if needed
+    //                 console.error('AJAX Error:', textStatus, errorThrown);
+    //                 $('#template').html('<option value="">-- Select WebSite --</option>');
+    //             }
+    //         });
+    // });
 
 
-    // Template variables section
-    const variableData = [];
-    const templateTextArea = $('#templateTextArea');
-    const mapDataFields = $('#mapDataFields');
+    // // Template variables section
+    // const variableData = [];
+    // const templateTextArea = $('#templateTextArea');
+    // const mapDataFields = $('#mapDataFields');
 
-    document.getElementById('template').addEventListener('change', function(e) {
+    // document.getElementById('template').addEventListener('change', function(e) {
         
-        const selectedType = this.value;
+    //     const selectedType = this.value;
         
-        if (selectedType === '') {
-            return;
-        }
+    //     if (selectedType === '') {
+    //         return;
+    //     }
 
-        const formData = new FormData();
-        formData.append('_token', '{{ csrf_token() }}');
-        formData.append('post_id', selectedType);
+    //     const formData = new FormData();
+    //     formData.append('_token', '{{ csrf_token() }}');
+    //     formData.append('post_id', selectedType);
 
-        $.ajax({
-            method: "POST",
-            url: "/api/get_template_vars",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
+    //     $.ajax({
+    //         method: "POST",
+    //         url: "/api/get_template_vars",
+    //         data: formData,
+    //         processData: false,
+    //         contentType: false,
+    //         success: function(response) {
                 
-                if (!response.success) {
-                    console.error('Error: ', response.message);
-                    $('#tempVariables').val('');
-                    return;
-                }
+    //             if (!response.success) {
+    //                 console.error('Error: ', response.message);
+    //                 $('#tempVariables').val('');
+    //                 return;
+    //             }
 
-                window.pkit.template_vars = response.data;
+    //             window.pkit.template_vars = response.data;
 
 
-                if("template_vars" in window.pkit && "datasource_info" in window.pkit) {
+    //             if("template_vars" in window.pkit && "datasource_info" in window.pkit) {
 
-                    createDataMap();
-                }
+    //                 createDataMap();
+    //             }
                 
-            }
+    //         }
 
 
-        });
-    });
+    //     });
+    // });
 
 
 
-    const sourceData = [];
-    const variableArrayData = [];
-    const storeArrayData = [];
-    // Existing data source
-    var source_headers = [];
-    document.getElementById('dataSource').addEventListener('change', function(e) {
+    // const sourceData = [];
+    // const variableArrayData = [];
+    // const storeArrayData = [];
+    // // Existing data source
+    // var source_headers = [];
+    // document.getElementById('dataSource').addEventListener('change', function(e) {
         
 
-        var selectedDSId = $(this).val();
+    //     var selectedDSId = $(this).val();
 
-        if(selectedDSId == "") {
-            alert("Data source cannot be null");
-            return ;
-        }   
+    //     if(selectedDSId == "") {
+    //         alert("Data source cannot be null");
+    //         return ;
+    //     }   
 
-        const formData = new FormData();
-        formData.append('ds_id', selectedDSId);
+    //     const formData = new FormData();
+    //     formData.append('ds_id', selectedDSId);
 
-        $.ajax({
-            url: '/api/get_datasource_mapping',
-            data: formData,
-            processData: false,
-            contentType: false,
-            method:"POST",
-            success:function(res) {
+    //     $.ajax({
+    //         url: '/api/get_datasource_mapping',
+    //         data: formData,
+    //         processData: false,
+    //         contentType: false,
+    //         method:"POST",
+    //         success:function(res) {
 
-                if(res.success) {
+    //             if(res.success) {
                 
-                    window.pkit.datasource_info = res.data;
+    //                 window.pkit.datasource_info = res.data;
 
-                    if("template_vars" in window.pkit && "datasource_info" in window.pkit) {
+    //                 if("template_vars" in window.pkit && "datasource_info" in window.pkit) {
 
-                        createDataMap();
-                    }
-                    // create template variable fields
+    //                     createDataMap();
+    //                 }
+    //                 // create template variable fields
                 
-                } else {
+    //             } else {
 
-                    alert("Whoops! there is a problem fetching this Data source.");
-                    console.log("Problem with datasource information", res);
+    //                 alert("Whoops! there is a problem fetching this Data source.");
+    //                 console.log("Problem with datasource information", res);
                 
-                }
+    //             }
 
 
                 
-                console.log(res);
+    //             console.log(res);
             
-            }
-        })
+    //         }
+    //     })
 
 
 
-        // $('#datasourceNext').removeClass('d-none');
+    //     // $('#datasourceNext').removeClass('d-none');
 
-        // const csvHeadersSelectId = this.value;
-        // $('#csvHeaders').val(csvHeadersSelectId);
-        // const dataSource = $(this).find('option:selected').attr('name');
-        // $('#dataSourceName').val(dataSource);
+    //     // const csvHeadersSelectId = this.value;
+    //     // $('#csvHeaders').val(csvHeadersSelectId);
+    //     // const dataSource = $(this).find('option:selected').attr('name');
+    //     // $('#dataSourceName').val(dataSource);
 
-        // const selectedFilePath =  $(this).find('option:selected').attr('id');
-        // if (selectedFilePath === '') {
-        //     return;
-        // }
+    //     // const selectedFilePath =  $(this).find('option:selected').attr('id');
+    //     // if (selectedFilePath === '') {
+    //     //     return;
+    //     // }
 
-        // const formData = new FormData();
-        // formData.append('csv_file', selectedFilePath);
+    //     // const formData = new FormData();
+    //     // formData.append('csv_file', selectedFilePath);
 
-        // $.ajax({
-        //     method: "POST",
-        //     url: "/api/csv-extract",
-        //     data: formData,
-        //     processData: false,
-        //     contentType: false,
-        //     success: function(res) {
-        //         console.log(res)
-        //         if (!res.success) {
-        //             console.error('Error: ', res.message);
-        //             $('#csvHeaders').html('<option value="">Nothing Fetched</option>');
-        //             return;
-        //         }
+    //     // $.ajax({
+    //     //     method: "POST",
+    //     //     url: "/api/csv-extract",
+    //     //     data: formData,
+    //     //     processData: false,
+    //     //     contentType: false,
+    //     //     success: function(res) {
+    //     //         console.log(res)
+    //     //         if (!res.success) {
+    //     //             console.error('Error: ', res.message);
+    //     //             $('#csvHeaders').html('<option value="">Nothing Fetched</option>');
+    //     //             return;
+    //     //         }
 
-        //         const csvHeadersSelect = $('#csvHeaders');
-        //         csvHeadersSelect.empty();
+    //     //         const csvHeadersSelect = $('#csvHeaders');
+    //     //         csvHeadersSelect.empty();
 
-        //         const headers = res.data.headers;
-        //         csvHeadersSelect.append('<option value=""> </option>');
-        //         source_headers.push(headers);
-        //         // Clear and populate mapDataFields with the variableData
-        //         // console.log(variableData);
-        //         variableData.forEach(variableDiv => {
-        //             const csvHeadersSelect = $('#csvHeaders').clone();
-        //             // csvHeadersSelect.prepend(newOption);
+    //     //         const headers = res.data.headers;
+    //     //         csvHeadersSelect.append('<option value=""> </option>');
+    //     //         source_headers.push(headers);
+    //     //         // Clear and populate mapDataFields with the variableData
+    //     //         // console.log(variableData);
+    //     //         variableData.forEach(variableDiv => {
+    //     //             const csvHeadersSelect = $('#csvHeaders').clone();
+    //     //             // csvHeadersSelect.prepend(newOption);
                      
-        //             headers.forEach(header => {
-        //                     csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
-        //             });
+    //     //             headers.forEach(header => {
+    //     //                     csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
+    //     //             });
 
-        //             const rowDiv = $('<div>', {
-        //                 class: 'row'
-        //             }).append(
-        //                 $('<div>', { class: 'col-md-6 mt-2' }).append(variableDiv),
-        //                 $('<div>', { class: 'col-md-6 mt-2' }).append(csvHeadersSelect)
-        //             );
+    //     //             const rowDiv = $('<div>', {
+    //     //                 class: 'row'
+    //     //             }).append(
+    //     //                 $('<div>', { class: 'col-md-6 mt-2' }).append(variableDiv),
+    //     //                 $('<div>', { class: 'col-md-6 mt-2' }).append(csvHeadersSelect)
+    //     //             );
                     
-        //             mapDataFields.append(rowDiv);
+    //     //             mapDataFields.append(rowDiv);
 
-        //             csvHeadersSelect.on('change', function() {
-        //                 const csvSelectedVal = $(this).val();
-        //                 storeArrayData.push({variableDiv, csvSelectedVal});
-        //                 console.log(storeArrayData);
-        //             });
+    //     //             csvHeadersSelect.on('change', function() {
+    //     //                 const csvSelectedVal = $(this).val();
+    //     //                 storeArrayData.push({variableDiv, csvSelectedVal});
+    //     //                 console.log(storeArrayData);
+    //     //             });
                     
                     
-        //         });
-        //             $('#variableArrayInput').val(storeArrayData);
+    //     //         });
+    //     //             $('#variableArrayInput').val(storeArrayData);
 
-        //         if (csvHeadersSelect){
-        //             const tempVariablesInput = $('#csvHeaders').addClass('d-none');
-        //             // const searchInput = $('.search').addClass('d-none');
-        //         }
+    //     //         if (csvHeadersSelect){
+    //     //             const tempVariablesInput = $('#csvHeaders').addClass('d-none');
+    //     //             // const searchInput = $('.search').addClass('d-none');
+    //     //         }
 
-        //         $('#sourceTextArea').val(headers.join('\n'));
+    //     //         $('#sourceTextArea').val(headers.join('\n'));
 
-        //     },
-        //     error: function(jqXHR, textStatus, errorThrown) {
-        //         // Handle the AJAX error if needed
-        //         console.error('AJAX Error:', textStatus, errorThrown);
-        //         $('#csvHeaders').html('<option value="">-- Choose --</option>');
-        //     }
-        // });
-
-
-    });
+    //     //     },
+    //     //     error: function(jqXHR, textStatus, errorThrown) {
+    //     //         // Handle the AJAX error if needed
+    //     //         console.error('AJAX Error:', textStatus, errorThrown);
+    //     //         $('#csvHeaders').html('<option value="">-- Choose --</option>');
+    //     //     }
+    //     // });
 
 
+    // });
 
 
-    // New data source
-    $('input[name="csv_file"]').change(function(e) {
-        var formValues = new FormData();
-        formValues.append('csv_file', e.target.files[0]);
-        formValues.append('name',"Umair");
 
-        jQuery.ajax({
-            method: "POST",
-            url: "/api/csv-preview",
-            data: formValues,
-            processData: false,
-            contentType: false, 
-            success: function(res) {
-                console.log(res)
-                if (!res.success) {
-                    console.error('Error: ', res.message);
-                    $('#csvHeaders').html('<option value="">Nothing Fetched</option>');
-                    return;
-                }
 
-                const csvHeadersSelect = $('#csvHeaders');
-                csvHeadersSelect.empty();
+    // // New data source
+    // $('input[name="csv_file"]').change(function(e) {
+    //     var formValues = new FormData();
+    //     formValues.append('csv_file', e.target.files[0]);
+    //     formValues.append('name',"Umair");
 
-                const headers = res.data.headers;
-                console.log(headers);
-                csvHeadersSelect.append('<option value=""> </option>');
-                source_headers.push(headers);
+    //     jQuery.ajax({
+    //         method: "POST",
+    //         url: "/api/csv-preview",
+    //         data: formValues,
+    //         processData: false,
+    //         contentType: false, 
+    //         success: function(res) {
+    //             console.log(res)
+    //             if (!res.success) {
+    //                 console.error('Error: ', res.message);
+    //                 $('#csvHeaders').html('<option value="">Nothing Fetched</option>');
+    //                 return;
+    //             }
 
-                headers.forEach(header => {
-                    csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
-                });
-                    $('#sourceTextArea').val(headers.join('\n'));
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('AJAX Error:', textStatus, errorThrown);
-                $('#csvHeaders').html('<option value="">-- Choose --</option>');
-            }
+    //             const csvHeadersSelect = $('#csvHeaders');
+    //             csvHeadersSelect.empty();
+
+    //             const headers = res.data.headers;
+    //             console.log(headers);
+    //             csvHeadersSelect.append('<option value=""> </option>');
+    //             source_headers.push(headers);
+
+    //             headers.forEach(header => {
+    //                 csvHeadersSelect.append($(`<option value="${header}">${header}</option>`));
+    //             });
+    //                 $('#sourceTextArea').val(headers.join('\n'));
+    //         },
+    //         error: function(jqXHR, textStatus, errorThrown) {
+    //             console.error('AJAX Error:', textStatus, errorThrown);
+    //             $('#csvHeaders').html('<option value="">-- Choose --</option>');
+    //         }
         
-        })
-    })
+    //     })
+    // })
 
-        // handle sections based on selected type
-        document.getElementById('selectType').addEventListener('change', function(e) 
-        {
-            var selectedValue = $(this).val();
-            if(selectedValue == 'csv'){
-                $('.uploadCSV').removeClass('d-none');
-                $('.uploadGoogleSheets').addClass('d-none');
-            }
-            else if(selectedValue == 'google_sheet'){
-                $('.uploadGoogleSheets').removeClass('d-none');
-                $('.uploadCSV').addClass('d-none');
-            }
-        });
+    //     // handle sections based on selected type
+    //     document.getElementById('selectType').addEventListener('change', function(e) 
+    //     {
+    //         var selectedValue = $(this).val();
+    //         if(selectedValue == 'csv'){
+    //             $('.uploadCSV').removeClass('d-none');
+    //             $('.uploadGoogleSheets').addClass('d-none');
+    //         }
+    //         else if(selectedValue == 'google_sheet'){
+    //             $('.uploadGoogleSheets').removeClass('d-none');
+    //             $('.uploadCSV').addClass('d-none');
+    //         }
+    //     });
 
 
-    // next button dependency section starts
-    $('#nextButton').on('click', function(e) {
-        e.preventDefault();
-        var isValid = true;
-        $('.first_sec_required').each(function() {
-            if ($(this).val() === '') {
-                isValid = false;
-            }
-        });
-        if(isValid == true){
-            $('.website').removeClass('d-none');
-            $('.firstError').addClass('d-none');
-        }
-        else{
-            $('.firstError').removeClass('d-none');
-        }
-    });
+    // // next button dependency section starts
+    // $('#nextButton').on('click', function(e) {
+    //     e.preventDefault();
+    //     var isValid = true;
+    //     $('.first_sec_required').each(function() {
+    //         if ($(this).val() === '') {
+    //             isValid = false;
+    //         }
+    //     });
+    //     if(isValid == true){
+    //         $('.website').removeClass('d-none');
+    //         $('.firstError').addClass('d-none');
+    //     }
+    //     else{
+    //         $('.firstError').removeClass('d-none');
+    //     }
+    // });
 
-    $('#webNext').on('click', function(e) {
-        e.preventDefault();
-        var isValid = true;
-        $('.web_sec_required').each(function() {
-            if ($(this).val() === '') {
-                isValid = false;
-            }
-        });
-        if(isValid == true){
-            $('.datasource').removeClass('d-none');
-            $('.secondError').addClass('d-none');
-        }
-        else{
-            $('.secondError').removeClass('d-none');
-        }
-    });
+    // $('#webNext').on('click', function(e) {
+    //     e.preventDefault();
+    //     var isValid = true;
+    //     $('.web_sec_required').each(function() {
+    //         if ($(this).val() === '') {
+    //             isValid = false;
+    //         }
+    //     });
+    //     if(isValid == true){
+    //         $('.datasource').removeClass('d-none');
+    //         $('.secondError').addClass('d-none');
+    //     }
+    //     else{
+    //         $('.secondError').removeClass('d-none');
+    //     }
+    // });
 
-    $('#datasourceNext').on('click', function(e) {
-        e.preventDefault();
-        var isValid = true;
-        $('.datasource_sec_required').each(function() {
-            if ($(this).val() === '') {
-                isValid = false;
-            }
-        });
-        if(isValid == true){
-            $('.mapdata').removeClass('d-none');
-            $('.thirdError').addClass('d-none');
-        }
-        else{
-            $('.thirdError').removeClass('d-none');
-        }
-    });
+    // $('#datasourceNext').on('click', function(e) {
+    //     e.preventDefault();
+    //     var isValid = true;
+    //     $('.datasource_sec_required').each(function() {
+    //         if ($(this).val() === '') {
+    //             isValid = false;
+    //         }
+    //     });
+    //     if(isValid == true){
+    //         $('.mapdata').removeClass('d-none');
+    //         $('.thirdError').addClass('d-none');
+    //     }
+    //     else{
+    //         $('.thirdError').removeClass('d-none');
+    //     }
+    // });
 
-    $('#add_new_ds').on('click', function(e) {
-        e.preventDefault();
+    // $('#add_new_ds').on('click', function(e) {
+    //     e.preventDefault();
        
-        $('.newdatasource').removeClass('d-none');
+    //     $('.newdatasource').removeClass('d-none');
         
-    });
+    // });
 
-    $('#newDatasourceNext').on('click', function(e) {
-        e.preventDefault();
-        $('.mapdata').removeClass('d-none');
+    // $('#newDatasourceNext').on('click', function(e) {
+    //     e.preventDefault();
+    //     $('.mapdata').removeClass('d-none');
 
-        // var isValid = true;
-        // $('.datasource_sec_required').each(function() {
-        //     if ($(this).val() === '') {
-        //         isValid = false;
-        //     }
-        // });
-        // if(isValid == true){
-        //     $('.mapdata').removeClass('d-none');
-        //     $('.fourthError').addClass('d-none');
-        // }
-        // else{
-        //     $('.fourthError').removeClass('d-none');
-        // }
-    });
+    //     // var isValid = true;
+    //     // $('.datasource_sec_required').each(function() {
+    //     //     if ($(this).val() === '') {
+    //     //         isValid = false;
+    //     //     }
+    //     // });
+    //     // if(isValid == true){
+    //     //     $('.mapdata').removeClass('d-none');
+    //     //     $('.fourthError').addClass('d-none');
+    //     // }
+    //     // else{
+    //     //     $('.fourthError').removeClass('d-none');
+    //     // }
+    // });
 
-    $('#mapdataNext').on('click', function(e) {
-        e.preventDefault();
-        var isValid = true;
-        $('.mapdata_sec_required').each(function() {
-            if ($(this).val() === '') {
-                isValid = false;
-            }
-        });
-        if(isValid == true){
-            $('.SaveAndStart').removeClass('d-none');
-            $('.fifthError').addClass('d-none');
-        }
-        else{
-            $('.fifthError').removeClass('d-none');
-        }
-    });
-    // next button dependency section ends
-
-
+    // $('#mapdataNext').on('click', function(e) {
+    //     e.preventDefault();
+    //     var isValid = true;
+    //     $('.mapdata_sec_required').each(function() {
+    //         if ($(this).val() === '') {
+    //             isValid = false;
+    //         }
+    //     });
+    //     if(isValid == true){
+    //         $('.SaveAndStart').removeClass('d-none');
+    //         $('.fifthError').addClass('d-none');
+    //     }
+    //     else{
+    //         $('.fifthError').removeClass('d-none');
+    //     }
+    // });
+    // // next button dependency section ends
 
 
-    function createDataMap() {
 
-        var template_vars = window.pkit.template_vars;
+
+    // function createDataMap() {
+
+    //     var template_vars = window.pkit.template_vars;
         
-        var tbodyContainer = $('.data-map-table tbody');
+    //     var tbodyContainer = $('.data-map-table tbody');
         
-        tbodyContainer.html('');
-        //  $('.source_fields_holder').html('');
+    //     tbodyContainer.html('');
+    //     //  $('.source_fields_holder').html('');
 
-        if("variables" in template_vars) {
+    //     if("variables" in template_vars) {
 
-            var totalVars = template_vars.length;
+    //         var totalVars = template_vars.length;
 
-            template_vars.variables.forEach(function(temp_var, index) {
-                var modifiedVariable = temp_var.replace(/[{}"]/g, ''); 
-                selectDropdown = $(`<select name="source_${index}" var_name="${modifiedVariable}_selector" class="map_source_options form-control"></select>`)
-
-
-                var tableRow = $(`<tr class="var_index_${index}"></tr>`);
+    //         template_vars.variables.forEach(function(temp_var, index) {
+    //             var modifiedVariable = temp_var.replace(/[{}"]/g, ''); 
+    //             selectDropdown = $(`<select name="source_${index}" var_name="${modifiedVariable}_selector" class="map_source_options form-control"></select>`)
 
 
-                tableRow.append(`<td class="var_name"><span>${modifiedVariable}</span></td>`);
+    //             var tableRow = $(`<tr class="var_index_${index}"></tr>`);
 
-                var sourceSelectorCol = $(`<td class="var_source"></td>`).append(selectDropdown).append($(`<input type="hidden" name="${modifiedVariable}" value="" />`));
 
-                tableRow.append(sourceSelectorCol);
+    //             tableRow.append(`<td class="var_name"><span>${modifiedVariable}</span></td>`);
+
+    //             var sourceSelectorCol = $(`<td class="var_source"></td>`).append(selectDropdown).append($(`<input type="hidden" name="${modifiedVariable}" value="" />`));
+
+    //             tableRow.append(sourceSelectorCol);
                 
                 
-                tableRow.append(`<td class="var_preview"><span>Select a source header</span></td>`);
+    //             tableRow.append(`<td class="var_preview"><span>Select a source header</span></td>`);
 
-               tbodyContainer.append(tableRow);
+    //            tbodyContainer.append(tableRow);
             
-            });
+    //         });
             
-            loadOptionsinFieldMaps()
+    //         loadOptionsinFieldMaps()
         
         
-        }
+    //     }
         
-    }
+    // }
 
 
 
-    function loadOptionsinFieldMaps() {
+    // function loadOptionsinFieldMaps() {
 
 
-        var dataSource = window.pkit.datasource_info;
+    //     var dataSource = window.pkit.datasource_info;
 
-        var dsOptions = [];
+    //     var dsOptions = [];
         
 
-        if("headers" in dataSource) {
+    //     if("headers" in dataSource) {
 
-            dsOptions.push($(`<option value="">-- Select header --</option>`));
+    //         dsOptions.push($(`<option value="">-- Select header --</option>`));
 
-            dataSource.headers.forEach(function(header, index) {
+    //         dataSource.headers.forEach(function(header, index) {
 
-                dsOptions.push($(`<option header_index="${index}" value="${header}">${header}</option>`)); 
+    //             dsOptions.push($(`<option header_index="${index}" value="${header}">${header}</option>`)); 
             
-            })
+    //         })
         
-        }
+    //     }
 
 
-        $('select.map_source_options').append(dsOptions);
+    //     $('select.map_source_options').append(dsOptions);
 
-        $('select.map_source_options').change(handleDatasourceHeaderChange);
-        // 
+    //     $('select.map_source_options').change(handleDatasourceHeaderChange);
+    //     // 
 
 
     
-    }
+    // }
 
 
-    function handleDatasourceHeaderChange(e) {
+    // function handleDatasourceHeaderChange(e) {
 
-        e.preventDefault();
+    //     e.preventDefault();
 
             
-        var selectedHeader = $(this).val();
-        var headerIndex = $(this).find(`[value="${selectedHeader}"]`).attr('header_index');
+    //     var selectedHeader = $(this).val();
+    //     var headerIndex = $(this).find(`[value="${selectedHeader}"]`).attr('header_index');
 
-        if(!headerIndex) {
-            $(this).parents('tr').find('td.var_preview span').html('Select a source header');
-            console.log("Header Index not matched");
+    //     if(!headerIndex) {
+    //         $(this).parents('tr').find('td.var_preview span').html('Select a source header');
+    //         console.log("Header Index not matched");
         
-        }
+    //     }
 
-        if(!("pkit" in  window) || !("datasource_info" in window.pkit) || !("preview_rows" in window.pkit.datasource_info) || window.pkit.datasource_info.preview_rows.length < 1) {
+    //     if(!("pkit" in  window) || !("datasource_info" in window.pkit) || !("preview_rows" in window.pkit.datasource_info) || window.pkit.datasource_info.preview_rows.length < 1) {
 
-            console.log("Invalid data available");
-            return false;
+    //         console.log("Invalid data available");
+    //         return false;
         
-        }
+    //     }
 
-        var firstRow = window.pkit.datasource_info.preview_rows[0];
+    //     var firstRow = window.pkit.datasource_info.preview_rows[0];
 
-        var previewData = firstRow[headerIndex];
+    //     var previewData = firstRow[headerIndex];
 
-        $(this).parents('td').find('input[type="hidden"]').val(selectedHeader);
-        $(this).parents('tr').find('td.var_preview span').html(previewData);
+    //     $(this).parents('td').find('input[type="hidden"]').val(selectedHeader);
+    //     $(this).parents('tr').find('td.var_preview span').html(previewData);
 
     
-    }
+    // }
 
 
 
-    function prepareDataMapJSON() {
+    // function prepareDataMapJSON() {
     
-        var dataMapJson = [];
+    //     var dataMapJson = [];
 
-        $('.var_source').find('[type="hidden"]').each(function(index, item) {
+    //     $('.var_source').find('[type="hidden"]').each(function(index, item) {
 
-            var dataObj = [];
+    //         var dataObj = [];
             
-            dataObj.push($(item).attr('name'));
-            dataObj.push($(item).val());
+    //         dataObj.push($(item).attr('name'));
+    //         dataObj.push($(item).val());
 
-            dataMapJson.push(dataObj);
+    //         dataMapJson.push(dataObj);
 
-        });
+    //     });
 
-        var mappingJson = JSON.stringify(dataMapJson);
+    //     var mappingJson = JSON.stringify(dataMapJson);
 
-        $('[name="data_maps_json"]').val(mappingJson);
+    //     $('[name="data_maps_json"]').val(mappingJson);
 
-        return mappingJson;
-    }
+    //     return mappingJson;
+    // }
 
 
-    function handleFormSubmit(e) {
+    // function handleFormSubmit(e) {
 
-        e.preventDefault();
+    //     e.preventDefault();
         
-        prepareDataMapJSON();
+    //     prepareDataMapJSON();
 
-        $(this).parents('form').submit();
-    }
+    //     $(this).parents('form').submit();
+    // }
 
 
-    $(function() {
+    // $(function() {
     
-        $('.submit-form-btn').click(handleFormSubmit);
+    //     $('.submit-form-btn').click(handleFormSubmit);
 
 
-        // $('.btn.ds-existing').click(function(e) {
-        //     e.preventDefault();
-        //     $('.new-datasource').css('display', 'none');
-        //     $('.existing-datasource').fadeIn(50);
+    //     // $('.btn.ds-existing').click(function(e) {
+    //     //     e.preventDefault();
+    //     //     $('.new-datasource').css('display', 'none');
+    //     //     $('.existing-datasource').fadeIn(50);
         
-        // })
+    //     // })
 
-        // $('.btn.ds-new').click(function(e) {
+    //     // $('.btn.ds-new').click(function(e) {
 
-        //     e.preventDefault()
+    //     //     e.preventDefault()
 
-        //     $('.existing-datasource').css('display', 'none');
-        //     $('.new-datasource').fadeIn(50);
+    //     //     $('.existing-datasource').css('display', 'none');
+    //     //     $('.new-datasource').fadeIn(50);
         
-        // })
+    //     // })
 
     
-    })
+    // })
  
 
 

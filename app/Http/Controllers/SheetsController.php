@@ -12,8 +12,7 @@ use Google\Service\Sheets\SpreadsheetProperties;
 use Google\Service\Sheets;
 
 
-class SheetsController extends Controller
-{
+class SheetsController extends Controller {
     //  
 
     public function init(Request $request) {
@@ -71,8 +70,6 @@ class SheetsController extends Controller
 
 
 
-
-
     public function detectAuthCodeAndSave($request) {
 
         $accessCode = $request->code;
@@ -83,8 +80,6 @@ class SheetsController extends Controller
         if($accessCode) {
 
             if(count($getAccessTokens) < 1) {
-
-                
 
                 $allowedScopesArr = $allowedScopes != "" && $allowedScopes ? explode(" ", $allowedScopes) : [];
                 //var_dump(explode(" ",$allowedScopes)); die();
@@ -112,7 +107,7 @@ class SheetsController extends Controller
 
                 if(!isset($accessToken['access_token']) && isset($accessToken['error'])) {
                 
-                        var_dump($accessToken['error']); die();
+                    var_dump($accessToken['error']); die();
                 }
 
                 // save code recieved
@@ -146,7 +141,7 @@ class SheetsController extends Controller
 
         if(!$user) {
 
-            die("Unauthorized");
+           return false;
         }
 
         $accessTokens = $user->google_access_token()->where(['auth_type' => 'google_oauth']);
@@ -164,12 +159,15 @@ class SheetsController extends Controller
 
     public function getClient() {
 
+        $redirect_url = env('APP_ENV') == "local" ? 'http://localhost/pkit' :  'https://pkit.codeivo.com/sheets/init';
+
+
         $client = new Client(array(
             'application_name' => env("GOOGLE_APPLICATION_NAME"),
             "client_id" => env("GOOGLE_CLIENT_ID"),
             "client_secret" => env("GOOGLE_CLIENT_SECRET"),
-            // "redirect_uri" => $redirect_uri,
-            "redirect_uri" => 'https://pkit.codeivo.com/sheets/init',
+            "redirect_uri" => $redirect_url,
+            // "redirect_uri" => 'https://pkit.codeivo.com/sheets/init',
             "scopes" => [\Google\Service\Sheets::DRIVE, \Google\Service\Sheets::SPREADSHEETS],
             "access_type" => "online",
             "approval_prompt" => "auto"
@@ -188,7 +186,8 @@ class SheetsController extends Controller
 
         if(!$accessToken) {
             
-            redirect('/sheets/init');
+            return false;
+            // redirect('/sheets/init');
 
         }
 
@@ -198,7 +197,8 @@ class SheetsController extends Controller
 
         if($client->isAccessTokenExpired()) {
 
-            return redirect($client->createAuthUrl());
+            return false;
+            // return redirect($client->createAuthUrl());
         
         }
 
@@ -206,15 +206,51 @@ class SheetsController extends Controller
     
     }
 
+    
+    public function http_create_new_sheet(Request $request) {
 
+        $sheet_title = $request->input('title');
+
+        $new_sheet = $this->createNewGoogleSheet($sheet_title);
+
+        
+        
+        if($new_sheet) {
+
+            return response()->json([
+                'success' => true,
+                'data' => ['sheet_id' => $new_sheet],
+                'error' => null
+            ]);
+
+        }
+
+
+        return response()->json([
+            'success' => false,
+            'data' => [],
+            'error' => "There is an error creating Google sheet."
+        ]);
+    
+    }
 
 
     public function createNewGoogleSheet($title) {
 
         $client = $this->initializeClientWithAccessToken();
 
+
+
+        if(!$client) {
+
+            return false;
+
+        }
+
+
+
         $service = new Sheets($client);
-     
+
         $spreadSheet = new Spreadsheet([
             'properties' => [
                 'title' => $title
@@ -222,7 +258,7 @@ class SheetsController extends Controller
         ]);
 
 
-        $created_sheet = $service->spreadsheets->create($spreadSheet, ['fields' => 'spreadsheetId']);
+        $created_sheet = $service->spreadsheets->create( $spreadSheet, ['fields' => 'spreadsheetId'] );
 
         if($created_sheet) {
 
