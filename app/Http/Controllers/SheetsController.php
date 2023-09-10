@@ -103,7 +103,7 @@ class SheetsController extends Controller {
                 $accessToken = $client->fetchAccessTokenWithAuthCode($accessCode);
                 $refreshToken = "Not available";
 
-                ddd($accessCode); die();
+                ddd($accessToken); die();
 
                 if(isset($accessToken['refresh_token'])) {
                     $refreshToken = $accessToken['refresh_token'];
