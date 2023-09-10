@@ -22,10 +22,16 @@ class DatasourcesController extends Controller {
     public function manage() {
 
         $current_user_id = Auth::user()->id;
-        $datasources = Datasources::where('owner_id', $current_user_id)->get();       
+        $datasources = Datasources::where('owner_id', $current_user_id)->get();
+        $datasourcesIDs = $datasources->pluck('id')->toArray();
+       
+        $datasources_in_campaign = Campaign::whereIn('data_source_id', $datasourcesIDs)
+        ->where('owner_id', $current_user_id)
+        ->get();
 
         return view('dashboard-pages/datasources/manage',array(
-            'datasources' => $datasources
+            'datasources' => $datasources,
+            'sourcesCampaign' => $datasources_in_campaign
         ));
     }
 
@@ -46,13 +52,14 @@ class DatasourcesController extends Controller {
 
     }
 
-    public function store(Request $request) {
-
+    public function store(Request $request) 
+    {
+        // return $request;
         $attributes  = $request->validate([
             'name' => ['required'],
             'type' => ['required'],
-            // 'website_url' => ['required'],
-            // 'ajax_url' => ['required'],
+            'sourceHeader' => [''],
+            'primaryKey' => [''],
             // 'authentication_key' => ['required'],
 
 
@@ -96,13 +103,13 @@ class DatasourcesController extends Controller {
         $datasource = new Datasources();
         $datasource->name = $request->input('name');
         $datasource->type = $request->input('type');
+        $datasource->source_header = $request->input('sourceHeader');
+        $datasource->primary_key = $request->input('primaryKey');
         $datasource->owner_id = $user->id;
         $datasource->requires_mapping = false;
         $datasource->records_count = $recordCount;
-        $datasource->file_path = $filePath; // Save the file path in the database
+        $datasource->file_path = $filePath; 
         $datasource->last_synced = now();
-
-
         $datasource->save();
 
         return redirect()->route('manage-datasources')->with('message', 'Data source added successfully!');
@@ -165,6 +172,8 @@ class DatasourcesController extends Controller {
         $datasource =  Datasources::find($request->id);
         $datasource->name = $request->input('name');
         $datasource->type = $request->input('type');
+        $datasource->source_header = $request->input('sourceHeader');
+        $datasource->primary_key = $request->input('primaryKey');
         $datasource->requires_mapping = false;
         $datasource->records_count = $recordCount;
         $datasource->file_path = $filePath; 

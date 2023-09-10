@@ -161,6 +161,20 @@
 
 
             <div class="card mb-4 data-preview d-none">
+                
+                <div class="container-fluid">
+                    <div class="row pb-0 px-3 pt-3">
+                        <div class="col-md-6">
+                            <h6 class="mb-0">Primary Key</h6>
+                            <div class="primaryKey"></div>
+                            <select type="search" class="form-control csv-headers" name="sourceHeader" id="csvHeaders" data-live-search="true">
+                                <option value=""> </option>
+                            </select>
+                            <input type="hidden" id="primary_id" name="primaryKey" value="">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Preview your Database</h6>
                 </div>
@@ -237,156 +251,18 @@
                 </div>
             </div>      
     </form>
-
-
-        
-
-        
-       
-@endsection
-
-
-@section('javascript')
-
-    <script>
-        
-        jQuery(function($) {
-
-            $('input[name="csv_file"]').change(function(e) {
-
-                var formValues = new FormData();
-
-               
-                formValues.append('csv_file', e.target.files[0]);
-                formValues.append('name',"Umair");
-
-                jQuery.ajax({
-                    method: "POST",
-                    url: "/api/csv-preview",
-                    data: formValues,
-                    processData: false,
-                    contentType: false, // Set contentType to false to allow the browser to set the correct content type for the FormData object
-
-                    success: function(res) {
-
-
-                        if(!res.success ) {
-
-                            if(!$('.data-preview').hasClass('d-none')) {
-                                
-                                $('.data-preview').addClass('d-none');
-                                
-                            }
-
-                            $('.data-preview thead tr').html("");
-                            $('.data-preview tbody tr').html("");
-                        }
-
-
-                        var headers = res.data.headers;
-
-                        var rows = res.data.preview_rows;
-
-
-                        if(headers.length < 1){
-                            return false;
-                        }
-
-
-                        $('.data-preview').removeClass('d-none');
-
-                        $('.data-preview thead tr').html("");
-                        $('.data-preview tbody tr').html("");
-
-
-                        var headersToPreview = headers.length < 7 ? headers : headers.splice(0, 6)
-
-                        headersToPreview.forEach(function(item, index) {
-    
-    
-                            $('.data-preview thead tr').append(`<th>${item}</th>`);
-                        
-                        });
-
-                        
-                        rows.forEach(function(item, index) {
-
-                            elemRow = $('<tr></tr>');
-
-                            item.forEach(function(rowItem, rowIndex) {
-                                elemRow.append(`<td>${rowItem}</td>`)
-                            })
-                            
-                            
-                            $('.data-preview tbody').append(elemRow);
-
-                            // elemRow
-                        
-                        })
-
-
-                        // console.log(res);
-                    }
-                })
-
-            })
-        
-        })
-
-        // handle sections based on selected type
-        document.getElementById('selectType').addEventListener('change', function(e) 
-        {
-            var selectedValue = $(this).val();
-            if(selectedValue == 'csv'){
-                $('.uploadCSV').removeClass('d-none');
-                $('.uploadGoogleSheets').addClass('d-none');
-            }
-            else if(selectedValue == 'google_sheet'){
-                $('.uploadGoogleSheets').removeClass('d-none');
-                $('.uploadCSV').addClass('d-none');
-            }
-        });
-
-        $('.gsheets').on('click', function(e) {
-            jQuery.ajax({
-                    method: "GET",
-                    url: "/sheets",
-                    success: function(response) {
-                        console.log(response);
-                        var sheetId = response.spreadsheetId; 
-                        var sheetName = response.sheetName; 
-
-                        var formValues = new FormData();
-                        formValues.append('sheet_id', JSON.stringify(sheetId));
-                        formValues.append('sheet_name', sheetName);
-
-                        var csrfToken = $('meta[name="csrf-token"]').attr('content');
-                        jQuery.ajax({
-                            method: "POST",
-                            url: "/store-sheet-data",
-                            data: formValues,
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken
-                            },
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {
-                                console.log(response);
-                            }
-                        });
-                    }
-            });
-
-        });  
-
-    </script>
-
-
+      
     <style>
         tr td, tr th {
             text-align:center;
         }
 
     </style>
+        
+       
+@endsection
+
+
+@section('javascript')
 
 @endsection
