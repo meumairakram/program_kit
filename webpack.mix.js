@@ -19,13 +19,18 @@ mix.webpackConfig({
         },
     },
 })
-.react('app.js', 'dist/js');
+.js('public/js/app.js', 'public/dist/js').react();
 
 
 
 
-mix.js('resources/js/app.js', 'public/js')
+    mix
+    .js('resources/js/create_campaign_script.js', 'public/js')
+    .js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
         //
     ]).minify('public/assets/js/soft-ui-dashboard.js');
+
 mix.sass('public/assets/scss/soft-ui-dashboard.scss', 'public/assets/css');
+
+mix.sass('public/assets/scss/custom/custom-styles.scss', 'public/assets/css');
