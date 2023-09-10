@@ -206,7 +206,17 @@ class SheetsController extends Controller {
 
         if($client->isAccessTokenExpired()) {
 
-            return false;
+            if($accessToken->refresh_token != '' && $accessToken->refresh_token != 'Not available') {
+            
+                $new_access_token = $client->fetchAccessTokenWithRefreshToken($accessToken->refresh_token);
+
+                $accessToken->key_value = $new_access_token['access_token'];
+                $accessToken->save();
+
+                $client->setAccessToken($new_access_token['access_token']);
+            
+            }
+            //return false;
             // return redirect($client->createAuthUrl());
         
         }
