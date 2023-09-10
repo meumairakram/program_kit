@@ -36,11 +36,7 @@ class SheetsController extends Controller {
             return view('internal.account_auth_result')->with(["status" => "success"]);
 
             die();
-            // } 
-
-            // if(session()->has('post_auth_redirect')) {
-                // return redirect(session()->get('post_auth_redirect') . '?google_auth=success');
-            // }
+          
         
         }
 
@@ -49,8 +45,8 @@ class SheetsController extends Controller {
 
             $client = $this->getClient();
 
-            session()->forget('post_auth_redirect');
-            session(['post_auth_redirect' => $redirect_uri]);
+            // session()->forget('post_auth_redirect');
+            // session(['post_auth_redirect' => $redirect_uri]);
 
             return redirect($client->createAuthUrl());
 
@@ -58,15 +54,15 @@ class SheetsController extends Controller {
 
 
 
-         if(parse_url($request->url())['path'] == $redirect_path) {
+        // if(parse_url($request->url())['path'] == $redirect_path) {
                 
-            return view('internal.account_auth_result')->with(["status" => "pre_connected"]);
-  
-            die();
-        } 
+          
+        // } 
 
-        
-        return redirect($redirect_uri . '?google_auth=success');
+        return view('internal.account_auth_result')->with(["status" => "pre_connected"]);
+  
+        die();        
+        // return redirect($redirect_uri . '?google_auth=success');
 
 
     }
