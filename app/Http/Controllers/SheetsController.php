@@ -175,7 +175,7 @@ class SheetsController extends Controller {
             "redirect_uri" => $redirect_url,
             // "redirect_uri" => 'https://pkit.codeivo.com/sheets/init',
             "scopes" => [\Google\Service\Sheets::DRIVE, \Google\Service\Sheets::SPREADSHEETS],
-            "access_type" => "online",
+            "access_type" => "offline",
             "approval_prompt" => "auto"
 
         ));
