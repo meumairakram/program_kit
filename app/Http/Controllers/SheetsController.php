@@ -101,11 +101,8 @@ class SheetsController extends Controller {
                 $client = $this->getClient();
 
                 $accessToken = $client->fetchAccessTokenWithAuthCode($accessCode);
-                $refreshToken = $client->getRefreshToken();
-                
-                
-                ddd($refreshToken); die();
-
+          
+            
                 $refreshToken = "Not available";
 
 
