@@ -494,11 +494,6 @@ $(document).ready(function(){
     $('#mapdataNext').on('click', function(e) {
         e.preventDefault();
         var isValid = true;
-        // $('.mapdata_sec_required').each(function() {
-        //     if ($(this).val() === '') {
-        //         isValid = false;
-        //     }
-        // });
         if(isValid == true){
             $('.SaveAndStart').removeClass('d-none');
             $('.fifthError').addClass('d-none');
@@ -548,7 +543,8 @@ $(document).ready(function(){
             
             loadOptionsinFieldMaps()
         
-        
+            // Automatically match template_vars with dataSource headers
+            matchTemplateVarsWithHeaders();
         }
         
     }
@@ -617,6 +613,25 @@ $(document).ready(function(){
     
     }
 
+
+    function matchTemplateVarsWithHeaders() {
+        var template_vars = window.pkit.template_vars;
+        var dataSource = window.pkit.datasource_info;
+    
+        if ("variables" in template_vars && "headers" in dataSource) {
+            template_vars.variables.forEach(function (temp_var, index) {
+                var modifiedVariable = temp_var.replace(/[{}"]/g, '');
+                var selectField = $(`.var_index_${index} .map_source_options`);
+                
+                // Check if the modifiedVariable exists in dataSource.headers
+                if (dataSource.headers.includes(modifiedVariable)) {
+                    // Set the default selected option
+                    selectField.val(modifiedVariable).change();
+                }
+            });
+        }
+    }
+    
 
 
     function prepareDataMapJSON() {
