@@ -508,48 +508,40 @@ $(document).ready(function(){
 
 
     function createDataMap() {
-
         var template_vars = window.pkit.template_vars;
-        
         var tbodyContainer = $('.data-map-table tbody');
-        
         tbodyContainer.html('');
-        //  $('.source_fields_holder').html('');
-
-        if("variables" in template_vars) {
-
-            var totalVars = template_vars.length;
-
-            template_vars.variables.forEach(function(temp_var, index) {
-                var modifiedVariable = temp_var.replace(/[{}"]/g, ''); 
-                selectDropdown = $(`<select name="source_${index}" var_name="${modifiedVariable}_selector" class="map_source_options form-control"></select>`)
-
-
+    
+        if ("variables" in template_vars) {
+            var totalVars = template_vars.variables.length;
+    
+            template_vars.variables.forEach(function (temp_var, index) {
+                var modifiedVariable = temp_var.replace(/[{}"]/g, '');
+                selectDropdown = $(`<select name="source_${index}" var_name="${modifiedVariable}_selector" style="max-width:300px;" class="map_source_options form-control"></select>`);
+    
                 var tableRow = $(`<tr class="var_index_${index}"></tr>`);
-
-
                 tableRow.append(`<td class="var_name"><span>${modifiedVariable}</span></td>`);
-
-                var sourceSelectorCol = $(`<td class="var_source"></td>`).append(selectDropdown).append($(`<input type="hidden" name="${modifiedVariable}" value="" />`));
-
+    
+                var sourceSelectorCol = $(`<td class="var_source"></td>`)
+                    .append(selectDropdown) // Append the <select> element
+                    .append($(`<input type="hidden" name="${modifiedVariable}" value="" />`));
+                
                 tableRow.append(sourceSelectorCol);
-                
-                
                 tableRow.append(`<td class="var_preview"><span>Select a source header</span></td>`);
-
-               tbodyContainer.append(tableRow);
-            
+                
+                tbodyContainer.append(tableRow);
             });
+    
+            // Now, after all <select> elements are appended, initialize Select2
+            $('.map_source_options').select2(); // Initialize Select2 on all elements with class 'map_source_options'
             
-            loadOptionsinFieldMaps()
-        
+            loadOptionsinFieldMaps();
+    
             // Automatically match template_vars with dataSource headers
             matchTemplateVarsWithHeaders();
         }
-        
     }
-
-
+    
 
     function loadOptionsinFieldMaps() {
 
