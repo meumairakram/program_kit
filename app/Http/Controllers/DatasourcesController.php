@@ -184,8 +184,7 @@ class DatasourcesController extends Controller {
 
     }
 
-    public function delete(Request $request, $id) 
-    {
+    public function delete(Request $request, $id) {
         // $datasource =  Datasources::find($id);
         Datasources::destroy(array('id',$id));
         $current_user_id = Auth::user()->id;

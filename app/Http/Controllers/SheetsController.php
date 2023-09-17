@@ -7,10 +7,14 @@ use Revolution\Google\Sheets\Facades\Google;
 use Google\Client;
 // use Sheets\Facades\Sheets;
 use App\Models\AuthTokens;
+use App\Models\WebsitesInfo;
+
 use Google\Service\Sheets\Spreadsheet;
 use Google\Service\Sheets\SpreadsheetProperties;
 use Google\Service\Sheets;
+use Google\Service\Sheets\ValueRange;
 
+use App\HelperClasses\TemplateHelpers;
 
 class SheetsController extends Controller {
     //  
@@ -230,9 +234,63 @@ class SheetsController extends Controller {
 
         $sheet_title = $request->input('title');
 
+        $website_id = $request->input('website_id');
+
+        $template_id = $request->input('template_id');
+        
+        $website = WebsitesInfo::where(['id' => $website_id ])->first();
+
+        if($website->is_authenticated != "yes" || $website->type != "wordpress") {
+
+            
+            return response()->json([
+               "success" => false,
+                "data" => [
+                    
+                ],
+                "error" => "Selected Website type is invalid"
+            ]);
+        
+        }
+
+        if(!$website) {
+
+            // no website found with this id
+            return response()->json([
+               "success" => false,
+                "data" => [
+                    
+                ],
+                "error" => "Website not found."
+            ]);
+        
+        }
+
+
+
+
+
+        // Dont try to create sheet on local, as it will eventually fail
+        if(env('APP_ENV') == 'local') {
+
+            return response()->json([
+               "success" => true,
+                "data" => [
+                    "sheet_id" => "1YUXbojq3AdbXnZpASKoTIj4az5ZT5Kr15RpVP7kUhcA"
+                ],
+                "error" => null
+            ]);
+        }
+
+
+        // WebsitesInfo;
+
+
         $new_sheet = $this->createNewGoogleSheet($sheet_title);
 
-        
+        $variables = TemplateHelpers::getTemplateVarsArray();
+
+        $this->loadVariablesToSheetHeader($new_sheet, $variables);
         
         if($new_sheet) {
 
@@ -251,6 +309,41 @@ class SheetsController extends Controller {
             'error' => "There is an error creating Google sheet."
         ]);
     
+    }
+
+
+    public function loadVariablesToSheetHeader($sheet_id, $vars_array) {
+
+        $client = $this->initializeClientWithAccessToken();
+
+
+
+        if(!$client) {
+
+            return false;
+
+        }
+
+        $service = new Sheets($client);
+        $values = [$vars_array];
+
+        $body = new ValueRange();
+
+        $body->setValues($values);
+
+
+        $params = [
+            'valueInputOption' => "RAW"
+        ];
+
+        $result = $service->spreadsheets_values->update($sheet_id, "A1",
+        $body, $params);
+
+
+        return true;
+
+
+
     }
 
 
