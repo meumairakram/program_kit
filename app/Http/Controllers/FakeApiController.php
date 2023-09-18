@@ -106,7 +106,7 @@ class FakeApiController extends Controller {
 
         $variables = array();
 
-        if($template_id == "18") {
+        if($template_id == "18" || $template_id == "88") {
 
             $variables = [
 

@@ -183,7 +183,7 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Template</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" @change="bind_field_on_change" name="wp_template_id" id="template">
+                                        <select class="form-control web_sec_required" @change="handleTemplateFieldChange" name="wp_template_id" id="template">
                                             <option value="">Template title</option>
                                             <!-- <option value="1">Template title - #18</option>
                                             <option value="2">Template title - #19</option>
@@ -500,6 +500,28 @@
                                         </thead>
 
                                         <tbody>
+
+                                            <template x-for="variable in getVariablesMap()">
+                                                
+                                                <tr>
+                                                    <td x-text="variable"></td>
+                                                    <td>
+
+                                                        <select class="form-control" @change="handle_source_field_change" x-bind:vartarget="variable" name="selected_field">
+
+                                                            <template x-for="field in datasourceFields">
+                                                                <option x-bind:value="field" x-text="field"></option>
+
+                                                            </template> 
+                                                        
+                                                        </select>
+                                                    
+                                                    </td>
+                                                    <td x-text="variablesMap[variable] ? variablesMap[variable].preview_row_data : 'Select a field'"></td>
+                                                </tr>
+
+
+                                            </template>
                                         
                                         
                                         

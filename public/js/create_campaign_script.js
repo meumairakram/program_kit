@@ -2337,6 +2337,24 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 document.addEventListener('alpine:init', function () {
   var $pThis = null;
@@ -2386,10 +2404,12 @@ document.addEventListener('alpine:init', function () {
       var source_id = event.target.value;
       var source_title = $(event.target).find("[value=\"".concat(source_id, "\"]")).attr('name');
       this.requiresMapping = true;
+      $pThis.setTemplateVariables();
       this.data_source_id = {
         id: source_id,
         title: source_title
       };
+      $pThis.setDatasourceFields();
       this.incrementStep();
     },
     getSelectedDSLabel: function getSelectedDSLabel() {
@@ -2402,11 +2422,65 @@ document.addEventListener('alpine:init', function () {
 
       return true;
     },
-    // handle_website_onChange(evt) {
-    //     evt.preventDefault();
-    //     $pThis.website_id = evt.target.value;
-    //     // console.log(evt.target.value);
-    // },
+    variablesMap: {},
+    datasourceFields: [],
+    firstDataRow: [],
+    getVariablesMap: function getVariablesMap() {
+      var variables = Object.keys($pThis.variablesMap);
+      return variables;
+    },
+    setTemplateVariables: function setTemplateVariables() {
+      var formValues = new FormData();
+      formValues.append('post_id', $pThis.wp_template_id);
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_template_vars', formValues).then(function (response) {
+        if (!response.data.success) {
+          console.error("Got invalid response for template vars");
+          return false;
+        }
+
+        if (response.data.data.variables.length < 1) {
+          console.error("got no vars for this template");
+          return false;
+        }
+
+        var varsArray = {};
+        response.data.data.variables.forEach(function (value, index) {
+          varsArray[value] = {
+            source_field: null,
+            preview_row_data: null
+          };
+        });
+        $pThis.variablesMap = _objectSpread({}, varsArray);
+      });
+    },
+    setDatasourceFields: function setDatasourceFields() {
+      var formValues = new FormData();
+      formValues.append('ds_id', $pThis.data_source_id.id);
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_datasource_mapping', formValues).then(function (response) {
+        console.log(response);
+
+        if (response.data.success) {
+          $pThis.datasourceFields = _toConsumableArray(response.data.data.headers);
+          $pThis.firstDataRow = _toConsumableArray(response.data.data.preview_rows[0]);
+        }
+      });
+    },
+    handleTemplateFieldChange: function handleTemplateFieldChange(event) {
+      $pThis.bind_field_on_change(event);
+      $pThis.setTemplateVariables();
+    },
+    handle_source_field_change: function handle_source_field_change(event) {
+      event.preventDefault();
+      var elem = event.target;
+      var dataRowIndex = $pThis.datasourceFields.findIndex(function (item) {
+        return item === $(elem).val();
+      });
+      $pThis.variablesMap[$(elem).attr('vartarget')].source_field = $(elem).val();
+
+      if (dataRowIndex > -1) {
+        $pThis.variablesMap[$(elem).attr('vartarget')].preview_row_data = $pThis.firstDataRow[dataRowIndex];
+      }
+    },
     bind_field_on_change: function bind_field_on_change(event) {
       event.preventDefault();
 

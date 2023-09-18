@@ -84,13 +84,18 @@ document.addEventListener('alpine:init', () => {
            
             this.requiresMapping = true;
             
+            $pThis.setTemplateVariables();
 
             this.data_source_id = { 
                 id: source_id, 
                 title: source_title
             };
 
+
+            $pThis.setDatasourceFields();
             this.incrementStep();
+
+
         },
 
 
@@ -110,23 +115,117 @@ document.addEventListener('alpine:init', () => {
             
         },
 
-        // handle_website_onChange(evt) {
 
-        //     evt.preventDefault();
+        variablesMap : {},
+        datasourceFields: [],
+        firstDataRow: [],
 
-        //     $pThis.website_id = evt.target.value;
 
-        //     // console.log(evt.target.value);
+        getVariablesMap() {
 
-        // },
+            var variables = Object.keys($pThis.variablesMap);
+
+            return variables;
+
+        },
+
+
+        setTemplateVariables() {
+            
+            var formValues = new FormData();
+
+            formValues.append('post_id', $pThis.wp_template_id);
+            axios.post('/api/get_template_vars', formValues)
+            .then(response => {
+
+                if(!response.data.success) {
+                    console.error("Got invalid response for template vars");
+                    return false;
+                }
+
+                if(response.data.data.variables.length < 1) {
+                    console.error("got no vars for this template");
+                    return false;
+                
+                }
+                
+                var varsArray = {};
+
+                response.data.data.variables.forEach((value, index) => {
+
+                    varsArray[value] = {
+                        source_field: null,
+                        preview_row_data: null,
+                    }
+                
+                })
+
+                $pThis.variablesMap = {...varsArray};
+            
+            })
+        
+        },
+
+
+        setDatasourceFields() {
+
+            var formValues = new FormData();
+            formValues.append('ds_id', $pThis.data_source_id.id);
+
+            axios.post('/api/get_datasource_mapping', formValues)
+            .then(response => {
+
+                console.log(response);
+
+                if(response.data.success) {
+                    
+                    $pThis.datasourceFields = [...response.data.data.headers]
+                    $pThis.firstDataRow = [...response.data.data.preview_rows[0]]
+                }
+            
+            
+            })
+        
+        },
+
+
+        handleTemplateFieldChange(event) {
+            
+            $pThis.bind_field_on_change(event);
+
+            $pThis.setTemplateVariables();
+
+        },
+
+        handle_source_field_change(event) {
+
+            event.preventDefault();
+            var elem = event.target;
+
+            var dataRowIndex = $pThis.datasourceFields.findIndex((item) => item === $(elem).val());
+
+
+            $pThis.variablesMap[$(elem).attr('vartarget')].source_field = $(elem).val();
+            
+            if(dataRowIndex > -1) {
+                
+                $pThis.variablesMap[$(elem).attr('vartarget')].preview_row_data = $pThis.firstDataRow[dataRowIndex];
+            
+            }
+            
+            
+        
+        },
+
 
         bind_field_on_change(event) {
 
             event.preventDefault();
 
             if(event.target.attributes.length == 0) {
-                console.alert("No attribute for name on", event.target);
 
+                console.alert("No attribute for name on", event.target);
+            
             }
 
             for(var i = 0; i < event.target.attributes.length ; i++) {
@@ -165,8 +264,6 @@ document.addEventListener('alpine:init', () => {
     
     });
 
-
-    
 
 
     function action_create_new_sheet_with_vars(event) {
