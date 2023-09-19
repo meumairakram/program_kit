@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <form x-data='$store.create_campaign_store' class="container-fluid py-4" action="{{ route('store-campaign') }}" method="POST" role="form text-left">
+    <form x-data='$store.create_campaign_store' @submit="submitCreateCampaign" class="container-fluid py-4" action="{{ route('store-campaign') }}" method="POST" role="form text-left">
             <div class="card mb-4" x-show="currentStep > 0">
                 <div class="card-header pb-0 px-3">
                     <div class="d-flex align-items-center justify-content-between">
@@ -125,8 +125,8 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Select Website Type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" name="website_type" id="websiteType">
-                                            <option value=""> </option>
+                                        <select class="form-control web_sec_required" @change="handleWebsiteTypeChange" name="website_type" id="websiteType">
+                                            <option value=""></option>
                                             <option value="wordpress">Wordpress</option>
                                             <!-- <option value="wordpress">Webflow</option>
                                             <option value="wordpress">Bubble</option> -->
@@ -146,12 +146,12 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Select Website</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" name="website_id" @change="bind_field_on_change" id="selectWebSite">
-                                            <option value="">Select a website</option>
+                                        <select class="form-control web_sec_required" name="website_id" @change="handleWebsiteIdChange" id="selectWebSite">
+                                            <option value="">-- Select a website --</option>
+                                            <template x-for="website_option in avl_websites">
+                                                <option x-bind:value="website_option.id" x-text="website_option.name + ' ( ' + website_option.url + ' )'">Select a website</option>
 
-                                            <!-- @foreach($allWebsites as $website)
-                                                <option value="{{ $website->id }}">{{$website->website_name}} ({{$website->website_url}})</option>
-                                            @endforeach -->
+                                            </template>
 
                                         </select>
 
@@ -167,8 +167,11 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Post type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" name="post_type" id="postType">
-                                            <option value=""> </option>
+                                        <select class="form-control web_sec_required" name="post_type" @change="handleWebsitePostTypeChange" id="postType">
+                                            <option value="">-- Select post type --</option>
+                                            <template x-for="post_type_option in avl_post_types">
+                                                <option x-bind:value="post_type_option" x-text="post_type_option"></option>
+                                            </template>
                                         </select>
 
                                         @error('type')
@@ -184,10 +187,15 @@
                                     <label for="user.phone" class="form-control-label">Template</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control web_sec_required" @change="handleTemplateFieldChange" name="wp_template_id" id="template">
-                                            <option value="">Template title</option>
-                                            <!-- <option value="1">Template title - #18</option>
+                                            <option value="">-- Select Template --</option>
+
+                                            <template x-for="template_option in avl_templates"> 
+                                                <option x-bind:value="template_option.id" x-text="`${template_option.title} - #${template_option.id}`"></option>
+
+                                            </template>
+<!--                                             
                                             <option value="2">Template title - #19</option>
-                                            <option value="3">Bubble</option> -->
+                                            <option value="3">Bubble</option> --> 
                                         </select>
 
                                         @error('type')
@@ -226,8 +234,6 @@
                 <div class="card-body pt-4 p-3">
 
                     <div class="row">
-
-
                         <div class="col-md-6">
                             <!-- <div class="card-header pb-0 px-3"> -->
                                 <!-- <h6 class="mb-0">Choose existing Data source</h6> -->
@@ -501,7 +507,7 @@
 
                                         <tbody>
 
-                                            <template x-for="variable in getVariablesMap()">
+                                            <template x-for="variable in getAvailableVariablesNames()">
                                                 
                                                 <tr>
                                                     <td x-text="variable"></td>
@@ -510,7 +516,7 @@
                                                         <select class="form-control" @change="handle_source_field_change" x-bind:vartarget="variable" name="selected_field">
 
                                                             <template x-for="field in datasourceFields">
-                                                                <option x-bind:value="field" x-text="field"></option>
+                                                                <option x-bind:selected="field == variablesMap[variable].source_field ? 'true' : null" x-bind:value="field" x-text="field"></option>
 
                                                             </template> 
                                                         
@@ -577,7 +583,8 @@
                         <div class="col-md-6">
 
                             <div class="d-flex justify-content-start">
-                                <input type="hidden" name="data_maps_json" value="" />  
+                                <input type="hidden" name="data_maps_json" x-bind:value="dataMapJson" />  
+                                <input type="hidden" name="selected_datasource_id" x-bind:value="data_source_id.id" />
                                 <button type="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4 submit-form-btn">Save &amp; Start Sync</button>
                             </div>
                         </div>
@@ -610,7 +617,7 @@
 
 
 
-    <script id="alpine_js" defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.0/dist/cdn.min.js"></script>
+    <script id="alpine_js" defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.0/dist/cdn.js"></script>
 
     <script id="create_campaign_script" src="{{ asset('js/create_campaign_script.js') }}" ></script>
 

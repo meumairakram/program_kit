@@ -114,7 +114,7 @@ class FakeApiController extends Controller {
                 "{author_4}",
                 "{heading1_product}",
                 "{product_1_title}",
-                "{product_1}",
+                "{company}",
                 "{rel_post_url}"
             
             ];

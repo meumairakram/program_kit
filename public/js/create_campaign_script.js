@@ -2355,6 +2355,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+ // import { clean } from "laravel-mix/src/HotReloading";
 
 document.addEventListener('alpine:init', function () {
   var $pThis = null;
@@ -2376,9 +2377,18 @@ document.addEventListener('alpine:init', function () {
     gsheet_id: "",
     variables_exported: null,
     ds_loading: false,
+    // website variables
+    website_type: "wordpress",
+    avl_websites: [],
+    avl_post_types: [],
+    avl_templates: [],
+    website_id: null,
     new_sheet_name: null,
     requiresMapping: false,
-    website_id: null,
+    variablesMap: {},
+    datasourceFields: [],
+    firstDataRow: [],
+    // Action creators
     // global setter
     setValue: function setValue(type, val) {
       $pThis[type] = val;
@@ -2422,12 +2432,21 @@ document.addEventListener('alpine:init', function () {
 
       return true;
     },
-    variablesMap: {},
-    datasourceFields: [],
-    firstDataRow: [],
-    getVariablesMap: function getVariablesMap() {
-      var variables = Object.keys($pThis.variablesMap);
-      return variables;
+    handleWebsiteTypeChange: function handleWebsiteTypeChange(event) {
+      $pThis.bind_field_on_change(event);
+      $pThis.loadWebsites();
+    },
+    handleWebsiteIdChange: function handleWebsiteIdChange(event) {
+      $pThis.bind_field_on_change(event);
+      $pThis.loadPostTypes();
+    },
+    handleWebsitePostTypeChange: function handleWebsitePostTypeChange(event) {
+      $pThis.bind_field_on_change(event);
+      $pThis.loadAvlTemplates();
+    },
+    handleTemplateFieldChange: function handleTemplateFieldChange(event) {
+      $pThis.bind_field_on_change(event);
+      $pThis.setTemplateVariables();
     },
     setTemplateVariables: function setTemplateVariables() {
       var formValues = new FormData();
@@ -2450,8 +2469,81 @@ document.addEventListener('alpine:init', function () {
             preview_row_data: null
           };
         });
-        $pThis.variablesMap = _objectSpread({}, varsArray);
+        $pThis.variablesMap = _objectSpread({}, varsArray); // Attempt automatch of fields.
+
+        $pThis.autoMatchDSFields();
       });
+    },
+    loadWebsites: function loadWebsites() {
+      var selectedType = $pThis.website_type;
+
+      if (!selectedType) {
+        alert("website type channot be empty");
+        return false;
+      }
+
+      var formValues = new FormData();
+      formValues.append('type', selectedType);
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/websites_type', formValues).then(function (response) {
+        // console.log(response);
+        if (response.data.success) {
+          var websitesStore = [];
+
+          if (!Array.isArray(response.data.websites)) {
+            return false;
+          }
+
+          response.data.websites.forEach(function (item) {
+            websitesStore.push({
+              id: item.id,
+              name: item.website_name,
+              url: item.website_url
+            });
+          });
+          $pThis.avl_websites = [].concat(websitesStore);
+        } else {
+          alert("error loading websites");
+        }
+      });
+    },
+    loadPostTypes: function loadPostTypes() {
+      var selectedWebsite = $pThis.website_id;
+
+      if (!selectedWebsite) {
+        alert("website type channot be empty");
+        return false;
+      }
+
+      var formValues = new FormData(); // formValues.append('type', selectedType);
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/get_post_types').then(function (response) {
+        console.log(response);
+
+        if (response.data.success) {
+          $pThis.avl_post_types = _toConsumableArray(response.data.data.post_types);
+        }
+      });
+    },
+    loadAvlTemplates: function loadAvlTemplates() {
+      var selectedPostType = $pThis.post_type;
+      var formValues = new FormData();
+      formValues.append('post_type', selectedPostType);
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_templates_by_type', formValues).then(function (response) {
+        console.log(response);
+
+        if (!response.data.success) {
+          alert("No website found for this settings");
+          return false;
+        }
+
+        if (Array.isArray(response.data.data.posts)) {
+          $pThis.avl_templates = _toConsumableArray(response.data.data.posts);
+        }
+      });
+    },
+    getAvailableVariablesNames: function getAvailableVariablesNames() {
+      var variables = Object.keys($pThis.variablesMap);
+      return variables;
     },
     setDatasourceFields: function setDatasourceFields() {
       var formValues = new FormData();
@@ -2461,13 +2553,26 @@ document.addEventListener('alpine:init', function () {
 
         if (response.data.success) {
           $pThis.datasourceFields = _toConsumableArray(response.data.data.headers);
-          $pThis.firstDataRow = _toConsumableArray(response.data.data.preview_rows[0]);
+          $pThis.firstDataRow = _toConsumableArray(response.data.data.preview_rows[0]); // Attempt automatch of fields.
+
+          $pThis.autoMatchDSFields();
         }
       });
     },
-    handleTemplateFieldChange: function handleTemplateFieldChange(event) {
-      $pThis.bind_field_on_change(event);
-      $pThis.setTemplateVariables();
+    autoMatchDSFields: function autoMatchDSFields() {
+      // Auto matching the fields with the same name
+      var allVariables = $pThis.getAvailableVariablesNames();
+      allVariables.forEach(function (element) {
+        var cleanVariable = element.replace("{", "").replace("}", "");
+        var dsIndex = $pThis.datasourceFields.findIndex(function (item) {
+          return item === cleanVariable;
+        });
+
+        if (dsIndex > -1) {
+          $pThis.variablesMap[element].source_field = cleanVariable;
+          $pThis.variablesMap[element].preview_row_data = $pThis.firstDataRow[dsIndex];
+        }
+      });
     },
     handle_source_field_change: function handle_source_field_change(event) {
       event.preventDefault();
@@ -2494,11 +2599,30 @@ document.addEventListener('alpine:init', function () {
         if (item.name == "name") {
           $pThis[item.value] = event.target.value;
         }
-      }
+      } // event.target.attributes;
+      // ((value, index)=> {
+      // });
 
-      event.target.attributes;
-
-      (function (value, index) {});
+    },
+    dataMapJson: '{}',
+    submitCreateCampaign: function submitCreateCampaign(e) {
+      e.preventDefault();
+      $pThis.createDataMapJson();
+      setTimeout(function () {
+        e.target.submit();
+      }, 500);
+    },
+    createDataMapJson: function createDataMapJson() {
+      var templateVarNames = $pThis.getAvailableVariablesNames();
+      var outputJson = [];
+      templateVarNames.forEach(function (tempvar) {
+        var varmap = [];
+        console.log($pThis.variablesMap[tempvar]);
+        varmap.push(tempvar);
+        varmap.push($pThis.variablesMap[tempvar].source_field);
+        outputJson.push(varmap);
+      });
+      $pThis.dataMapJson = JSON.stringify(outputJson);
     },
     // Action Creators
     action_create_new_sheet_with_vars: action_create_new_sheet_with_vars,
@@ -2602,7 +2726,7 @@ document.addEventListener('alpine:init', function () {
   function action_handle_map_step() {
     var mappingComplete = true;
 
-    if ($pThis.requiresMapping && mappingComplete) {
+    if ($pThis.requiresMapping && !mappingComplete) {
       alert("Please Properly map the fields to their relevant variables.");
       return false;
     }

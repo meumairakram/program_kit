@@ -1,4 +1,5 @@
 import axios from "axios";
+// import { clean } from "laravel-mix/src/HotReloading";
 
     
 
@@ -28,12 +29,29 @@ document.addEventListener('alpine:init', () => {
         gsheet_id: "",
         variables_exported : null,
         ds_loading: false,
+
+
+        // website variables
+        website_type: "wordpress",        
+        avl_websites: [],
+        avl_post_types: [],
+        avl_templates: [],
+        website_id: null,
         
 
         new_sheet_name: null,
         
         requiresMapping: false,
-        website_id: null,
+        variablesMap : {},
+        datasourceFields: [],
+        firstDataRow: [],
+
+
+
+
+        // Action creators
+
+
         // global setter
         setValue(type, val) {
 
@@ -116,18 +134,36 @@ document.addEventListener('alpine:init', () => {
         },
 
 
-        variablesMap : {},
-        datasourceFields: [],
-        firstDataRow: [],
+        handleWebsiteTypeChange(event) {
+            $pThis.bind_field_on_change(event);
 
+            $pThis.loadWebsites();
+        },
 
-        getVariablesMap() {
+        handleWebsiteIdChange(event) {
+            $pThis.bind_field_on_change(event);
 
-            var variables = Object.keys($pThis.variablesMap);
+            $pThis.loadPostTypes();
 
-            return variables;
+        
+        },
+
+        handleWebsitePostTypeChange(event) {
+
+            $pThis.bind_field_on_change(event);
+
+            $pThis.loadAvlTemplates();
+        }, 
+
+        
+        handleTemplateFieldChange(event) {
+            
+            $pThis.bind_field_on_change(event);
+
+            $pThis.setTemplateVariables();
 
         },
+
 
 
         setTemplateVariables() {
@@ -161,10 +197,137 @@ document.addEventListener('alpine:init', () => {
                 })
 
                 $pThis.variablesMap = {...varsArray};
+
+                
+                // Attempt automatch of fields.
+                $pThis.autoMatchDSFields();
             
             })
         
         },
+
+
+
+
+
+        loadWebsites() {
+            var selectedType = $pThis.website_type;
+
+
+            if(!selectedType) {
+                alert("website type channot be empty");
+
+                return false;
+            }
+
+            var formValues  = new FormData();
+
+            formValues.append('type', selectedType);
+            axios.post('/websites_type', formValues)
+            .then((response) => {
+                // console.log(response);
+                if(response.data.success) {
+                    
+                    var websitesStore = [];
+                    if( !Array.isArray(response.data.websites) ){
+                        return false;
+                    }
+
+                    response.data.websites.forEach(item => {
+                        websitesStore.push({
+                            id: item.id,
+                            name: item.website_name,
+                            url: item.website_url
+                        })
+                    })
+
+
+                    $pThis.avl_websites = [...websitesStore];
+
+
+                } else {
+                    alert("error loading websites");
+                }
+
+
+            })
+
+
+        },
+
+
+        loadPostTypes() {
+
+            var selectedWebsite = $pThis.website_id;
+
+            if(!selectedWebsite) {
+                alert("website type channot be empty");
+
+                return false;
+
+            }
+
+            var formValues  = new FormData();
+
+            // formValues.append('type', selectedType);
+            axios.get('/api/get_post_types')
+            .then((response) => {
+
+                console.log(response);
+
+                if(response.data.success) {
+
+                    $pThis.avl_post_types = [...response.data.data.post_types];
+
+
+
+                }
+
+            });
+
+
+        
+        
+        },
+
+
+        loadAvlTemplates() {
+
+            var selectedPostType = $pThis.post_type;
+            
+            var formValues = new FormData();
+            formValues.append('post_type', selectedPostType);
+            axios.post('/api/get_templates_by_type', formValues)
+            .then((response) => {
+
+                console.log(response);
+
+                if(!response.data.success) {
+                    alert("No website found for this settings");
+                    return false;
+                }
+
+                if(Array.isArray(response.data.data.posts)) {
+                
+                    $pThis.avl_templates = [...response.data.data.posts];
+                }
+
+            
+            })
+
+        
+        },
+
+        getAvailableVariablesNames() {
+
+            var variables = Object.keys($pThis.variablesMap);
+
+            return variables;
+
+        },
+
+
+        
 
 
         setDatasourceFields() {
@@ -180,7 +343,12 @@ document.addEventListener('alpine:init', () => {
                 if(response.data.success) {
                     
                     $pThis.datasourceFields = [...response.data.data.headers]
-                    $pThis.firstDataRow = [...response.data.data.preview_rows[0]]
+                    $pThis.firstDataRow = [...response.data.data.preview_rows[0]];
+
+
+                    // Attempt automatch of fields.
+                    $pThis.autoMatchDSFields();
+                    
                 }
             
             
@@ -189,13 +357,30 @@ document.addEventListener('alpine:init', () => {
         },
 
 
-        handleTemplateFieldChange(event) {
-            
-            $pThis.bind_field_on_change(event);
+        autoMatchDSFields() {
 
-            $pThis.setTemplateVariables();
+        
+            // Auto matching the fields with the same name
+            var allVariables = $pThis.getAvailableVariablesNames();
 
+            allVariables.forEach(element => {
+
+                var cleanVariable = element.replace("{","").replace("}", "");
+                var dsIndex = $pThis.datasourceFields.findIndex((item) => item === cleanVariable);
+                
+
+                if(dsIndex > -1){
+                    $pThis.variablesMap[element].source_field = cleanVariable;
+                    $pThis.variablesMap[element].preview_row_data = $pThis.firstDataRow[dsIndex];
+                }
+
+
+            });
+
+        
         },
+
+
 
         handle_source_field_change(event) {
 
@@ -239,14 +424,54 @@ document.addEventListener('alpine:init', () => {
 
             }
 
-
-            event.target.attributes;((value, index)=> {
-
-               
+            // event.target.attributes;
             
+            // ((value, index)=> {
+
+            
+            // });
+        
+        
+        },
+
+
+        dataMapJson: '{}',
+
+        submitCreateCampaign(e) {
+            
+            e.preventDefault();
+            
+            $pThis.createDataMapJson();
+
+            setTimeout(() => {
+                e.target.submit();
+            
+            }, 500)
+        },
+
+
+        createDataMapJson() {
+
+            var templateVarNames = $pThis.getAvailableVariablesNames();
+            var outputJson = [];
+
+            templateVarNames.forEach(tempvar => {
+
+                
+                
+                var varmap = [];    
+
+                console.log($pThis.variablesMap[tempvar]);
+                varmap.push(tempvar);
+                varmap.push($pThis.variablesMap[tempvar].source_field);
+
+                outputJson.push(varmap);
+
             });
-        
-        
+
+            $pThis.dataMapJson = JSON.stringify(outputJson);
+
+
         },
 
 
@@ -413,17 +638,15 @@ document.addEventListener('alpine:init', () => {
         var mappingComplete = true;
 
 
-        if($pThis.requiresMapping && mappingComplete) {
+        if($pThis.requiresMapping && !mappingComplete) {
 
             alert("Please Properly map the fields to their relevant variables.");
             return false;
         
         }
-        
-        
-        
 
         $pThis.incrementStep();
+        
     }   
 
 

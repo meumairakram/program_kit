@@ -78,7 +78,7 @@ class CampaignController extends Controller {
             'website_id' => [''],
             'post_type' => [''],
             'wp_template_id' => [''],
-            'data_source_id' => [''],
+            'selected_datasource_id' => [''],
             'data_maps_json' => ['']
         ]);
 
@@ -94,14 +94,15 @@ class CampaignController extends Controller {
         $campaign->website_id = $attributes['website_id'];
       //  $campaign->post_type = $attributes['post_type'];
         $campaign->wp_template_id = $attributes['wp_template_id'];
-        $campaign->data_source_id = $attributes['data_source_id'];
+        $campaign->data_source_id = $attributes['selected_datasource_id'];
         $campaign->status = 'ready';
         $campaign->owner_id = $user->id;
         $campaign->save();
 
+      
 
         $source_maps_fields = array();
-        $data_maps = json_decode($request->input('data_maps_json', true));
+        $data_maps = json_decode($request->input('data_maps_json'), true);
 
         foreach($data_maps as $map) {
 
