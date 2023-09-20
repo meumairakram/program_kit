@@ -1,8 +1,4 @@
 import axios from "axios";
-// import { clean } from "laravel-mix/src/HotReloading";
-
-    
-
         
 
 document.addEventListener('alpine:init', () => {
@@ -14,6 +10,8 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.google_acc_connected = google_acc_connected;
             $pThis = this;
+
+
 
         },
 
@@ -47,7 +45,9 @@ document.addEventListener('alpine:init', () => {
         firstDataRow: [],
 
 
+        dataMapJson: '{}',
 
+        
 
         // Action creators
 
@@ -424,18 +424,8 @@ document.addEventListener('alpine:init', () => {
 
             }
 
-            // event.target.attributes;
-            
-            // ((value, index)=> {
-
-            
-            // });
         
-        
-        },
-
-
-        dataMapJson: '{}',
+        },       
 
         submitCreateCampaign(e) {
             
