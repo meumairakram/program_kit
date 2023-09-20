@@ -23,26 +23,15 @@ class CampaignController extends Controller {
 
         $current_user_id = Auth::user()->id;
     //    $campaigns = Campaign::where('owner_id', $current_user_id)->get();
-        $campaigns = DB::table('campaigns')
-            ->leftjoin('user_datasources', 'campaigns.data_source_id', 'user_datasources.id')
-            ->leftjoin('templates', 'campaigns.wp_template_id','templates.template_id')
-            ->leftjoin('user_websites', 'campaigns.website_id', 'user_websites.id')
-            // ->where("user_websites.is_authenticated", "Verified")
-            ->where('campaigns.owner_id', $current_user_id)
-            ->select(
-                'campaigns.*',
-                'user_datasources.name as dataSourceName',
-                'user_datasources.type as dataSourceType',
-                'templates.template as templateName',
-                'templates.template_variables as variables',
-                'user_websites.website_name as website_name',
-                'user_websites.website_url as website_url'
-            )
-            ->orderBy('campaigns.id', 'ASC')
-            //->distinct()
-            ->get();
-
-        
+       $campaigns = DB::table('campaigns')
+        ->join('user_websites', 'user_websites.id', 'campaigns.website_id')
+        ->join('user_datasources', 'user_datasources.id', 'campaigns.data_source_id')
+        ->join('templates', 'templates.template_id', 'campaigns.wp_template_id')
+        ->where('campaigns.owner_id', $current_user_id)
+        ->select('campaigns.*', 'user_datasources.name', 'user_datasources.type', 'user_websites.website_url')
+        ->orderBy('campaigns.id', 'ASC')
+        // ->distinct()
+        ->get();
      
         return view('dashboard-pages/campaign-management',array(
             'campaigns' => $campaigns

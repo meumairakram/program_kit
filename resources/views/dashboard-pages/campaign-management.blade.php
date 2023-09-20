@@ -30,7 +30,7 @@
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="user.phone" class="form-control-label ms-md-0 ">Search by Title and Website_url</label>
+                                    <label for="user.phone" class="form-control-label ms-md-0 ">Search by Title and Website URL</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <div class="ms-md-0 pe-md-3 d-flex align-items-center">
                                             <div class="input-group">
@@ -113,7 +113,7 @@
                                             <p class="text-xs font-weight-bold mb-0">{{$camp->website_url}}</p>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{$camp->dataSourceName}} ({{$camp->dataSourceType}})</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{$camp->name}} ({{$camp->type}})</p>
                                         </td>
 
                                         <td class="text-center">
