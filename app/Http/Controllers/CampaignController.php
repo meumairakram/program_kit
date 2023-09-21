@@ -30,7 +30,7 @@ class CampaignController extends Controller {
         ->where('campaigns.owner_id', $current_user_id)
         ->select('campaigns.*', 'user_datasources.name', 'user_datasources.type', 'user_websites.website_url')
         ->orderBy('campaigns.id', 'ASC')
-        // ->distinct()
+        ->distinct()
         ->get();
      
         return view('dashboard-pages/campaign-management',array(
@@ -116,10 +116,10 @@ class CampaignController extends Controller {
         // store-campaign
     }
 
-    public function edit(Request $request, $id) {
-
+    public function edit(Request $request, $id) 
+    {
         $current_user_id = Auth::user()->id;
-//      $campaign = Campaign::where('id', $id)->first();
+        //      $campaign = Campaign::where('id', $id)->first();
         $campaign = DB::table('campaigns')
             ->leftjoin('data_source_fields', 'campaigns.data_source_id', '=', 'data_source_fields.data_source_id')
             ->leftjoin('user_datasources', 'campaigns.data_source_id', 'user_datasources.id')
@@ -150,12 +150,25 @@ class CampaignController extends Controller {
         $csvHeaders = $csvData[0];
         $first_10_records = array_slice($csvData, 1, 10);
 
-        return view('dashboard-pages/edit-campaign',compact(["campaign", "allWebsites", "allDatasources", "absolute_file_path", "csvHeaders", "first_10_records"]));
+        $get_auth_token = AuthTokens::where('owner_id', '=', $current_user_id)->first();
+        $google_acc_connected = $get_auth_token ? true : false;
+
+        return view('dashboard-pages/edit-campaign',compact(["campaign", "allWebsites", "allDatasources", "absolute_file_path", "csvHeaders", "first_10_records", "google_acc_connected"]));
     }
 
     public function update(Request $request, Campaign $campaign) 
     {
-        // return $request;
+        $attributes  = $request->validate([
+            'title' => [''],
+            'description' => [],
+            'website_type' => [''],
+            'website_id' => [''],
+            'post_type' => [''],
+            'wp_template_id' => [''],
+            'selected_datasource_id' => [''],
+            'data_maps_json' => ['']
+        ]);
+
         if(!Auth::check()) {
            // User not logged in
         }
@@ -163,37 +176,20 @@ class CampaignController extends Controller {
 
         $user = Auth::user();
         $campaign =  Campaign::find($request->id);
-        $campaign->title = $request->title;
-        $campaign->description = $request->description;
-        $campaign->website_type = $request->website_type;
+        $campaign->title = $attributes['title'];
+        $campaign->description = $attributes['description'];
+        $campaign->website_type = $attributes['website_id'];
         $campaign->website_id = $request->website_id;
-        $campaign->post_type = $request->post_type;
-        $campaign->wp_template_id = $request->wp_template_id;
-        $campaign->data_source_id = $request->data_source_id;
+        // $campaign->post_type = $attributes['post_type'];
+        $campaign->wp_template_id = $attributes['wp_template_id'];
+        $campaign->data_source_id = $attributes['selected_datasource_id'];
         $campaign->status = 'ready';
         $campaign->owner_id = $user->id;
         $campaign->save();
 
-        $templateid= Template::where('template_id', $campaignid->wp_template_id)->where('owner_id', $user->id)->first();
-
-        $template = Template::find($templateid->id);
-        $template->template_id = $request->wp_template_id;;
-        $template->template = $request->template_name;
-        $template->template_variables = $request->variables;
-        $template->owner_id = $user->id;
-        $template->save();
-
-        $datasourceid = DataSourceField::where('data_source_id', $campaignid->data_source_id)->where('owner_id', $user->id)->first();
-
-        $dataSource = DataSourceField::find($datasourceid->id);
-        $dataSource->data_source_id = $request->data_source_id;
-        $dataSource->data_source = $request->data_source_name;
-        $dataSource->data_source_headers = $request->data_source_headers;
-        $dataSource->owner_id = $user->id;
-        $dataSource->save();
-
+        
         $source_maps_fields = array();
-        $data_maps = json_decode($request->input('data_maps_json', true));
+        $data_maps = json_decode($request->input('data_maps_json'), true);
 
         foreach($data_maps as $map) {
 
@@ -208,6 +204,28 @@ class CampaignController extends Controller {
             
             );
         }
+
+
+        // Create data source fields mapping
+        DataSourceField::where('campaign_id', $campaign->id)->insert($source_maps_fields);
+
+        $templateid= Template::where('template_id', $campaignid->wp_template_id)->where('owner_id', $user->id)->first();
+
+        $template = Template::find($templateid->id);
+        $template->template_id = $request->wp_template_id;;
+        $template->template = $request->template_name;
+        $template->template_variables = $request->variables;
+        $template->owner_id = $user->id;
+        $template->save();
+
+        // $datasourceid = DataSourceField::where('data_source_id', $campaignid->data_source_id)->where('owner_id', $user->id)->first();
+
+        // $dataSource = DataSourceField::find($datasourceid->id);
+        // $dataSource->data_source_id = $request->data_source_id;
+        // $dataSource->data_source = $request->data_source_name;
+        // $dataSource->data_source_headers = $request->data_source_headers;
+        // $dataSource->owner_id = $user->id;
+        // $dataSource->save();
 
         return redirect()->route('campaign-management')->with('message', 'Campaign Updated successfully!');
     }

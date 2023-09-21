@@ -2331,9 +2331,9 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-/*!************************************************!*\
-  !*** ./resources/js/create_campaign_script.js ***!
-  \************************************************/
+/*!**********************************************!*\
+  !*** ./resources/js/edit_campaign_script.js ***!
+  \**********************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
@@ -2359,7 +2359,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 document.addEventListener('alpine:init', function () {
   var $pThis = null;
-  Alpine.store("create_campaign_store", {
+  Alpine.update("edit_campaign_store", {
     init: function init() {
       this.google_acc_connected = google_acc_connected;
       $pThis = this;

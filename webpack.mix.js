@@ -26,6 +26,7 @@ mix.webpackConfig({
 
     mix
     .js('resources/js/create_campaign_script.js', 'public/js')
+    .js('resources/js/edit_campaign_script.js', 'public/js')
     .js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
         //
