@@ -71,6 +71,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('delete-campaign/{id}', [CampaignController::class, 'delete'])->name('delete-campaign');
 
     Route::post('/websites_type', [CampaignController::class, 'selectWebSite']);
+    Route::post('/get_mapping_existing_data', [CampaignController::class, 'getMappingExistingData']);
 
 
 	// websites

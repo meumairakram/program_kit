@@ -191,43 +191,80 @@ class CampaignController extends Controller {
         $source_maps_fields = array();
         $data_maps = json_decode($request->input('data_maps_json'), true);
 
-        foreach($data_maps as $map) {
-
+        foreach ($data_maps as $map) {
             $variable_name = $map[0];
             $header_name = $map[1];
 
-            $source_maps_fields[] = array(
+            $existingRecords = DataSourceField::where(
+                'campaign_id', $campaign->id
+            )->get();
 
-                'campaign_id' => $campaign->id,
-                'data_source' => $variable_name,
-                'data_source_headers' => $header_name,  
-            
-            );
+            foreach ($existingRecords as $existingRecord) {
+                $existingRecord->update([
+                    'campaign_id' => $campaign->id,
+                    'data_source' => $variable_name,
+                    'data_source_headers' => $header_name,
+                ]);
+            }
+        
         }
 
-
-        // Create data source fields mapping
-        DataSourceField::where('campaign_id', $campaign->id)->insert($source_maps_fields);
-
-        $templateid= Template::where('template_id', $campaignid->wp_template_id)->where('owner_id', $user->id)->first();
-
-        $template = Template::find($templateid->id);
-        $template->template_id = $request->wp_template_id;;
-        $template->template = $request->template_name;
-        $template->template_variables = $request->variables;
-        $template->owner_id = $user->id;
-        $template->save();
-
-        // $datasourceid = DataSourceField::where('data_source_id', $campaignid->data_source_id)->where('owner_id', $user->id)->first();
-
-        // $dataSource = DataSourceField::find($datasourceid->id);
-        // $dataSource->data_source_id = $request->data_source_id;
-        // $dataSource->data_source = $request->data_source_name;
-        // $dataSource->data_source_headers = $request->data_source_headers;
-        // $dataSource->owner_id = $user->id;
-        // $dataSource->save();
-
         return redirect()->route('campaign-management')->with('message', 'Campaign Updated successfully!');
+    }
+
+    public function getMappingExistingData(Request $request)
+    {
+
+        $campaign_id = $request->input('id');
+
+        $mapData = DataSourceField::where(['campaign_id' => $datasource_id])->get();
+
+        if(!$mapData) {
+
+            return response()->json(array(
+                'success' => false,
+                'data' => null,
+                'error' => 'No data with this id exists'
+            ));
+        
+        }
+
+        $datasource_id = $request->input('ds_id');
+
+        $datasource = Datasources::where(['id' => $datasource_id])->first();
+
+        $filePath = $datasource->file_path;
+
+        $absolute_file_path = storage_path('app/' . $filePath);
+
+        if (!file_exists($absolute_file_path)) {
+            return response()->json([
+                "success" => false,
+                "data" => []
+            ]);
+        }
+        
+        $csvData = array_map("str_getcsv", file($absolute_file_path));
+        $csvHeaders = $csvData[0];
+        $first_10_records = array_slice($csvData, 1, 10);
+
+        if($mapData['data_source_headers'] == $csvHeaders){
+            return response()->json([
+                "success" => true,
+                "data" => array(
+                    "variables" => $mapData['data_source'],
+                    "heraders" => $mapData['data_source_headers'],
+                    "preview_rows" => $first_10_records[0]
+                )
+            ]);
+        }
+ 
+        return response()->json([
+            "success" => true,
+            "data" => array(
+                "mapData" => $mapData
+            )
+        ]);
     }
 
     public function delete(Request $request, $id)

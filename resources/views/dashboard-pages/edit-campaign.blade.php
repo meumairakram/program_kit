@@ -2,7 +2,7 @@
 
 @section('content')
 
-<form x-data='$store.edit_campaign_store' @submit="submitCreateCampaign" class="container-fluid py-4" action="{{ route('store-campaign') }}" method="POST" role="form text-left">
+<form x-data='$store.edit_campaign_store' @submit="submitCreateCampaign" class="container-fluid py-4" action="{{ route('update-campaign') }}" method="POST" role="form text-left">
 
             <div class="card mb-4">
                 <div class="card-header pb-0 px-3">
@@ -43,7 +43,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" name="id" value="{{$campaign->id}}">
+
+                         <div x-data="{ id: document.getElementById('fetchId').value }">
+
+                            <input type="hidden" name="id" id="fetchId" value="{{$campaign->id}}">
+                            
+                        </div>
+
+
+                                <!-- <input type="hidden" name="id" id="fetchId" value="{{$campaign->id}}"> -->
+
+
                             <!-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Type</label>
@@ -564,8 +574,22 @@
                                     </thead>
 
                                     <tbody>
+                                        <template x-for="(variable, index) in getAvailableVariablesNames()">
+                                            <tr>
+                                                <td x-text="variable"></td>
+                                                <td>
+                                                    <select class="form-control" @change="handle_source_field_change" x-bind:vartarget="variable" name="selected_field">
+                                                        <template x-for="field in datasourceFields">
+                                                            <option :value="field" x-text="field" :selected="field === variablesMap[variable].source_field"></option>
+                                                        </template>
+                                                    </select>
+                                                </td>
+                                                <td x-text="variablesMap[variable] ? variablesMap[variable].preview_row_data : 'Select a field'"></td>
+                                            </tr>
+                                        </template>
 
-                                        <template x-for="variable in getAvailableVariablesNames()">
+
+                                        <!-- <template x-for="variable in getAvailableVariablesNames()">
                                             
                                             <tr>
                                                 <td x-text="variable"></td>
@@ -585,7 +609,7 @@
                                             </tr>
 
 
-                                        </template>
+                                        </template> -->
                                     
                                     
                                     </tbody>

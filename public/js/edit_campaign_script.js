@@ -2359,16 +2359,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 document.addEventListener('alpine:init', function () {
   var $pThis = null;
-  Alpine.update("edit_campaign_store", {
+  Alpine.store("edit_campaign_store", {
     init: function init() {
       this.google_acc_connected = google_acc_connected;
       $pThis = this;
     },
-    currentStep: 3,
+    currentStep: 4,
     google_acc_connected: false,
     sheet_type: null,
     //  new or exisitng
     data_source_id: null,
+    _id: null,
     // create_new_datasource: action_create_new_datasource.bind(this),
     ds_source_type: "existing",
     // new or existing
@@ -2419,8 +2420,7 @@ document.addEventListener('alpine:init', function () {
         id: source_id,
         title: source_title
       };
-      $pThis.setDatasourceFields();
-      this.incrementStep();
+      $pThis.setDatasourceFields(); // this.incrementStep();
     },
     getSelectedDSLabel: function getSelectedDSLabel() {
       return "".concat(this.data_source_id.title, " - #").concat(this.data_source_id.id);
@@ -2624,6 +2624,44 @@ document.addEventListener('alpine:init', function () {
       });
       $pThis.dataMapJson = JSON.stringify(outputJson);
     },
+    set_cm_id: function set_cm_id(event) {
+      var cm_id = event.target.value;
+      this.data_cm_id = {
+        id: cm_id
+      };
+      $pThis.fetchData();
+    },
+    fetchData: function fetchData() {
+      var _this = this;
+
+      var cm_id = $pThis.cm_id;
+      var formValues = new FormData();
+      formValues.append('id', cm_id);
+      formValues.append('ds_id', $pThis.data_source_id.id);
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/get_mapping_existing_data', formValues).then(function (response) {
+        if (response.data.success) {
+          var data = response.data.data;
+          var outputJson = [];
+          var headermap = [];
+          var previewmap = [];
+          data.forEach(function (tempvar) {
+            var varmap = [];
+            varmap.push(tempvar);
+            varmap.push(_this.variablesMap[tempvar].source_field);
+            headermap.push(_this.datasourceFields[tempvar]);
+            previewmap.push(_this.firstDataRow[tempvar]);
+            outputJson.push(varmap);
+          });
+          _this.dataMapJson = JSON.stringify(outputJson);
+          _this.datasourceFields = JSON.stringify(headermap);
+          _this.firstDataRow = JSON.stringify(previewmap); // ... and other properties ...
+        } else {
+          console.error('Failed to fetch data from the server');
+        }
+      })["catch"](function (error) {
+        console.error('Error fetching data:', error);
+      });
+    },
     // Action Creators
     action_create_new_sheet_with_vars: action_create_new_sheet_with_vars,
     action_handle_campaign_info_step: action_handle_campaign_info_step,
@@ -2635,7 +2673,7 @@ document.addEventListener('alpine:init', function () {
   });
 
   function action_create_new_sheet_with_vars(event) {
-    var _this = this;
+    var _this2 = this;
 
     event.preventDefault();
     this.ds_loading = true;
@@ -2652,7 +2690,7 @@ document.addEventListener('alpine:init', function () {
     axios__WEBPACK_IMPORTED_MODULE_0___default().post('/sheets/create_new', formValues).then(function (response) {
       if (response.data.success) {
         var sheetFormValues = new FormData();
-        sheetFormValues.append('title', _this.new_sheet_name);
+        sheetFormValues.append('title', _this2.new_sheet_name);
         sheetFormValues.append('type', 'google_sheet');
         sheetFormValues.append('requires_mapping', '0'); // sheetFormValues.append('file_path','');
 
@@ -2700,7 +2738,7 @@ document.addEventListener('alpine:init', function () {
       return false;
     }
 
-    $pThis.incrementStep();
+    $pThis.currentStep = 2; // Set the current step to the desired step number
   }
 
   function action_handle_website_submit_step() {
@@ -2711,7 +2749,7 @@ document.addEventListener('alpine:init', function () {
       return false;
     }
 
-    $pThis.incrementStep();
+    $pThis.currentStep = 3; // Set the current step to the desired step number
   }
 
   function action_handle_ds_step() {
@@ -2720,7 +2758,7 @@ document.addEventListener('alpine:init', function () {
       return false;
     }
 
-    $pThis.incrementStep();
+    $pThis.currentStep = 4; // Set the current step to the desired step number
   }
 
   function action_handle_map_step() {
@@ -2731,7 +2769,7 @@ document.addEventListener('alpine:init', function () {
       return false;
     }
 
-    $pThis.incrementStep();
+    $pThis.currentStep = 5;
   }
 });
 })();

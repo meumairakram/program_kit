@@ -9,7 +9,7 @@ document.addEventListener('alpine:init', () => {
             
     var $pThis = null;
 
-    Alpine.update("edit_campaign_store", {
+    Alpine.store("edit_campaign_store", {
 
         init() {
             this.google_acc_connected = google_acc_connected;
@@ -17,10 +17,11 @@ document.addEventListener('alpine:init', () => {
 
         },
 
-        currentStep: 3,
+        currentStep: 4,
         google_acc_connected: false,
         sheet_type: null,   //  new or exisitng
         data_source_id: null,
+        _id: null,
         // create_new_datasource: action_create_new_datasource.bind(this),
         ds_source_type: "existing",     // new or existing
 
@@ -111,7 +112,7 @@ document.addEventListener('alpine:init', () => {
 
 
             $pThis.setDatasourceFields();
-            this.incrementStep();
+            // this.incrementStep();
 
 
         },
@@ -473,6 +474,61 @@ document.addEventListener('alpine:init', () => {
 
 
         },
+        
+        set_cm_id(event) {
+
+            var cm_id =  event.target.value;
+
+            this.data_cm_id = { 
+                id: cm_id
+            };
+
+            $pThis.fetchData();
+
+        },
+
+        fetchData() {
+
+            var cm_id = $pThis.cm_id;
+
+                var formValues = new FormData();
+                formValues.append('id', cm_id);
+                formValues.append('ds_id', $pThis.data_source_id.id);
+    
+                axios.post('/get_mapping_existing_data', formValues)
+                    .then(response => {
+                        if (response.data.success) {
+                            var data = response.data.data;
+    
+                            var outputJson = [];
+                            var headermap = [];
+                            var previewmap = [];
+    
+                            data.forEach(tempvar => {
+                                var varmap = [];
+                                varmap.push(tempvar);
+                                varmap.push(this.variablesMap[tempvar].source_field);
+    
+                                headermap.push(this.datasourceFields[tempvar]);
+                                previewmap.push(this.firstDataRow[tempvar]);
+    
+                                outputJson.push(varmap);
+                            });
+    
+                            this.dataMapJson = JSON.stringify(outputJson);
+                            this.datasourceFields = JSON.stringify(headermap);
+                            this.firstDataRow = JSON.stringify(previewmap);
+    
+                            // ... and other properties ...
+                        } else {
+                            console.error('Failed to fetch data from the server');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+         
+        },
 
 
 
@@ -578,77 +634,50 @@ document.addEventListener('alpine:init', () => {
         this.new_ds_type = null;
         
     }
-
-
-
+  
     function action_handle_campaign_info_step() {
-
         var title = $('#campaign-title');
-
         var desc = $('#about');
-
-
-        if(title.val() == "" || desc.val() == "") {
-        
+    
+        if (title.val() == "" || desc.val() == "") {
             alert("Please fill in campaign info.");
-
             return false;
-
         }
-
-        $pThis.incrementStep();
-        
+    
+        $pThis.currentStep = 2; // Set the current step to the desired step number
     }
-
-
-
+    
     function action_handle_website_submit_step() {
-
         var selectedTemplate = $('#template');
-
-        if( selectedTemplate.val() == "" ) {
-        
+    
+        if (selectedTemplate.val() == "") {
             alert("Please fill in website info.");
             return false;
-
         }
-        
-        $pThis.incrementStep();
-
-    }
-
-
-    function action_handle_ds_step() {
     
-        if($pThis.data_source_id == null) {
-
+        $pThis.currentStep = 3; // Set the current step to the desired step number
+    }
+    
+    function action_handle_ds_step() {
+        if ($pThis.data_source_id == null) {
             alert("Please select a datasource.");
             return false;
-        
         }
-        
-
-        $pThis.incrementStep();
-
-
+    
+        $pThis.currentStep = 4; // Set the current step to the desired step number
     }
-
+    
     function action_handle_map_step() {
-
         var mappingComplete = true;
-
-
-        if($pThis.requiresMapping && !mappingComplete) {
-
+    
+        if ($pThis.requiresMapping && !mappingComplete) {
             alert("Please Properly map the fields to their relevant variables.");
             return false;
-        
         }
-
-        $pThis.incrementStep();
-        
-    }   
-
+    
+        $pThis.currentStep = 5; 
+    }
+    
 
 
 });
