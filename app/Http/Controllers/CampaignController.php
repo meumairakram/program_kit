@@ -141,6 +141,8 @@ class CampaignController extends Controller {
 
         $allWebsites = WebsitesInfo::where("owner_id", "=", $current_user_id)->get();
         $allDatasources = Datasources::where("owner_id", "=", $current_user_id)->get();
+        $mapData = DataSourceField::where(['campaign_id' => $id])->select('id', 'campaign_id', 'data_source', 'data_source_headers')->get();
+
 
         $datasources = DB::table('user_datasources')->where('id', $campaign->data_source_id)->first();
         $file_path = $datasources->file_path; 
@@ -153,7 +155,7 @@ class CampaignController extends Controller {
         $get_auth_token = AuthTokens::where('owner_id', '=', $current_user_id)->first();
         $google_acc_connected = $get_auth_token ? true : false;
 
-        return view('dashboard-pages/edit-campaign',compact(["campaign", "allWebsites", "allDatasources", "absolute_file_path", "csvHeaders", "first_10_records", "google_acc_connected"]));
+        return view('dashboard-pages/edit-campaign',compact(["campaign", "allWebsites", "allDatasources", "absolute_file_path", "google_acc_connected", 'mapData']));
     }
 
     public function update(Request $request, Campaign $campaign) 
@@ -212,60 +214,60 @@ class CampaignController extends Controller {
         return redirect()->route('campaign-management')->with('message', 'Campaign Updated successfully!');
     }
 
-    public function getMappingExistingData(Request $request)
-    {
+    // public function getMappingExistingData(Request $request)
+    // {
 
-        $campaign_id = $request->input('id');
+    //     $campaign_id = $request->input('id');
 
-        $mapData = DataSourceField::where(['campaign_id' => $datasource_id])->get();
+    //     $mapData = DataSourceField::where(['campaign_id' => $datasource_id])->get();
 
-        if(!$mapData) {
+    //     if(!$mapData) {
 
-            return response()->json(array(
-                'success' => false,
-                'data' => null,
-                'error' => 'No data with this id exists'
-            ));
+    //         return response()->json(array(
+    //             'success' => false,
+    //             'data' => null,
+    //             'error' => 'No data with this id exists'
+    //         ));
         
-        }
+    //     }
 
-        $datasource_id = $request->input('ds_id');
+    //     $datasource_id = $request->input('ds_id');
 
-        $datasource = Datasources::where(['id' => $datasource_id])->first();
+    //     $datasource = Datasources::where(['id' => $datasource_id])->first();
 
-        $filePath = $datasource->file_path;
+    //     $filePath = $datasource->file_path;
 
-        $absolute_file_path = storage_path('app/' . $filePath);
+    //     $absolute_file_path = storage_path('app/' . $filePath);
 
-        if (!file_exists($absolute_file_path)) {
-            return response()->json([
-                "success" => false,
-                "data" => []
-            ]);
-        }
+    //     if (!file_exists($absolute_file_path)) {
+    //         return response()->json([
+    //             "success" => false,
+    //             "data" => []
+    //         ]);
+    //     }
         
-        $csvData = array_map("str_getcsv", file($absolute_file_path));
-        $csvHeaders = $csvData[0];
-        $first_10_records = array_slice($csvData, 1, 10);
+    //     $csvData = array_map("str_getcsv", file($absolute_file_path));
+    //     $csvHeaders = $csvData[0];
+    //     $first_10_records = array_slice($csvData, 1, 10);
 
-        if($mapData['data_source_headers'] == $csvHeaders){
-            return response()->json([
-                "success" => true,
-                "data" => array(
-                    "variables" => $mapData['data_source'],
-                    "heraders" => $mapData['data_source_headers'],
-                    "preview_rows" => $first_10_records[0]
-                )
-            ]);
-        }
+    //     if($mapData['data_source_headers'] == $csvHeaders){
+    //         return response()->json([
+    //             "success" => true,
+    //             "data" => array(
+    //                 "variables" => $mapData['data_source'],
+    //                 "heraders" => $mapData['data_source_headers'],
+    //                 "preview_rows" => $first_10_records[0]
+    //             )
+    //         ]);
+    //     }
  
-        return response()->json([
-            "success" => true,
-            "data" => array(
-                "mapData" => $mapData
-            )
-        ]);
-    }
+    //     return response()->json([
+    //         "success" => true,
+    //         "data" => array(
+    //             "mapData" => $mapData
+    //         )
+    //     ]);
+    // }
 
     public function delete(Request $request, $id)
     {

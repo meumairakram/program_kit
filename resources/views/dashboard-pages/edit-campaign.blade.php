@@ -550,10 +550,10 @@
             </div> -->
 
 
-        <div class="card mb-4 mapdata" x-show="currentStep > 3 && requiresMapping == true">
+        <div class="card mb-4 mapdata" x-show="requiresMapping == true">
 
             <template x-if="requiresMapping == true">
-                <div class="card mb-4 mapdata">
+                <div class="card mb-4 mapdata" x-data="editCampaign">
                     <div class="card-header pb-0 px-3">
                         <h6 class="mb-0">Map Data Fields</h6>
                     </div>
@@ -572,48 +572,23 @@
                                         </tr>
 
                                     </thead>
-
+                                    
                                     <tbody>
-                                        <template x-for="(variable, index) in getAvailableVariablesNames()">
+                                        <template x-for="variable in getAvailableVariablesNames()">
                                             <tr>
                                                 <td x-text="variable"></td>
                                                 <td>
                                                     <select class="form-control" @change="handle_source_field_change" x-bind:vartarget="variable" name="selected_field">
                                                         <template x-for="field in datasourceFields">
-                                                            <option :value="field" x-text="field" :selected="field === variablesMap[variable].source_field"></option>
-                                                        </template>
+                                                            <option x-bind:selected="field === variablesMap[variable]?.source_field ? 'true' : null" x-bind:value="field" x-text="field"></option>
+                                                        </template> 
                                                     </select>
                                                 </td>
                                                 <td x-text="variablesMap[variable] ? variablesMap[variable].preview_row_data : 'Select a field'"></td>
                                             </tr>
                                         </template>
-
-
-                                        <!-- <template x-for="variable in getAvailableVariablesNames()">
-                                            
-                                            <tr>
-                                                <td x-text="variable"></td>
-                                                <td>
-
-                                                    <select class="form-control" @change="handle_source_field_change" x-bind:vartarget="variable" name="selected_field">
-
-                                                        <template x-for="field in datasourceFields">
-                                                            <option x-bind:selected="field == variablesMap[variable].source_field ? 'true' : null" x-bind:value="field" x-text="field"></option>
-
-                                                        </template> 
-                                                    
-                                                    </select>
-                                                
-                                                </td>
-                                                <td x-text="variablesMap[variable] ? variablesMap[variable].preview_row_data : 'Select a field'"></td>
-                                            </tr>
-
-
-                                        </template> -->
-                                    
-                                    
                                     </tbody>
-
+                              
                                 </table>
 
                             </div>
@@ -697,7 +672,7 @@
             </div> -->
 
 
-            <div class="card SaveAndStart" x-show="currentStep  > 4">
+            <div class="card SaveAndStart" >
 
                 <div class="card-header pb-0 px-3">
                     <h6 class="mb-0">Lets save and start</h6>
@@ -738,6 +713,8 @@
     <script>
         
         var google_acc_connected = @if($google_acc_connected) true @else false @endif ;
+     
+        var mapData = <?php echo json_encode($mapData); ?>;
 
     </script>
 

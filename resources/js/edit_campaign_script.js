@@ -14,10 +14,10 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.google_acc_connected = google_acc_connected;
             $pThis = this;
-
+            this.requiresMapping = true;
         },
 
-        currentStep: 4,
+        // currentStep: 5,
         google_acc_connected: false,
         sheet_type: null,   //  new or exisitng
         data_source_id: null,
@@ -61,17 +61,17 @@ document.addEventListener('alpine:init', () => {
         },
 
 
-        incrementStep() {
+        // incrementStep() {
 
-            this.currentStep = this.currentStep + 1;
+        //     this.currentStep = this.currentStep + 1;
         
-        },
+        // },
 
-        decrementStep() {
+        // decrementStep() {
 
-            this.currentStep = this.currentStep - 1;
+        //     this.currentStep = this.currentStep - 1;
         
-        },
+        // },
 
 
 
@@ -403,7 +403,7 @@ document.addEventListener('alpine:init', () => {
         
         },
 
-
+        
         bind_field_on_change(event) {
 
             event.preventDefault();
@@ -475,60 +475,6 @@ document.addEventListener('alpine:init', () => {
 
         },
         
-        set_cm_id(event) {
-
-            var cm_id =  event.target.value;
-
-            this.data_cm_id = { 
-                id: cm_id
-            };
-
-            $pThis.fetchData();
-
-        },
-
-        fetchData() {
-
-            var cm_id = $pThis.cm_id;
-
-                var formValues = new FormData();
-                formValues.append('id', cm_id);
-                formValues.append('ds_id', $pThis.data_source_id.id);
-    
-                axios.post('/get_mapping_existing_data', formValues)
-                    .then(response => {
-                        if (response.data.success) {
-                            var data = response.data.data;
-    
-                            var outputJson = [];
-                            var headermap = [];
-                            var previewmap = [];
-    
-                            data.forEach(tempvar => {
-                                var varmap = [];
-                                varmap.push(tempvar);
-                                varmap.push(this.variablesMap[tempvar].source_field);
-    
-                                headermap.push(this.datasourceFields[tempvar]);
-                                previewmap.push(this.firstDataRow[tempvar]);
-    
-                                outputJson.push(varmap);
-                            });
-    
-                            this.dataMapJson = JSON.stringify(outputJson);
-                            this.datasourceFields = JSON.stringify(headermap);
-                            this.firstDataRow = JSON.stringify(previewmap);
-    
-                            // ... and other properties ...
-                        } else {
-                            console.error('Failed to fetch data from the server');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching data:', error);
-                    });
-         
-        },
 
 
 
@@ -546,6 +492,112 @@ document.addEventListener('alpine:init', () => {
     });
 
 
+    Alpine.data('editCampaign', () => ({
+        datasourceFields: [],
+        selectOptions: [],
+        // variablesMap: {},
+        requiresMapping: true,
+
+        init() {
+            this.loadMapData();
+        },
+
+        // loadMapData() {
+        //     // Initialize arrays for variables and data source headers
+        //     const variables = [];
+        //     const dataSources = [];
+        
+        //     mapData.forEach((item) => {
+        //         const variable = item.data_source;
+        //         const dataSource = item.data_source_headers;
+        //         console.log(variable);
+        //         console.log(dataSource);
+    
+        //         variables.push(variable);
+            
+        //         dataSources.push(dataSource);
+        //     });
+        
+        //     console.log(variables);
+        //     console.log(dataSources);
+        
+        //     // Populate selectOptions with data source headers
+        //     this.selectOptions = dataSources.map((dataSource) => ({
+        //         value: dataSource,
+        //         text: dataSource,
+        //     }));
+        //     dataSources.forEach(header => {
+            
+        //     var dataRowIndex = $pThis.datasourceFields.findIndex((item) => item === header);
+
+
+        //     $pThis.variablesMap[$(header).attr('vartarget')].source_field = header;
+            
+        //     if(dataRowIndex > -1) {
+                
+        //         $pThis.variablesMap[$(header).attr('vartarget')].preview_row_data = $pThis.firstDataRow[dataRowIndex];
+            
+        //     }
+        
+        //     });
+
+
+        //     // Set the variablesMap with variables
+        //     // var vari = Object.keys($pThis.variablesMap);
+
+        //     var outputJson = [];
+            
+        //     variables.forEach(tempvar => {
+                
+        //         var varmap = [];    
+
+        //         console.log($pThis.variablesMap[tempvar]);
+        //         varmap.push(tempvar);
+        //         varmap.push($pThis.variablesMap[tempvar].source_field);
+
+        //         outputJson.push(varmap);
+
+        //     });
+
+        //     $pThis.dataMapJson = JSON.stringify(outputJson);
+        // },
+        
+        loadMapData() {
+            // Initialize arrays for variables and data source headers
+            const variables = [];
+            const dataSources = [];
+        
+            mapData.forEach((item) => {
+                const variable = item.data_source;
+                const dataSource = item.data_source_headers;
+        
+                variables.push(variable);
+                dataSources.push(dataSource);
+            });
+        
+            // Populate selectOptions with data source headers
+          
+            variables.forEach((variable) => {
+                if (!this.variablesMap[variable]) {
+                    this.variablesMap[variable] = {};
+                    dataSources.forEach((header) => {
+                        const dsIndex = this.datasourceFields.findIndex((item) => item === header);
+                       
+                            this.variablesMap[variable][header] = {
+                                source_field: header,
+                                preview_row_data: this.firstDataRow[dsIndex]
+                            };
+                        
+                    });
+                } else {
+                   // 
+                }
+            });
+            
+        }
+        
+
+    }));
 
     function action_create_new_sheet_with_vars(event) {
 
@@ -597,8 +649,8 @@ document.addEventListener('alpine:init', () => {
 
                         $pThis.ds_loading = false;
 
-                        $pThis.incrementStep();
-                        $pThis.incrementStep();
+                        // $pThis.incrementStep();
+                        // $pThis.incrementStep();
 
                     }
 
@@ -613,20 +665,13 @@ document.addEventListener('alpine:init', () => {
     
     }
 
-
-
-
-
-
     // Action Creators
-
     function action_removeSelectedDataSource() {
     
             this.data_source_id = null;
-            $pThis.decrementStep();
+            // $pThis.decrementStep();
         
     }
-
 
     function action_switch_ds_type(event, type) {
 
@@ -644,7 +689,7 @@ document.addEventListener('alpine:init', () => {
             return false;
         }
     
-        $pThis.currentStep = 2; // Set the current step to the desired step number
+        // $pThis.currentStep = 2; // Set the current step to the desired step number
     }
     
     function action_handle_website_submit_step() {
@@ -655,7 +700,7 @@ document.addEventListener('alpine:init', () => {
             return false;
         }
     
-        $pThis.currentStep = 3; // Set the current step to the desired step number
+        // $pThis.currentStep = 3; // Set the current step to the desired step number
     }
     
     function action_handle_ds_step() {
@@ -664,7 +709,7 @@ document.addEventListener('alpine:init', () => {
             return false;
         }
     
-        $pThis.currentStep = 4; // Set the current step to the desired step number
+        // $pThis.currentStep = 4; // Set the current step to the desired step number
     }
     
     function action_handle_map_step() {
@@ -675,9 +720,7 @@ document.addEventListener('alpine:init', () => {
             return false;
         }
     
-        $pThis.currentStep = 5; 
+        // $pThis.currentStep = 5; 
     }
-    
-
 
 });
