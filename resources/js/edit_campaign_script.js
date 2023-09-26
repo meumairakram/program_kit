@@ -493,107 +493,33 @@ document.addEventListener('alpine:init', () => {
 
 
     Alpine.data('editCampaign', () => ({
-        datasourceFields: [],
-        selectOptions: [],
-        // variablesMap: {},
-        requiresMapping: true,
-
+        
         init() {
             this.loadMapData();
         },
-
-        // loadMapData() {
-        //     // Initialize arrays for variables and data source headers
-        //     const variables = [];
-        //     const dataSources = [];
-        
-        //     mapData.forEach((item) => {
-        //         const variable = item.data_source;
-        //         const dataSource = item.data_source_headers;
-        //         console.log(variable);
-        //         console.log(dataSource);
-    
-        //         variables.push(variable);
-            
-        //         dataSources.push(dataSource);
-        //     });
-        
-        //     console.log(variables);
-        //     console.log(dataSources);
-        
-        //     // Populate selectOptions with data source headers
-        //     this.selectOptions = dataSources.map((dataSource) => ({
-        //         value: dataSource,
-        //         text: dataSource,
-        //     }));
-        //     dataSources.forEach(header => {
-            
-        //     var dataRowIndex = $pThis.datasourceFields.findIndex((item) => item === header);
-
-
-        //     $pThis.variablesMap[$(header).attr('vartarget')].source_field = header;
-            
-        //     if(dataRowIndex > -1) {
-                
-        //         $pThis.variablesMap[$(header).attr('vartarget')].preview_row_data = $pThis.firstDataRow[dataRowIndex];
-            
-        //     }
-        
-        //     });
-
-
-        //     // Set the variablesMap with variables
-        //     // var vari = Object.keys($pThis.variablesMap);
-
-        //     var outputJson = [];
-            
-        //     variables.forEach(tempvar => {
-                
-        //         var varmap = [];    
-
-        //         console.log($pThis.variablesMap[tempvar]);
-        //         varmap.push(tempvar);
-        //         varmap.push($pThis.variablesMap[tempvar].source_field);
-
-        //         outputJson.push(varmap);
-
-        //     });
-
-        //     $pThis.dataMapJson = JSON.stringify(outputJson);
-        // },
         
         loadMapData() {
-            // Initialize arrays for variables and data source headers
-            const variables = [];
-            const dataSources = [];
+     
+            let variableIndex = 0;
         
             mapData.forEach((item) => {
-                const variable = item.data_source;
+                const variable = item.data_source.replace("{","").replace("}", "");;
                 const dataSource = item.data_source_headers;
-        
-                variables.push(variable);
-                dataSources.push(dataSource);
-            });
-        
-            // Populate selectOptions with data source headers
-          
-            variables.forEach((variable) => {
-                if (!this.variablesMap[variable]) {
-                    this.variablesMap[variable] = {};
-                    dataSources.forEach((header) => {
-                        const dsIndex = this.datasourceFields.findIndex((item) => item === header);
-                       
-                            this.variablesMap[variable][header] = {
-                                source_field: header,
-                                preview_row_data: this.firstDataRow[dsIndex]
-                            };
-                        
-                    });
-                } else {
-                   // 
-                }
-            });
+
+                // $pThis.variablesMap[variable] = dataSource;
+                $pThis.variablesMap[variable] = {
+                    source_field: dataSource[variableIndex],
+                };
             
+                variableIndex++;
+    
+                $pThis.datasourceFields = [...$pThis.datasourceFields, dataSource];
+  
+            });
+            $pThis.variablesMap[$('.sourceFieldClass').attr('vartarget')].source_field = $pThis.datasourceFields;
+        
+            console.log($pThis.variablesMap);
+            console.log($pThis.datasourceFields);
         }
         
 

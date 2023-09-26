@@ -578,7 +578,7 @@
                                             <tr>
                                                 <td x-text="variable"></td>
                                                 <td>
-                                                    <select class="form-control" @change="handle_source_field_change" x-bind:vartarget="variable" name="selected_field">
+                                                    <select class="form-control .sourceFieldClass" @change="handle_source_field_change" x-bind:vartarget="variable" name="selected_field">
                                                         <template x-for="field in datasourceFields">
                                                             <option x-bind:selected="field === variablesMap[variable]?.source_field ? 'true' : null" x-bind:value="field" x-text="field"></option>
                                                         </template> 

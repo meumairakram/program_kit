@@ -2636,86 +2636,31 @@ document.addEventListener('alpine:init', function () {
   });
   Alpine.data('editCampaign', function () {
     return {
-      datasourceFields: [],
-      selectOptions: [],
-      // variablesMap: {},
-      requiresMapping: true,
       init: function init() {
         this.loadMapData();
       },
-      // loadMapData() {
-      //     // Initialize arrays for variables and data source headers
-      //     const variables = [];
-      //     const dataSources = [];
-      //     mapData.forEach((item) => {
-      //         const variable = item.data_source;
-      //         const dataSource = item.data_source_headers;
-      //         console.log(variable);
-      //         console.log(dataSource);
-      //         variables.push(variable);
-      //         dataSources.push(dataSource);
-      //     });
-      //     console.log(variables);
-      //     console.log(dataSources);
-      //     // Populate selectOptions with data source headers
-      //     this.selectOptions = dataSources.map((dataSource) => ({
-      //         value: dataSource,
-      //         text: dataSource,
-      //     }));
-      //     dataSources.forEach(header => {
-      //     var dataRowIndex = $pThis.datasourceFields.findIndex((item) => item === header);
-      //     $pThis.variablesMap[$(header).attr('vartarget')].source_field = header;
-      //     if(dataRowIndex > -1) {
-      //         $pThis.variablesMap[$(header).attr('vartarget')].preview_row_data = $pThis.firstDataRow[dataRowIndex];
-      //     }
-      //     });
-      //     // Set the variablesMap with variables
-      //     // var vari = Object.keys($pThis.variablesMap);
-      //     var outputJson = [];
-      //     variables.forEach(tempvar => {
-      //         var varmap = [];    
-      //         console.log($pThis.variablesMap[tempvar]);
-      //         varmap.push(tempvar);
-      //         varmap.push($pThis.variablesMap[tempvar].source_field);
-      //         outputJson.push(varmap);
-      //     });
-      //     $pThis.dataMapJson = JSON.stringify(outputJson);
-      // },
       loadMapData: function loadMapData() {
-        var _this = this;
-
-        // Initialize arrays for variables and data source headers
-        var variables = [];
-        var dataSources = [];
+        var variableIndex = 0;
         mapData.forEach(function (item) {
-          var variable = item.data_source;
-          var dataSource = item.data_source_headers;
-          variables.push(variable);
-          dataSources.push(dataSource);
-        }); // Populate selectOptions with data source headers
+          var variable = item.data_source.replace("{", "").replace("}", "");
+          ;
+          var dataSource = item.data_source_headers; // $pThis.variablesMap[variable] = dataSource;
 
-        variables.forEach(function (variable) {
-          if (!_this.variablesMap[variable]) {
-            _this.variablesMap[variable] = {};
-            dataSources.forEach(function (header) {
-              var dsIndex = _this.datasourceFields.findIndex(function (item) {
-                return item === header;
-              });
-
-              _this.variablesMap[variable][header] = {
-                source_field: header,
-                preview_row_data: _this.firstDataRow[dsIndex]
-              };
-            });
-          } else {// 
-          }
+          $pThis.variablesMap[variable] = {
+            source_field: dataSource[variableIndex]
+          };
+          variableIndex++;
+          $pThis.datasourceFields = [].concat(_toConsumableArray($pThis.datasourceFields), [dataSource]);
         });
+        $pThis.variablesMap[$('.sourceFieldClass').attr('vartarget')].source_field = $pThis.datasourceFields;
+        console.log($pThis.variablesMap);
+        console.log($pThis.datasourceFields);
       }
     };
   });
 
   function action_create_new_sheet_with_vars(event) {
-    var _this2 = this;
+    var _this = this;
 
     event.preventDefault();
     this.ds_loading = true;
@@ -2732,7 +2677,7 @@ document.addEventListener('alpine:init', function () {
     axios__WEBPACK_IMPORTED_MODULE_0___default().post('/sheets/create_new', formValues).then(function (response) {
       if (response.data.success) {
         var sheetFormValues = new FormData();
-        sheetFormValues.append('title', _this2.new_sheet_name);
+        sheetFormValues.append('title', _this.new_sheet_name);
         sheetFormValues.append('type', 'google_sheet');
         sheetFormValues.append('requires_mapping', '0'); // sheetFormValues.append('file_path','');
 
