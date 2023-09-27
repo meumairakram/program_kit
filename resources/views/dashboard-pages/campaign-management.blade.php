@@ -113,7 +113,7 @@
                                             <p class="text-xs font-weight-bold mb-0">{{$camp->website_url}}</p>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{$camp->name}} ({{$camp->type}})</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{$camp->name}} ({{$camp->data_source_type}})</p>
                                         </td>
 
                                         <td class="text-center">

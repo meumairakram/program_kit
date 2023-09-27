@@ -23,16 +23,18 @@ class CampaignController extends Controller {
 
         $current_user_id = Auth::user()->id;
     //    $campaigns = Campaign::where('owner_id', $current_user_id)->get();
-       $campaigns = DB::table('campaigns')
-        ->join('user_websites', 'user_websites.id', 'campaigns.website_id')
-        ->join('user_datasources', 'user_datasources.id', 'campaigns.data_source_id')
-        ->join('templates', 'templates.template_id', 'campaigns.wp_template_id')
+        $campaigns = Campaign::join('user_websites', 'campaigns.website_id', '=', 'user_websites.id')
+        ->join('user_datasources', 'campaigns.data_source_id', '=', 'user_datasources.id')
         ->where('campaigns.owner_id', $current_user_id)
-        ->select('campaigns.*', 'user_datasources.name', 'user_datasources.type', 'user_websites.website_url')
-        ->orderBy('campaigns.id', 'ASC')
-        ->distinct()
+        ->select(
+            'user_datasources.type as data_source_type',
+            'user_datasources.name as name',
+            'user_websites.website_name as website_name',
+            'user_websites.website_url as website_url',
+            'campaigns.*'
+        )
         ->get();
-     
+
         return view('dashboard-pages/campaign-management',array(
             'campaigns' => $campaigns
         ));
@@ -59,7 +61,7 @@ class CampaignController extends Controller {
 
     public function store(Request $request) 
     {
-       
+    //    return $request;
         $attributes  = $request->validate([
             'title' => [''],
             'description' => [],
@@ -81,7 +83,7 @@ class CampaignController extends Controller {
         $campaign->description = $attributes['description'];
         $campaign->type = $attributes['website_type'];
         $campaign->website_id = $attributes['website_id'];
-      //  $campaign->post_type = $attributes['post_type'];
+        $campaign->post_type = $attributes['post_type'];
         $campaign->wp_template_id = $attributes['wp_template_id'];
         $campaign->data_source_id = $attributes['selected_datasource_id'];
         $campaign->status = 'ready';
@@ -120,19 +122,13 @@ class CampaignController extends Controller {
     {
         $current_user_id = Auth::user()->id;
         //      $campaign = Campaign::where('id', $id)->first();
-        $campaign = DB::table('campaigns')
-            ->leftjoin('data_source_fields', 'campaigns.data_source_id', '=', 'data_source_fields.data_source_id')
-            ->leftjoin('user_datasources', 'campaigns.data_source_id', 'user_datasources.id')
-            ->leftjoin('templates', 'campaigns.wp_template_id', '=', 'templates.template_id')
-            ->leftjoin('user_websites', 'campaigns.website_id', '=', 'user_websites.id')
+        $campaign = Campaign::join('user_websites', 'campaigns.website_id', '=', 'user_websites.id')
+            ->join('user_datasources', 'campaigns.data_source_id', '=', 'user_datasources.id')
             ->where('campaigns.id', $id)
             ->select(
-                'data_source_fields.data_source as dataSourceName',
-                'data_source_fields.data_source_headers as data_source_headers',
-                'user_datasources.type as type',
-                'user_datasources.id as id',
-                'templates.template as templateName',
-                'templates.template_variables as variables',
+                'user_datasources.type as data_source_type',
+                'user_datasources.id as data_source_id',
+                'user_datasources.name as name',
                 'user_websites.website_name as website_name',
                 'user_websites.website_url as website_url',
                 'campaigns.*'
@@ -182,7 +178,7 @@ class CampaignController extends Controller {
         $campaign->description = $attributes['description'];
         $campaign->website_type = $attributes['website_id'];
         $campaign->website_id = $request->website_id;
-        // $campaign->post_type = $attributes['post_type'];
+        $campaign->post_type = $attributes['post_type'];
         $campaign->wp_template_id = $attributes['wp_template_id'];
         $campaign->data_source_id = $attributes['selected_datasource_id'];
         $campaign->status = 'ready';
@@ -198,12 +194,12 @@ class CampaignController extends Controller {
             $header_name = $map[1];
 
             $existingRecords = DataSourceField::where(
-                'campaign_id', $campaign->id
+                'campaign_id', $request->id
             )->get();
 
             foreach ($existingRecords as $existingRecord) {
                 $existingRecord->update([
-                    'campaign_id' => $campaign->id,
+                    'campaign_id' => $request->id,
                     'data_source' => $variable_name,
                     'data_source_headers' => $header_name,
                 ]);

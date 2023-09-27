@@ -118,7 +118,7 @@
                                     <label for="user.phone" class="form-control-label">Select Website Type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control web_sec_required" @change="handleWebsiteTypeChange" name="website_type" id="websiteType">
-                                            <option value="{{$campaign->website_type}}">{{$campaign->website_type}}</option>
+                                            <option value="{{$campaign->website_type}}">{{$campaign->type}}</option>
                                             <option value="wordpress">Wordpress</option>
                                             <!-- <option value="wordpress">Webflow</option>
                                             <option value="wordpress">Bubble</option> -->
@@ -229,7 +229,7 @@
                                             <template x-if="ds_source_type == 'existing'">
                                                 <div class="existing-datasource">
                                                     <select @change="set_ds_id" class="form-control datasource_sec_required" name="data_source_id" id="dataSource">
-                                                        <option value="{{$campaign->data_source_id}}">{{$campaign->dataSourceName}}</option>
+                                                        <option value="{{$campaign->data_source_id}}">{{$campaign->name}}({{$campaign->data_source_type}})</option>
 
                                                         @foreach($allDatasources as $ds)
                                                             <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
