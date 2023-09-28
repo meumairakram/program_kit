@@ -179,12 +179,12 @@
                             </div>
 
 
-                             <div class="col-md-6">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Template</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control web_sec_required" @change="handleTemplateFieldChange" name="wp_template_id" id="template">
-                                            <option value="{{$campaign->wp_template_id}}">{{$campaign->templateName}}</option>
+                                            <!-- <option value="{{$campaign->wp_template_id}}">{{$campaign->templateName}}</option> -->
                                             <template x-for="template_option in avl_templates"> 
                                                 <option x-bind:value="template_option.id" x-text="`${template_option.title} - #${template_option.id}`"></option>
 
@@ -715,6 +715,10 @@
         var google_acc_connected = @if($google_acc_connected) true @else false @endif ;
      
         var mapData = <?php echo json_encode($mapData); ?>;
+        var post_type = <?php echo json_encode($campaign->post_type); ?>;
+        // console.log(post_type);
+        var template_id = <?php echo json_encode($campaign->wp_template_id); ?>;
+        var ds_id = <?php echo json_encode($campaign->data_source_id); ?>;
 
     </script>
 

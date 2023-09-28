@@ -39,13 +39,15 @@ document.addEventListener('alpine:init', () => {
         avl_templates: [],
         website_id: null,
         
-
+        
         new_sheet_name: null,
         
         requiresMapping: false,
         variablesMap : {},
         datasourceFields: [],
         firstDataRow: [],
+        existingSourceField: [],
+        existingVariables: [],
 
 
 
@@ -292,12 +294,20 @@ document.addEventListener('alpine:init', () => {
         },
 
 
-        loadAvlTemplates() {
+        loadAvlTemplates(post_type) {
 
             var selectedPostType = $pThis.post_type;
-            
+
             var formValues = new FormData();
-            formValues.append('post_type', selectedPostType);
+
+            if(post_type){
+
+                formValues.append('post_type', post_type);
+            }
+            else {
+                formValues.append('post_type', selectedPostType);
+            }
+
             axios.post('/api/get_templates_by_type', formValues)
             .then((response) => {
 
@@ -331,10 +341,15 @@ document.addEventListener('alpine:init', () => {
         
 
 
-        setDatasourceFields() {
+        setDatasourceFields(ds_id) {
 
             var formValues = new FormData();
-            formValues.append('ds_id', $pThis.data_source_id.id);
+            if(ds_id){
+                formValues.append('ds_id', ds_id);
+            }
+            else{
+                formValues.append('ds_id', $pThis.data_source_id.id);
+            }
 
             axios.post('/api/get_datasource_mapping', formValues)
             .then(response => {
@@ -349,6 +364,8 @@ document.addEventListener('alpine:init', () => {
 
                     // Attempt automatch of fields.
                     $pThis.autoMatchDSFields();
+
+                    $pThis.setDefaultSelectValues();
                     
                 }
             
@@ -357,6 +374,54 @@ document.addEventListener('alpine:init', () => {
         
         },
 
+        // setDefaultSelectValues() {
+        //     console.log($pThis.existingSourceField);
+        //     console.log($pThis.existingVariables);
+            
+          
+        //     $pThis.existingSourceField.forEach((element) => {
+
+        //       if (!$pThis.variablesMap[element]) {
+        //         $pThis.variablesMap[element] = {};
+        //       }
+          
+        //       var dsIndex = $pThis.datasourceFields.findIndex((item) => item === element);
+          
+        //       if (dsIndex > -1) {
+        //         $pThis.variablesMap[element].source_field = element;
+        //         $pThis.variablesMap[element].preview_row_data = $pThis.firstDataRow[dsIndex];
+        //       }
+        //     });
+        // },
+        setDefaultSelectValues() {
+            console.log($pThis.existingSourceField);
+            console.log($pThis.existingVariables);
+            
+            mapData.forEach((element) => {
+                const variable = element.data_source.replace("{","").replace("}", "");
+                const dataSource = element.data_source_headers;
+
+                if (!$pThis.variablesMap[dataSource]) {
+                    $pThis.variablesMap[dataSource] = {};
+                }
+                if (!$pThis.variablesMap[variable]) {
+                    $pThis.variablesMap[variable] = {};
+                }
+              
+                  var dsIndex = $pThis.datasourceFields.findIndex((item) => item === dataSource);
+              
+                  if (dsIndex > -1) {
+                    $pThis.variablesMap[variable].source_field = dataSource;
+                    $pThis.variablesMap[variable].preview_row_data = $pThis.firstDataRow[dsIndex];
+                  }
+  
+            });
+          
+            // $pThis.existingSourceField.forEach((element) => {
+
+            // });
+        },
+          
 
         autoMatchDSFields() {
 
@@ -494,32 +559,45 @@ document.addEventListener('alpine:init', () => {
 
     Alpine.data('editCampaign', () => ({
         
+        
         init() {
+            this.checkTemplateField();
+            this.sourcePreviewField();
             this.loadMapData();
         },
         
+        checkTemplateField() {
+            if (template_id) {
+              this.loadAvlTemplates(post_type);
+            }
+        },
+        sourcePreviewField() {
+            if (ds_id) {
+              this.setDatasourceFields(ds_id);
+            }
+        },
+       
+
         loadMapData() {
      
             let variableIndex = 0;
         
             mapData.forEach((item) => {
-                const variable = item.data_source.replace("{","").replace("}", "");;
+                const variable = item.data_source.replace("{","").replace("}", "");
                 const dataSource = item.data_source_headers;
 
                 // $pThis.variablesMap[variable] = dataSource;
-                $pThis.variablesMap[variable] = {
-                    source_field: dataSource[variableIndex],
-                };
+                // $pThis.variablesMap[variable] = {
+                //     source_field: dataSource[variableIndex],
+                // };
             
-                variableIndex++;
+                // variableIndex++;
     
-                $pThis.datasourceFields = [...$pThis.datasourceFields, dataSource];
+                $pThis.existingSourceField.push(dataSource);
+                $pThis.existingVariables.push(variable);
   
             });
-            $pThis.variablesMap[$('.sourceFieldClass').attr('vartarget')].source_field = $pThis.datasourceFields;
         
-            console.log($pThis.variablesMap);
-            console.log($pThis.datasourceFields);
         }
         
 
