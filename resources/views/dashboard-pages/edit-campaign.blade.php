@@ -144,9 +144,6 @@
                                                 <option x-bind:value="website_option.id" x-text="website_option.name + ' ( ' + website_option.url + ' )'">Select a website</option>
 
                                             </template>
-                                            <!-- @foreach($allWebsites as $website)
-                                                <option value="{{ $website->id }}">{{$website->website_name}} ({{$website->website_url}})</option>
-                                            @endforeach -->
 
                                         </select>
 

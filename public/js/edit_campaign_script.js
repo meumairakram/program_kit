@@ -2455,6 +2455,8 @@ document.addEventListener('alpine:init', function () {
       var formValues = new FormData();
       formValues.append('post_id', $pThis.wp_template_id);
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_template_vars', formValues).then(function (response) {
+        console.log('tempid', $pThis.wp_template_id);
+
         if (!response.data.success) {
           console.error("Got invalid response for template vars");
           return false;
@@ -2531,7 +2533,7 @@ document.addEventListener('alpine:init', function () {
       var selectedPostType = $pThis.post_type;
       var formValues = new FormData();
 
-      if (post_type) {
+      if (!selectedPostType) {
         formValues.append('post_type', post_type);
       } else {
         formValues.append('post_type', selectedPostType);
@@ -2554,57 +2556,47 @@ document.addEventListener('alpine:init', function () {
       var variables = Object.keys($pThis.variablesMap);
       return variables;
     },
-    setDatasourceFields: function setDatasourceFields(ds_id) {
+    setDatasourceFields: function setDatasourceFields() {
       var formValues = new FormData();
-
-      if (ds_id) {
-        formValues.append('ds_id', ds_id);
-      } else {
-        formValues.append('ds_id', $pThis.data_source_id.id);
-      }
-
+      formValues.append('ds_id', $pThis.data_source_id.id);
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_datasource_mapping', formValues).then(function (response) {
         console.log(response);
 
         if (response.data.success) {
           $pThis.datasourceFields = _toConsumableArray(response.data.data.headers);
-          $pThis.firstDataRow = _toConsumableArray(response.data.data.preview_rows[0]); // Attempt automatch of fields.
-
+          $pThis.firstDataRow = _toConsumableArray(response.data.data.preview_rows[0]);
           $pThis.autoMatchDSFields();
+        }
+      });
+      ds_id = 0;
+    },
+    setExistingDatasourceFields: function setExistingDatasourceFields(ds_id) {
+      var formValues = new FormData();
+      formValues.append('ds_id', ds_id);
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_datasource_mapping', formValues).then(function (response) {
+        console.log(response);
+
+        if (response.data.success) {
+          $pThis.datasourceFields = _toConsumableArray(response.data.data.headers);
+          $pThis.firstDataRow = _toConsumableArray(response.data.data.preview_rows[0]);
           $pThis.setDefaultSelectValues();
         }
       });
     },
-    // setDefaultSelectValues() {
-    //     console.log($pThis.existingSourceField);
-    //     console.log($pThis.existingVariables);
-    //     $pThis.existingSourceField.forEach((element) => {
-    //       if (!$pThis.variablesMap[element]) {
-    //         $pThis.variablesMap[element] = {};
-    //       }
-    //       var dsIndex = $pThis.datasourceFields.findIndex((item) => item === element);
-    //       if (dsIndex > -1) {
-    //         $pThis.variablesMap[element].source_field = element;
-    //         $pThis.variablesMap[element].preview_row_data = $pThis.firstDataRow[dsIndex];
-    //       }
-    //     });
-    // },
     setDefaultSelectValues: function setDefaultSelectValues() {
       console.log($pThis.existingSourceField);
       console.log($pThis.existingVariables);
-      mapData.forEach(function (element) {
-        var variable = element.data_source.replace("{", "").replace("}", "");
-        var dataSource = element.data_source_headers;
 
-        if (!$pThis.variablesMap[dataSource]) {
-          $pThis.variablesMap[dataSource] = {};
-        }
+      var _loop = function _loop() {
+        currentData = mapData[i];
+        var variable = currentData.data_source.replace("{", "").replace("}", "");
+        var dataSource = currentData.data_source_headers;
 
         if (!$pThis.variablesMap[variable]) {
           $pThis.variablesMap[variable] = {};
         }
 
-        var dsIndex = $pThis.datasourceFields.findIndex(function (item) {
+        dsIndex = $pThis.datasourceFields.findIndex(function (item) {
           return item === dataSource;
         });
 
@@ -2612,8 +2604,14 @@ document.addEventListener('alpine:init', function () {
           $pThis.variablesMap[variable].source_field = dataSource;
           $pThis.variablesMap[variable].preview_row_data = $pThis.firstDataRow[dsIndex];
         }
-      }); // $pThis.existingSourceField.forEach((element) => {
-      // });
+      };
+
+      for (var i = 0; i < mapData.length; i++) {
+        var currentData;
+        var dsIndex;
+
+        _loop();
+      }
     },
     autoMatchDSFields: function autoMatchDSFields() {
       // Auto matching the fields with the same name
@@ -2703,22 +2701,8 @@ document.addEventListener('alpine:init', function () {
       },
       sourcePreviewField: function sourcePreviewField() {
         if (ds_id) {
-          this.setDatasourceFields(ds_id);
+          this.setExistingDatasourceFields(ds_id);
         }
-      },
-      loadMapData: function loadMapData() {
-        var variableIndex = 0;
-        mapData.forEach(function (item) {
-          var variable = item.data_source.replace("{", "").replace("}", "");
-          var dataSource = item.data_source_headers; // $pThis.variablesMap[variable] = dataSource;
-          // $pThis.variablesMap[variable] = {
-          //     source_field: dataSource[variableIndex],
-          // };
-          // variableIndex++;
-
-          $pThis.existingSourceField.push(dataSource);
-          $pThis.existingVariables.push(variable);
-        });
       }
     };
   });
