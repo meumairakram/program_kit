@@ -112,15 +112,15 @@ class CampaignController extends Controller {
             $source_maps_fields[] = array(
 
                 'campaign_id' => $campaign->id,
-                'data_source' => $variable_name,
-                'data_source_headers' => $header_name,  
-            
+                'template_variable' => $variable_name,
+                'field_header' => $header_name,  
+                'val_type' => 'string'
             );
         }
 
 
         // Create data source fields mapping
-        DataSourceField::insert($source_maps_fields);
+        CampMap::insert($source_maps_fields);
         
 
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');

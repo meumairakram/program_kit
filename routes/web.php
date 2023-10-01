@@ -90,7 +90,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('edit-datasource', [DatasourcesController::class, 'update'])->name('update-datasource');
 	Route::get('delete-datasource/{id}', [DatasourcesController::class, 'delete'])->name('delete-datasource');
 
-
+	
 
 
 

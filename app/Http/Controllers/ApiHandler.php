@@ -8,6 +8,15 @@ use App\Models\Datasources;
 
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\Campaign;
+use App\Models\CampMap;
+use App\Models\WebsitesInfo;
+
+use App\HelperClasses\WebsiteHelpers;
+
+use App\Models\CampExecLog;
+
+use App\Jobs\CreateTemplateOnWebsite;
 
 class ApiHandler extends Controller {
     //
@@ -116,6 +125,33 @@ class ApiHandler extends Controller {
 
 
     
+    }
+
+
+
+    public function test_api_method(Request $request) {
+
+
+        // $campaign_id = 33;
+
+        // $data = array(
+        //     'source_headers' => ['feature', 'company', 'price', 'firstname', 'company_two'],
+        //     'rows' => [
+                
+        //         [ 'Fast accelration', "Tesla Motors", '500000k', 'John' , "Ford Motors"],   // represents each row
+        //         [ 'Top speed', "Ferarri Motors", '500000k', 'Henry' , "Volswagon Motors"], 
+        //         [ 'Ultimate Luxury', "Mercedes", '500000k', 'KElvin' , "Toyota Lexus"],  
+        //         [ 'Relibable and Durable', "Honda Motors", '500000k', 'Jonathan' , "Toyota Moters"],
+        //         [ 'Affordability', "Honda Motors", '500000k', 'Nicholas' , "Suzuki Motors corp"],   
+        //     ]
+        // );
+
+        // CreateTemplateOnWebsite::dispatch($campaign_id, $data);
+        
+
+        
+
+
     }
 
 
