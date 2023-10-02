@@ -130,6 +130,7 @@ class CampaignController extends Controller {
                 'user_datasources.id as data_source_id',
                 'user_datasources.name as name',
                 'user_websites.website_name as website_name',
+                'user_websites.id as website_id',
                 'user_websites.website_url as website_url',
                 'campaigns.*'
             )
@@ -189,14 +190,16 @@ class CampaignController extends Controller {
             );
         }
         
-        $campaignIds = [$request->id];
+        // Update existing records one by one using the array
+        foreach ($source_maps_fields as $mapping) {
+            DataSourceField::where('campaign_id', $campaign->id)
+                ->update([
+                    'data_source' => $mapping['data_source'],
+                    'data_source_headers' => $mapping['data_source_headers'],
+                ]);
+        }
         
-        DataSourceField::whereIn('campaign_id', $campaignIds)
-        ->update([
-            'campaign_id' => $request->id,
-            'data_source' => $source_maps_fields['data_source'],
-            'data_source_headers' => $source_maps_fields['data_source_headers'],
-        ]);
+        
 
         return redirect()->route('campaign-management')->with('message', 'Campaign Updated successfully!');
     }

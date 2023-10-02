@@ -2364,11 +2364,23 @@ document.addEventListener('alpine:init', function () {
       this.google_acc_connected = google_acc_connected;
       $pThis = this;
 
+      if (web_type) {
+        this.requiresMapping = true;
+        this.editwebsitetype(web_type);
+      }
+
+      if (website_id) {
+        this.requiresMapping = true;
+        this.editwebsiteid(website_id);
+      }
+
       if (post_type) {
-        this.loadAvlTemplates(post_type);
+        this.requiresMapping = true;
+        this.editposttype(post_type);
       }
 
       if (ds_id) {
+        this.requiresMapping = true;
         this.setExistingDatasourceFields(ds_id);
       }
     },
@@ -2482,6 +2494,18 @@ document.addEventListener('alpine:init', function () {
         $pThis.autoMatchDSFields();
       });
     },
+    editwebsitetype: function editwebsitetype(web_type) {
+      $pThis.website_type = web_type;
+      $pThis.loadWebsites();
+    },
+    editwebsiteid: function editwebsiteid(website_id) {
+      $pThis.website_id = website_id;
+      $pThis.loadPostTypes();
+    },
+    editposttype: function editposttype(post_type) {
+      $pThis.post_type = post_type;
+      $pThis.loadAvlTemplates();
+    },
     loadWebsites: function loadWebsites() {
       var selectedType = $pThis.website_type;
 
@@ -2532,21 +2556,15 @@ document.addEventListener('alpine:init', function () {
         }
       });
     },
-    loadAvlTemplates: function loadAvlTemplates(post_type) {
+    loadAvlTemplates: function loadAvlTemplates() {
       var selectedPostType = $pThis.post_type;
       var formValues = new FormData();
-
-      if (!selectedPostType) {
-        formValues.append('post_type', post_type);
-      } else {
-        formValues.append('post_type', selectedPostType);
-      }
-
+      formValues.append('post_type', selectedPostType);
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_templates_by_type', formValues).then(function (response) {
         console.log(response);
 
         if (!response.data.success) {
-          alert("No website found for this settings");
+          console("No website found for this settings");
           return false;
         }
 
@@ -2602,9 +2620,6 @@ document.addEventListener('alpine:init', function () {
       });
     },
     setDefaultSelectValues: function setDefaultSelectValues() {
-      console.log($pThis.existingSourceField);
-      console.log($pThis.existingVariables);
-
       var _loop = function _loop() {
         currentData = mapData[i];
         var variable = currentData.data_source.replace("{", "").replace("}", "");
@@ -2673,10 +2688,11 @@ document.addEventListener('alpine:init', function () {
       var templateVarNames = $pThis.getAvailableVariablesNames();
       var outputJson = [];
       templateVarNames.forEach(function (tempvar) {
+        var cleanVariable = tempvar.replace("{", "").replace("}", "");
         var varmap = [];
-        console.log($pThis.variablesMap[tempvar]);
-        varmap.push(tempvar);
-        varmap.push($pThis.variablesMap[tempvar].source_field);
+        console.log($pThis.variablesMap[cleanVariable]);
+        varmap.push(cleanVariable);
+        varmap.push($pThis.variablesMap[cleanVariable].source_field);
         outputJson.push(varmap);
       });
       $pThis.dataMapJson = JSON.stringify(outputJson);
@@ -2689,25 +2705,6 @@ document.addEventListener('alpine:init', function () {
     action_handle_website_submit_step: action_handle_website_submit_step,
     action_removeSelectedDataSource: action_removeSelectedDataSource,
     action_switch_ds_type: action_switch_ds_type
-  });
-  Alpine.data('editCampaign', function () {
-    return {
-      init: function init() {
-        this.checkTemplateField();
-        this.sourcePreviewField();
-        this.loadMapData();
-      },
-      checkTemplateField: function checkTemplateField() {
-        if (template_id) {
-          this.loadAvlTemplates(post_type);
-        }
-      },
-      sourcePreviewField: function sourcePreviewField() {
-        if (ds_id) {
-          this.setExistingDatasourceFields(ds_id);
-        }
-      }
-    };
   });
 
   function action_create_new_sheet_with_vars(event) {

@@ -2,7 +2,7 @@
 
 @section('content')
 
-<form x-data='$store.edit_campaign_store' @submit="submitCreateCampaign" class="container-fluid py-4" action="{{ route('update-campaign') }}" method="POST" role="form text-left">
+<form x-data='$store.create_campaign_store' @submit="updateCreateCampaign" class="container-fluid py-4" action="{{ route('update-campaign') }}" method="POST" role="form text-left">
 
             <div class="card mb-4">
                 <div class="card-header pb-0 px-3">
@@ -51,27 +51,6 @@
                         </div>
 
 
-                                <!-- <input type="hidden" name="id" id="fetchId" value="{{$campaign->id}}"> -->
-
-
-                            <!-- <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="user.phone" class="form-control-label">Type</label>
-                                    <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control first_sec_required" name="website_type"  value="{{$campaign->website_type}}">
-                                            <option value="wordpress">Wordpress</option>
-                                            <option value="webflow">Webflow</option>
-                                            <option value="bubble">Bubble</option>
-                                        </select>
-
-                                        @error('type')
-                                                <p class="text-danger text-xs mt-2">{{ $message }}</p>
-                                        @enderror
-
-                                    </div>
-                                </div>
-                            </div>    -->
-
                             <div class="col-md-4">
                                 <div class="form-group ps-0 form-switch">
                                     <label class="d-block">Status</label>
@@ -118,7 +97,7 @@
                                     <label for="user.phone" class="form-control-label">Select Website Type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control web_sec_required" @change="handleWebsiteTypeChange" name="website_type" id="websiteType">
-                                            <option value="{{$campaign->website_type}}">{{$campaign->type}}</option>
+                                            <!-- <option value="{{$campaign->website_type}}">{{$campaign->type}}</option> -->
                                             <option value="wordpress">Wordpress</option>
                                             <!-- <option value="wordpress">Webflow</option>
                                             <option value="wordpress">Bubble</option> -->
@@ -139,7 +118,7 @@
                                     <label for="user.phone" class="form-control-label">Select Website</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control web_sec_required" name="website_id" @change="handleWebsiteIdChange" id="selectWebSite">
-                                            <option value="{{$campaign->website_id}}">{{$campaign->website_name}} || {{$campaign->website_url}}</option>
+                                            <!-- <option value="{{$campaign->website_id}}">{{$campaign->website_name}} || {{$campaign->website_url}}</option> -->
                                             <template x-for="website_option in avl_websites">
                                                 <option x-bind:value="website_option.id" x-text="website_option.name + ' ( ' + website_option.url + ' )'">Select a website</option>
 
@@ -161,7 +140,7 @@
                                     <label for="user.phone" class="form-control-label">Post type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control web_sec_required" name="post_type" @change="handleWebsitePostTypeChange" id="postType">
-                                            <option value="{{$campaign->post_type}}">{{$campaign->post_type}}</option>
+                                            <!-- <option value="{{$campaign->post_type}}">{{$campaign->post_type}}</option> -->
                                             <template x-for="post_type_option in avl_post_types">
                                                 <option x-bind:value="post_type_option" x-text="post_type_option"></option>
                                             </template>
@@ -226,7 +205,7 @@
                                             <template x-if="ds_source_type == 'existing'">
                                                 <div class="existing-datasource">
                                                     <select @change="set_ds_id" class="form-control datasource_sec_required" name="data_source_id" id="dataSource">
-                                                        <option value="{{$campaign->data_source_id}}">{{$campaign->name}}({{$campaign->data_source_type}})</option>
+                                                        <!-- <option value="{{$campaign->data_source_id}}">{{$campaign->name}}({{$campaign->data_source_type}})</option> -->
 
                                                         @foreach($allDatasources as $ds)
                                                             <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
@@ -461,91 +440,6 @@
                 </div>
             </div>
 
-            <!-- <div class="card mb-4 d-none newdatasource">
-                <div class="card-header pb-0 px-3">
-                    <h6 class="mb-0">Connect new Data Source</h6>
-                </div>
-
-                <div class="card-body pt-4 p-3">
-
-                    <div class="row">
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="user.phone" class="form-control-label">Type</label>
-                                <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                    <select class="form-control" name="type" id="selectType">
-                                        <option value="csv"> </option>
-                                        <option value="csv">CSV</option>
-                                        <option value="airtable">Airtable</option>
-                                        <option value="google_sheet">Google sheet</option>
-                                    </select>
-                                    
-                                    @error('type')
-                                            <p class="text-danger text-xs mt-2">{{ $message }}</p>
-                                    @enderror
-                                    
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 uploadCSV d-none">
-                           <div class="card mb-4">
-                                <div class="card-header pb-0 px-3">
-                                    <h6 class="mb-0">Upload your database</h6>
-                                </div>
-                                <div class="card-body pt-4 p-3">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="user.location" class="form-control-label d-block mb-0">Upload file</label>
-                                                <span class="text-xs mb-2 d-block ms-1">Upload your csv</span> 
-                                                <div class="@error('user.location') border border-danger rounded-3 @enderror">
-                                                    <input class="form-control" type="file" placeholder="Location" id="name" name="csv_file" value="">
-                                                </div>
-                                            </div>
-                                        </div>  
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-6 uploadGoogleSheets d-none">
-                            <div class="card mb-4">
-                                <div class="card-header pb-0 px-3">
-                                    <h6 class="mb-0">Google sheets</h6>
-                                </div>
-                                <div class="card-body pt-4 p-3">
-                                    <div class="row"> 
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <div class="d-flex justify-content-start">
-                                                    <button type="button" class="btn btn-dark bg-gradient-dark gsheets">Create Google Sheet</button>
-                                                </div>
-                                            </div>
-                                        </div>  
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="d-flex justify-content-start">
-                        <button type="button" id="newDatasourceNext" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
-                    </div>
-
-                    <div class="mt-3  alert alert-primary alert-dismissible fade show d-none fourthError" role="alert">
-                        <span class="alert-text text-white">You have to fill 'Data Source' section completely to proceed next.</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                            <i class="fa fa-close" aria-hidden="true"></i>
-                        </button>
-                    </div>
-
-                </div>
-            </div> -->
-
 
         <div class="card mb-4 mapdata" x-show="requiresMapping == true">
 
@@ -616,58 +510,6 @@
 
         </div>
 
-            <!-- <div class="card mb-4 mapdata">
-                <div class="card-header pb-0 px-3">
-                    <h6 class="mb-0">Map Data Fields</h6>
-                </div>
-
-                <div class="card-body pt-4 p-3">
-
-                    <div class="row">
-
-                        <div class="col-md-8 offset-md-2">
-
-                            <div class="row" id="mapDataFields">
-                                <div class="col-md-6">
-
-                                    <span class="text-bold">Template fields</span>
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <input class="form-control" type="text" id="tempVariablesInput" name="template"  value="{{$campaign->variables}}">
-                                        
-                                        </div>
-
-                                    </div>
-
-
-
-                                </div>
-
-
-                                <div class="col-md-6">
-                                    <span class="text-bold">Source field</span>
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <select class="form-control csv-headers" name="source_field" id="csvHeaders"  value="{{$campaign->data_source_headers}}">
-                                                <option value="{{$campaign->data_source_headers}}">{{$campaign->data_source_headers}}</option>
-                                            </select>
-                                         
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                   
-
-                </div>
-            </div> -->
-
 
             <div class="card SaveAndStart" >
 
@@ -706,24 +548,27 @@
 
 
 @section("javascript")
+
+    <script id="alpine_js" defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.0/dist/cdn.js"></script>
+
+    <script id="create_campaign_script" src="{{ asset('js/create_campaign_script.js') }}"></script>
     
     <script>
         
         var google_acc_connected = @if($google_acc_connected) true @else false @endif ;
      
-        var mapData = <?php echo json_encode($mapData); ?>;
+        var web_type = <?php echo json_encode($campaign->type); ?>;
+        var website_id = <?php echo json_encode($campaign->website_id); ?>;
         var post_type = <?php echo json_encode($campaign->post_type); ?>;
-        // console.log(post_type);
         var template_id = <?php echo json_encode($campaign->wp_template_id); ?>;
         var ds_id = <?php echo json_encode($campaign->data_source_id); ?>;
 
+        var mapData = <?php echo json_encode($mapData); ?>;
+        
     </script>
 
 
 
-    <script id="alpine_js" defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.0/dist/cdn.js"></script>
-
-    <script id="create_campaign_store" src="{{ asset('js/create_campaign_store.js') }}" ></script>
 
 
 @endsection

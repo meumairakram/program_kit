@@ -15,10 +15,21 @@ document.addEventListener('alpine:init', () => {
             this.google_acc_connected = google_acc_connected;
             $pThis = this;
 
-            if (post_type) {
-                this.loadAvlTemplates(post_type);
+             if (web_type) {
+                this.requiresMapping = true;
+                this.editwebsitetype(web_type);
             }
+             if (website_id) {
+                this.requiresMapping = true;
+                this.editwebsiteid(website_id);
+            }
+            if (post_type) {
+                this.requiresMapping = true;
+                this.editposttype(post_type);
+            }
+
             if (ds_id) {
+                this.requiresMapping = true;
                 this.setExistingDatasourceFields(ds_id);
             }
         },
@@ -214,11 +225,24 @@ document.addEventListener('alpine:init', () => {
 
 
 
+        editwebsitetype(web_type){
+            $pThis.website_type = web_type;
+            $pThis.loadWebsites();
+        },
+
+        editwebsiteid(website_id){
+            $pThis.website_id = website_id;
+            $pThis.loadPostTypes();
+        },
+
+        editposttype(post_type){
+            $pThis.post_type = post_type;
+            $pThis.loadAvlTemplates();
+        },
 
 
         loadWebsites() {
             var selectedType = $pThis.website_type;
-
 
             if(!selectedType) {
                 alert("website type channot be empty");
@@ -286,7 +310,6 @@ document.addEventListener('alpine:init', () => {
                     $pThis.avl_post_types = [...response.data.data.post_types];
 
 
-
                 }
 
             });
@@ -297,18 +320,12 @@ document.addEventListener('alpine:init', () => {
         },
 
 
-        loadAvlTemplates(post_type) {
+        loadAvlTemplates() {
 
             var selectedPostType = $pThis.post_type;
             
             var formValues = new FormData();
-            if(!selectedPostType){
-
-                formValues.append('post_type', post_type);
-            }
-            else {
-                formValues.append('post_type', selectedPostType);
-            }
+            formValues.append('post_type', selectedPostType);
 
             axios.post('/api/get_templates_by_type', formValues)
             .then((response) => {
@@ -316,12 +333,12 @@ document.addEventListener('alpine:init', () => {
                 console.log(response);
 
                 if(!response.data.success) {
-                    alert("No website found for this settings");
+                    console("No website found for this settings");
                     return false;
                 }
 
                 if(Array.isArray(response.data.data.posts)) {
-                
+            
                     $pThis.avl_templates = [...response.data.data.posts];
                 }
 
@@ -338,10 +355,6 @@ document.addEventListener('alpine:init', () => {
             return variables;
 
         },
-
-
-        
-
 
         setDatasourceFields() {
 
@@ -414,10 +427,9 @@ document.addEventListener('alpine:init', () => {
         
 
         setDefaultSelectValues() {
-            console.log($pThis.existingSourceField);
-            console.log($pThis.existingVariables);
             
             for (var i = 0; i < mapData.length; i++) {
+
                 var currentData = mapData[i]; 
                 const variable = currentData.data_source.replace("{","").replace("}", "");
                 const dataSource = currentData.data_source_headers;
@@ -425,6 +437,8 @@ document.addEventListener('alpine:init', () => {
                 if (!$pThis.variablesMap[variable]) {
                     $pThis.variablesMap[variable] = {};
                 }
+                
+
                 var dsIndex = $pThis.datasourceFields.findIndex((item) => item === dataSource);
         
                 if (dsIndex > -1) {
@@ -512,12 +526,13 @@ document.addEventListener('alpine:init', () => {
             templateVarNames.forEach(tempvar => {
 
                 
+                var cleanVariable = tempvar.replace("{","").replace("}", "");
                 
                 var varmap = [];    
 
-                console.log($pThis.variablesMap[tempvar]);
-                varmap.push(tempvar);
-                varmap.push($pThis.variablesMap[tempvar].source_field);
+                console.log($pThis.variablesMap[cleanVariable]);
+                varmap.push(cleanVariable);
+                varmap.push($pThis.variablesMap[cleanVariable].source_field);
 
                 outputJson.push(varmap);
 
@@ -545,28 +560,6 @@ document.addEventListener('alpine:init', () => {
 
 
     
-    Alpine.data('editCampaign', () => ({
-        
-        
-        init() {
-            this.checkTemplateField();
-            this.sourcePreviewField();
-            this.loadMapData();
-        },
-        
-        checkTemplateField() {
-            if (template_id) {
-              this.loadAvlTemplates(post_type);
-            }
-        },
-        sourcePreviewField() {
-            if (ds_id) {
-              this.setExistingDatasourceFields(ds_id);
-            }
-        },
-        
-
-    }));
 
     function action_create_new_sheet_with_vars(event) {
 
