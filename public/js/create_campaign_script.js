@@ -2363,6 +2363,14 @@ document.addEventListener('alpine:init', function () {
     init: function init() {
       this.google_acc_connected = google_acc_connected;
       $pThis = this;
+
+      if (post_type) {
+        this.loadAvlTemplates(post_type);
+      }
+
+      if (ds_id) {
+        this.setExistingDatasourceFields(ds_id);
+      }
     },
     currentStep: 3,
     google_acc_connected: false,
@@ -2524,10 +2532,16 @@ document.addEventListener('alpine:init', function () {
         }
       });
     },
-    loadAvlTemplates: function loadAvlTemplates() {
+    loadAvlTemplates: function loadAvlTemplates(post_type) {
       var selectedPostType = $pThis.post_type;
       var formValues = new FormData();
-      formValues.append('post_type', selectedPostType);
+
+      if (!selectedPostType) {
+        formValues.append('post_type', post_type);
+      } else {
+        formValues.append('post_type', selectedPostType);
+      }
+
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_templates_by_type', formValues).then(function (response) {
         console.log(response);
 
@@ -2573,6 +2587,49 @@ document.addEventListener('alpine:init', function () {
           $pThis.variablesMap[element].preview_row_data = $pThis.firstDataRow[dsIndex];
         }
       });
+    },
+    setExistingDatasourceFields: function setExistingDatasourceFields(ds_id) {
+      var formValues = new FormData();
+      formValues.append('ds_id', ds_id);
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_datasource_mapping', formValues).then(function (response) {
+        console.log(response);
+
+        if (response.data.success) {
+          $pThis.datasourceFields = _toConsumableArray(response.data.data.headers);
+          $pThis.firstDataRow = _toConsumableArray(response.data.data.preview_rows[0]);
+          $pThis.setDefaultSelectValues();
+        }
+      });
+    },
+    setDefaultSelectValues: function setDefaultSelectValues() {
+      console.log($pThis.existingSourceField);
+      console.log($pThis.existingVariables);
+
+      var _loop = function _loop() {
+        currentData = mapData[i];
+        var variable = currentData.data_source.replace("{", "").replace("}", "");
+        var dataSource = currentData.data_source_headers;
+
+        if (!$pThis.variablesMap[variable]) {
+          $pThis.variablesMap[variable] = {};
+        }
+
+        dsIndex = $pThis.datasourceFields.findIndex(function (item) {
+          return item === dataSource;
+        });
+
+        if (dsIndex > -1) {
+          $pThis.variablesMap[variable].source_field = dataSource;
+          $pThis.variablesMap[variable].preview_row_data = $pThis.firstDataRow[dsIndex];
+        }
+      };
+
+      for (var i = 0; i < mapData.length; i++) {
+        var currentData;
+        var dsIndex;
+
+        _loop();
+      }
     },
     handle_source_field_change: function handle_source_field_change(event) {
       event.preventDefault();
@@ -2632,6 +2689,25 @@ document.addEventListener('alpine:init', function () {
     action_handle_website_submit_step: action_handle_website_submit_step,
     action_removeSelectedDataSource: action_removeSelectedDataSource,
     action_switch_ds_type: action_switch_ds_type
+  });
+  Alpine.data('editCampaign', function () {
+    return {
+      init: function init() {
+        this.checkTemplateField();
+        this.sourcePreviewField();
+        this.loadMapData();
+      },
+      checkTemplateField: function checkTemplateField() {
+        if (template_id) {
+          this.loadAvlTemplates(post_type);
+        }
+      },
+      sourcePreviewField: function sourcePreviewField() {
+        if (ds_id) {
+          this.setExistingDatasourceFields(ds_id);
+        }
+      }
+    };
   });
 
   function action_create_new_sheet_with_vars(event) {

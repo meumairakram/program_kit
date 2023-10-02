@@ -15,6 +15,12 @@ document.addEventListener('alpine:init', () => {
             this.google_acc_connected = google_acc_connected;
             $pThis = this;
 
+            if (post_type) {
+                this.loadAvlTemplates(post_type);
+            }
+            if (ds_id) {
+                this.setExistingDatasourceFields(ds_id);
+            }
         },
 
         currentStep: 3,
@@ -291,12 +297,19 @@ document.addEventListener('alpine:init', () => {
         },
 
 
-        loadAvlTemplates() {
+        loadAvlTemplates(post_type) {
 
             var selectedPostType = $pThis.post_type;
             
             var formValues = new FormData();
-            formValues.append('post_type', selectedPostType);
+            if(!selectedPostType){
+
+                formValues.append('post_type', post_type);
+            }
+            else {
+                formValues.append('post_type', selectedPostType);
+            }
+
             axios.post('/api/get_templates_by_type', formValues)
             .then((response) => {
 
@@ -378,6 +391,47 @@ document.addEventListener('alpine:init', () => {
             });
 
         
+        },
+
+        setExistingDatasourceFields(ds_id) {
+            
+            var formValues = new FormData();
+            formValues.append('ds_id', ds_id);
+
+            axios.post('/api/get_datasource_mapping', formValues)
+            .then(response => {
+                console.log(response);
+        
+                if (response.data.success) {
+                    $pThis.datasourceFields = [...response.data.data.headers];
+                    $pThis.firstDataRow = [...response.data.data.preview_rows[0]];
+        
+                    $pThis.setDefaultSelectValues();
+                  
+                }
+            });
+        },
+        
+
+        setDefaultSelectValues() {
+            console.log($pThis.existingSourceField);
+            console.log($pThis.existingVariables);
+            
+            for (var i = 0; i < mapData.length; i++) {
+                var currentData = mapData[i]; 
+                const variable = currentData.data_source.replace("{","").replace("}", "");
+                const dataSource = currentData.data_source_headers;
+        
+                if (!$pThis.variablesMap[variable]) {
+                    $pThis.variablesMap[variable] = {};
+                }
+                var dsIndex = $pThis.datasourceFields.findIndex((item) => item === dataSource);
+        
+                if (dsIndex > -1) {
+                    $pThis.variablesMap[variable].source_field = dataSource;
+                    $pThis.variablesMap[variable].preview_row_data = $pThis.firstDataRow[dsIndex];
+                }
+            }
         },
 
 
@@ -490,6 +544,29 @@ document.addEventListener('alpine:init', () => {
     });
 
 
+    
+    Alpine.data('editCampaign', () => ({
+        
+        
+        init() {
+            this.checkTemplateField();
+            this.sourcePreviewField();
+            this.loadMapData();
+        },
+        
+        checkTemplateField() {
+            if (template_id) {
+              this.loadAvlTemplates(post_type);
+            }
+        },
+        sourcePreviewField() {
+            if (ds_id) {
+              this.setExistingDatasourceFields(ds_id);
+            }
+        },
+        
+
+    }));
 
     function action_create_new_sheet_with_vars(event) {
 

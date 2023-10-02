@@ -723,7 +723,7 @@
 
     <script id="alpine_js" defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.0/dist/cdn.js"></script>
 
-    <script id="edit_campaign_script" src="{{ asset('js/edit_campaign_script.js') }}" ></script>
+    <script id="create_campaign_store" src="{{ asset('js/create_campaign_store.js') }}" ></script>
 
 
 @endsection
