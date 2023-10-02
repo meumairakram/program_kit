@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Campaign;
 use App\Models\CampMap;
@@ -75,8 +75,14 @@ class CreateTemplateOnWebsite implements ShouldQueue
         
         $sourceHeaders = $data['source_headers'];
 
+
+
+        Log::debug("headers got" . serialize($sourceHeaders));
+        // Its an additonal step for Google sheets which are created locally, as they are 1:1 mapped
         foreach($campMapping as $index => $item) {
 
+            Log::debug("Searching for " . $item->field_header );
+        
             $headerIndex = array_search($item->field_header, $sourceHeaders);
 
             if($headerIndex === false) {
@@ -86,7 +92,6 @@ class CreateTemplateOnWebsite implements ShouldQueue
 
             $varIndexMap[] = array(
                 'var' => $item->template_variable,
-                
                 'header_index' => $headerIndex    
             );
 
@@ -94,7 +99,7 @@ class CreateTemplateOnWebsite implements ShouldQueue
 
         $requestdataPrep = array(
             'variables' => [],
-            'data_rows' => []
+            'dataset' => []
         );
 
         $loopIndex = 0;
@@ -131,6 +136,7 @@ class CreateTemplateOnWebsite implements ShouldQueue
                 $requestdataPrep['variables'] = $variablesMap;
             }
 
+            
             $requestdataPrep['dataset'][] = $current_row;
 
 

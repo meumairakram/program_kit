@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Datasources;
-
 use Illuminate\Support\Facades\Auth;
-
 use App\Models\Campaign;
 use App\Models\CampMap;
 use App\Models\WebsitesInfo;
-
 use App\HelperClasses\WebsiteHelpers;
-
 use App\Models\CampExecLog;
-
 use App\Jobs\CreateTemplateOnWebsite;
+use App\Models\User;
+
+
+use App\HelperClasses\GoogleSheetHelpers;
+
+
 
 class ApiHandler extends Controller {
     //
@@ -130,6 +130,93 @@ class ApiHandler extends Controller {
 
 
     public function test_api_method(Request $request) {
+
+        
+        $user = User::where(['id' => 2])->first();    // temp set user
+        // var_dump();
+        $sheetsHelper = new GoogleSheetHelpers($user);
+
+        // var_dump($sheetsHelper->user);
+
+        $data = $sheetsHelper->ReadAllDataFromSheet("1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI");
+
+        if(!$data || !is_array($data) || count($data) < 1) {
+
+            echo "Sheet is empty";
+            die();
+        }
+
+        $headers = $data[0];   // consider first row as header
+
+        $content_data = array_slice($data, 1, count($data));
+
+        // var_dump("Headers are:");
+
+        // var_dump($headers);
+
+
+        $clean_data = [];
+        $clean_headers = [];
+        $plain_headers = [];
+        
+        foreach($headers as $index => $header_name) {
+            if($header_name !== "") {
+                $clean_headers[] = ['index' => $index, "header" => $header_name];                   
+                $plain_headers[] = $header_name;
+            }
+        }   
+
+        foreach($content_data as $content_row) {
+
+            $current_row = [];
+
+            foreach($clean_headers as $header_data) {
+                
+                $target_index = $header_data['index'];
+                $header_name = $header_data['header'];
+
+                $current_row[] = array_key_exists($target_index, $content_row) ? $content_row[$target_index] : "";
+            
+            }
+
+            $clean_data[] = $current_row;
+            
+        
+        }
+
+
+
+
+        // need to split job data in sets of 20 for each job dispatch
+
+
+
+        $job_data = array(
+            'source_headers' => $plain_headers,
+            'rows' => $clean_data
+        );
+
+        CreateTemplateOnWebsite::dispatch(35, $job_data);
+
+        var_dump("Scheduled for " . count($clean_data) . " Templates");
+
+        die();
+
+
+
+        //  [ array(2) { ["index"]=> int(0) ["header"]=> string(10) "{author_1}" } ]
+
+
+
+        // var_dump($clean_data);
+        // die();
+
+        // array(
+        //     [],
+        //     [],
+        //     [],
+        
+        // )
 
 
         // $campaign_id = 33;
