@@ -727,35 +727,3 @@
 
 
 @endsection
-
-<!-- @section('javascript')
-
-@if(isset($absolute_file_path))
-    <script>
-     
-        $('[id="dataSource"]').on('change',function(){
-            var selectedOption = $('[id="dataSource"] option:selected');
-            var dataSourceName = selectedOption.name();
-            var dataSourceId = selectedOption.val();
-        
-            alert(dataSourceId);
-            const thumbnailPreviewTemplate =
-                `<div class="form-group" id="fileShow">
-                    <div class="alert bg-gray-200 border border-solid border-2 text-black alert-dismissible fade show" role="alert">
-                        <span class="alert-text">{{$campaign->dataSourceName}} ({{$campaign->type}})</span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                            <i class="fa fa-close text-dark" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                </div>`
-            let thumbnailTemplate = thumbnailPreviewTemplate
-            thumbnailTemplate = thumbnailTemplate.replace(dataSourceName,files[0].name)
-            thumbnailTemplate = thumbnailTemplate.replace(dataSourceId,$(this).data('id'))
-            $('#fileShow').html(thumbnailTemplate);
-        })
-        
-    </script>
-@endif
-
-@endsection -->
-
