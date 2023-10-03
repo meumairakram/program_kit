@@ -147,6 +147,7 @@ class CampaignController extends Controller {
 
     public function update(Request $request, Campaign $campaign) 
     {
+        return $request;
         $attributes  = $request->validate([
             'title' => [''],
             'description' => [],
@@ -178,7 +179,7 @@ class CampaignController extends Controller {
 
         $source_maps_fields = array();
         $data_maps = json_decode($request->input('data_maps_json'), true);
-        
+        return $data_maps;
         foreach ($data_maps as $map) {
             $variable_name = $map[0];
             $header_name = $map[1];
@@ -192,6 +193,7 @@ class CampaignController extends Controller {
         
         // Update existing records one by one using the array
         foreach ($source_maps_fields as $mapping) {
+            return $mapping;
             DataSourceField::where('campaign_id', $campaign->id)
                 ->update([
                     'data_source' => $mapping['data_source'],

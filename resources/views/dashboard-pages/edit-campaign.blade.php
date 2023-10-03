@@ -2,7 +2,7 @@
 
 @section('content')
 
-<form x-data='$store.create_campaign_store' @submit="updateCreateCampaign" class="container-fluid py-4" action="{{ route('update-campaign') }}" method="POST" role="form text-left">
+<form x-data='$store.create_campaign_store' @submit="submitCreateCampaign" class="container-fluid py-4" action="{{ route('update-campaign') }}" method="POST" role="form text-left">
 
             <div class="card mb-4">
                 <div class="card-header pb-0 px-3">

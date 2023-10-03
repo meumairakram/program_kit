@@ -15,6 +15,14 @@ document.addEventListener('alpine:init', () => {
             this.google_acc_connected = google_acc_connected;
             $pThis = this;
 
+            if(ds_id){
+
+                this.data_source_id = { 
+                    id: ds_id
+                };
+            }
+
+
              if (web_type) {
                 this.requiresMapping = true;
                 this.editwebsitetype(web_type);
@@ -506,10 +514,16 @@ document.addEventListener('alpine:init', () => {
         dataMapJson: '{}',
 
         submitCreateCampaign(e) {
-            
+            alert('submit');
             e.preventDefault();
+
+            if(ds_id){
+                $pThis.editDataMapJson();
+            }
+            else{
+                $pThis.createDataMapJson();
+            }
             
-            $pThis.createDataMapJson();
 
             setTimeout(() => {
                 e.target.submit();
@@ -517,22 +531,19 @@ document.addEventListener('alpine:init', () => {
             }, 500)
         },
 
+        editDataMapJson() {
 
-        createDataMapJson() {
 
-            var templateVarNames = $pThis.getAvailableVariablesNames();
-            var outputJson = [];
+            mapData.forEach(currentData => {
 
-            templateVarNames.forEach(tempvar => {
-
-                
-                var cleanVariable = tempvar.replace("{","").replace("}", "");
+                const tempvar = currentData.data_source;
+                const source_field = currentData.data_source_headers;
                 
                 var varmap = [];    
 
-                console.log($pThis.variablesMap[cleanVariable]);
-                varmap.push(cleanVariable);
-                varmap.push($pThis.variablesMap[cleanVariable].source_field);
+                console.log($pThis.variablesMap[tempvar]);
+                varmap.push(tempvar);
+                varmap.push($pThis.variablesMap[tempvar].source_field);
 
                 outputJson.push(varmap);
 
@@ -543,7 +554,27 @@ document.addEventListener('alpine:init', () => {
 
         },
 
+        createDataMapJson() {
 
+            var templateVarNames = $pThis.getAvailableVariablesNames();
+            var outputJson = [];
+
+            templateVarNames.forEach(tempvar => {
+                
+                var varmap = [];    
+
+                console.log($pThis.variablesMap[tempvar]);
+                varmap.push(tempvar);
+                varmap.push($pThis.variablesMap[tempvar].source_field);
+
+                outputJson.push(varmap);
+
+            });
+
+            $pThis.dataMapJson = JSON.stringify(outputJson);
+
+
+        },
 
         // Action Creators
 
@@ -627,11 +658,6 @@ document.addEventListener('alpine:init', () => {
     
     }
 
-
-
-
-
-
     // Action Creators
 
     function action_removeSelectedDataSource() {
@@ -648,7 +674,6 @@ document.addEventListener('alpine:init', () => {
         this.new_ds_type = null;
         
     }
-
 
 
     function action_handle_campaign_info_step() {
@@ -669,7 +694,6 @@ document.addEventListener('alpine:init', () => {
         $pThis.incrementStep();
         
     }
-
 
 
     function action_handle_website_submit_step() {
@@ -718,7 +742,6 @@ document.addEventListener('alpine:init', () => {
         $pThis.incrementStep();
         
     }   
-
 
 
 });
