@@ -514,16 +514,9 @@ document.addEventListener('alpine:init', () => {
         dataMapJson: '{}',
 
         submitCreateCampaign(e) {
-            alert('submit');
             e.preventDefault();
-
-            if(ds_id){
-                $pThis.editDataMapJson();
-            }
-            else{
-                $pThis.createDataMapJson();
-            }
-            
+           
+            $pThis.createDataMapJson();
 
             setTimeout(() => {
                 e.target.submit();
@@ -531,33 +524,44 @@ document.addEventListener('alpine:init', () => {
             }, 500)
         },
 
-        editDataMapJson() {
+        // createDataMapJson() {
 
+        //     var templateVarNames = $pThis.getAvailableVariablesNames();
+        //     var outputJson = [];
 
-            mapData.forEach(currentData => {
-
-                const tempvar = currentData.data_source;
-                const source_field = currentData.data_source_headers;
+        //     templateVarNames.forEach(tempvar => {
                 
-                var varmap = [];    
+        //         var varmap = [];    
 
-                console.log($pThis.variablesMap[tempvar]);
-                varmap.push(tempvar);
-                varmap.push($pThis.variablesMap[tempvar].source_field);
+        //         console.log($pThis.variablesMap[tempvar]);
+        //         varmap.push(tempvar);
+        //         varmap.push($pThis.variablesMap[tempvar].source_field);
 
-                outputJson.push(varmap);
+        //         outputJson.push(varmap);
 
-            });
+        //     });
 
-            $pThis.dataMapJson = JSON.stringify(outputJson);
-
-
-        },
+        //     $pThis.dataMapJson = JSON.stringify(outputJson);
+        // },
 
         createDataMapJson() {
 
             var templateVarNames = $pThis.getAvailableVariablesNames();
             var outputJson = [];
+
+            if(!templateVarNames){
+                mapData.forEach(currentData => {
+                    const tempvar = currentData.data_source;
+                    const dataSource = currentData.data_source_headers;
+            
+            
+                    console.log($pThis.variablesMap[tempvar]);
+                    varmap.push(tempvar);
+                    varmap.push($pThis.variablesMap[tempvar].source_field);
+
+                    outputJson.push(varmap);
+                });
+            }
 
             templateVarNames.forEach(tempvar => {
                 
@@ -572,8 +576,6 @@ document.addEventListener('alpine:init', () => {
             });
 
             $pThis.dataMapJson = JSON.stringify(outputJson);
-
-
         },
 
         // Action Creators

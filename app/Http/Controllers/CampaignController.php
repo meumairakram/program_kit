@@ -147,7 +147,7 @@ class CampaignController extends Controller {
 
     public function update(Request $request, Campaign $campaign) 
     {
-        return $request;
+        // return $request;
         $attributes  = $request->validate([
             'title' => [''],
             'description' => [],
@@ -179,30 +179,28 @@ class CampaignController extends Controller {
 
         $source_maps_fields = array();
         $data_maps = json_decode($request->input('data_maps_json'), true);
-        return $data_maps;
+        
         foreach ($data_maps as $map) {
             $variable_name = $map[0];
             $header_name = $map[1];
         
             $source_maps_fields[] = array(
-                'campaign_id' => $campaign->id,
                 'data_source' => $variable_name,
-                'data_source_headers' => $header_name,
+                'data_source_headers' => $header_name,  
             );
         }
         
-        // Update existing records one by one using the array
-        foreach ($source_maps_fields as $mapping) {
-            return $mapping;
-            DataSourceField::where('campaign_id', $campaign->id)
-                ->update([
-                    'data_source' => $mapping['data_source'],
-                    'data_source_headers' => $mapping['data_source_headers'],
+        $records = DataSourceField::where('campaign_id', $request->id)->get();
+        
+        foreach ($records as $index => $record) {
+            if (isset($source_maps_fields[$index])) {
+                $record->update([
+                    'data_source' => $source_maps_fields[$index]['data_source'],
+                    'data_source_headers' => $source_maps_fields[$index]['data_source_headers'],
                 ]);
+            }
         }
         
-        
-
         return redirect()->route('campaign-management')->with('message', 'Campaign Updated successfully!');
     }
 

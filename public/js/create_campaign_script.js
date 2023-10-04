@@ -2684,34 +2684,39 @@ document.addEventListener('alpine:init', function () {
     },
     dataMapJson: '{}',
     submitCreateCampaign: function submitCreateCampaign(e) {
-      alert('submit');
       e.preventDefault();
-
-      if (ds_id) {
-        $pThis.editDataMapJson();
-      } else {
-        $pThis.createDataMapJson();
-      }
-
+      $pThis.createDataMapJson();
       setTimeout(function () {
         e.target.submit();
       }, 500);
     },
-    editDataMapJson: function editDataMapJson() {
-      mapData.forEach(function (currentData) {
-        var tempvar = currentData.data_source;
-        var source_field = currentData.data_source_headers;
-        var varmap = [];
-        console.log($pThis.variablesMap[tempvar]);
-        varmap.push(tempvar);
-        varmap.push($pThis.variablesMap[tempvar].source_field);
-        outputJson.push(varmap);
-      });
-      $pThis.dataMapJson = JSON.stringify(outputJson);
-    },
+    // createDataMapJson() {
+    //     var templateVarNames = $pThis.getAvailableVariablesNames();
+    //     var outputJson = [];
+    //     templateVarNames.forEach(tempvar => {
+    //         var varmap = [];    
+    //         console.log($pThis.variablesMap[tempvar]);
+    //         varmap.push(tempvar);
+    //         varmap.push($pThis.variablesMap[tempvar].source_field);
+    //         outputJson.push(varmap);
+    //     });
+    //     $pThis.dataMapJson = JSON.stringify(outputJson);
+    // },
     createDataMapJson: function createDataMapJson() {
       var templateVarNames = $pThis.getAvailableVariablesNames();
       var outputJson = [];
+
+      if (!templateVarNames) {
+        mapData.forEach(function (currentData) {
+          var tempvar = currentData.data_source;
+          var dataSource = currentData.data_source_headers;
+          console.log($pThis.variablesMap[tempvar]);
+          varmap.push(tempvar);
+          varmap.push($pThis.variablesMap[tempvar].source_field);
+          outputJson.push(varmap);
+        });
+      }
+
       templateVarNames.forEach(function (tempvar) {
         var varmap = [];
         console.log($pThis.variablesMap[tempvar]);
