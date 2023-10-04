@@ -363,7 +363,7 @@
 
 
                                                             <template x-if="!google_acc_connected">
-                                                                <h6>Seems like your google account is not connected</h6>
+                                                                <h6>Seems like your google account is not connected. <a class="text-underline" target="_blank" href="/sheets/init"> Connect here</a></h6>
                                                                 <span> Lets connect your Google account first</span>
                                                                 
                                                                 <div class="mt-3">
@@ -584,7 +584,7 @@
 
                             <div class="d-flex justify-content-start">
                                 <input type="hidden" name="data_maps_json" x-bind:value="dataMapJson" />  
-                                <input type="hidden" name="selected_datasource_id" x-bind:value="data_source_id.id" />
+                                <input type="hidden" name="selected_datasource_id" x-bind:value="data_source_id ? data_source_id.id : ''" />
                                 <button type="submit" class="btn bg-gradient-dark btn-md mt-4 mb-4 submit-form-btn">Save &amp; Start Sync</button>
                             </div>
                         </div>

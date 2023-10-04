@@ -15,6 +15,8 @@ use App\Models\Campaign;
 use App\Models\CampMap;
 use App\Models\WebsitesInfo;
 use App\Models\CampExecLog;
+use App\Models\CampaignExecStatus;
+   
 
 use App\HelperClasses\WebsiteHelpers;
 
@@ -37,6 +39,12 @@ class CreateTemplateOnWebsite implements ShouldQueue
         $this->data = $data;
 
 
+    }
+
+
+    public function failed(\Exception $e) {
+
+        CampaignExecStatus::setCampaignStatus($this->campaign_id, 'failed');
     }
 
     /**
@@ -75,9 +83,12 @@ class CreateTemplateOnWebsite implements ShouldQueue
         
         $sourceHeaders = $data['source_headers'];
 
+        $existingExecInfo = CampExecLog::where(['campaign_id' => $campaign_id])->get();
 
 
         Log::debug("headers got" . serialize($sourceHeaders));
+
+        
         // Its an additonal step for Google sheets which are created locally, as they are 1:1 mapped
         foreach($campMapping as $index => $item) {
 
@@ -111,11 +122,15 @@ class CreateTemplateOnWebsite implements ShouldQueue
         }
 
         
-        foreach($data['rows'] as $datarow) {
+        foreach($data['rows'] as $row_info) {
 
             $variablesMap = [];
             $current_row = [];
 
+            $datarow = $row_info['data'];
+            $row_number = $row_info['row_number'];
+
+            $hasValue = false;
             foreach($varIndexMap as $varIndex) {
 
                 if($loopIndex == 0) {
@@ -124,8 +139,12 @@ class CreateTemplateOnWebsite implements ShouldQueue
 
                 if(array_key_exists(intval($varIndex['header_index']), $datarow)) {
                     
+                    if($datarow[intval($varIndex['header_index'])]) {
+                        $hasValue = true;                    
+                    }
+
                     $current_row[] = $datarow[intval($varIndex['header_index'])];
-                
+
                 } else {
                     $current_row[] = '';
                 }
@@ -136,19 +155,23 @@ class CreateTemplateOnWebsite implements ShouldQueue
                 $requestdataPrep['variables'] = $variablesMap;
             }
 
-            
-            $requestdataPrep['dataset'][] = $current_row;
+            $alreadyExecuted = $existingExecInfo->filter(function($value, $key) use($row_number) {
+                return $value->data_address == $row_number;
+            })->count();
 
+            if( $hasValue && $alreadyExecuted < 1) {
 
-            $campExecLogs[] = CampExecLog::create(
-                array(
-                    'campaign_id' => $campaign_id,
+                $campExecLogs[] = array(
+                    'campaign_id' => $campaign_id,                    
                     'ds_type' => $source_type,
-                    'data_address' => $loopIndex,
+                    'data_address' => $row_number,
                     'exec_type' => $job_type,
                     'status' => 'inprogress'
-                )
-            );
+                );
+
+                $requestdataPrep['dataset'][] = $current_row;
+
+            }            
 
             $loopIndex++;
         } 
@@ -156,12 +179,15 @@ class CreateTemplateOnWebsite implements ShouldQueue
 
         $requestdataPrep['template_id'] = $campaign->wp_template_id;
 
-        $response = $websiteHelper->createTemplateFromValues($requestdataPrep);
+        if(count($requestdataPrep['dataset']) > 0) {
+            // Dont send call if there is no data set    
+            $response = $websiteHelper->createTemplateFromValues($requestdataPrep);
+        
+        }
 
-        // foreach($campExecLogs as $execLog) {
-        //     CampExecLog::create($execLog);
-        // }
+        CampExecLog::insert( $campExecLogs);
 
+        CampaignExecStatus::setCampaignStatus($campaign_id, 'synced');
         
     }
 }

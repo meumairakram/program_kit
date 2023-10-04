@@ -12,6 +12,7 @@ use App\HelperClasses\WebsiteHelpers;
 use App\Models\CampExecLog;
 use App\Jobs\CreateTemplateOnWebsite;
 use App\Models\User;
+use App\Models\CampaignExecSatus;
 
 
 use App\HelperClasses\GoogleSheetHelpers;
@@ -45,29 +46,47 @@ class ApiHandler extends Controller {
         
         }
 
+        if($datasource->type == "csv") {
 
-        $filePath = $datasource->file_path;
+            $filePath = $datasource->file_path;
 
-        $absolute_file_path = storage_path('app/' . $filePath);
+            $absolute_file_path = storage_path('app/' . $filePath);
 
-        if (!file_exists($absolute_file_path)) {
+            if (!file_exists($absolute_file_path)) {
+                return response()->json([
+                    "success" => false,
+                    "data" => []
+                ]);
+            }
+
+            $csvData = array_map("str_getcsv", file($absolute_file_path));
+            $csvHeaders = $csvData[0];
+            $first_10_records = array_slice($csvData, 1, 10);
+
             return response()->json([
-                "success" => false,
-                "data" => []
+                "success" => true,
+                "data" => array(
+                    "headers" => $csvHeaders,
+                    "preview_rows" => $first_10_records
+                )
             ]);
+
         }
 
-        $csvData = array_map("str_getcsv", file($absolute_file_path));
-        $csvHeaders = $csvData[0];
-        $first_10_records = array_slice($csvData, 1, 10);
+        if($datasource->type == "google_sheet") {
 
-        return response()->json([
-            "success" => true,
-            "data" => array(
-                "headers" => $csvHeaders,
-                "preview_rows" => $first_10_records
-            )
-        ]);
+            return response()->json([
+                "success" => true,
+                "data" => array(
+                    "headers" => [],
+                    "preview_rows" => []
+                )
+            ]);
+        
+        }
+
+
+        
 
     
     }
@@ -133,12 +152,20 @@ class ApiHandler extends Controller {
 
         
         $user = User::where(['id' => 2])->first();    // temp set user
-        // var_dump();
+
+        $campaign_id = 35;
+
+        $sheet_id = "1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI";
+
+        
+        // Set campaign status to syncing 
+        CampaignExecSatus::setCampaignStatus($campaign_id, 'syncing');
+
+
         $sheetsHelper = new GoogleSheetHelpers($user);
 
-        // var_dump($sheetsHelper->user);
+        $data = $sheetsHelper->ReadAllDataFromSheet($sheet_id);
 
-        $data = $sheetsHelper->ReadAllDataFromSheet("1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI");
 
         if(!$data || !is_array($data) || count($data) < 1) {
 
@@ -149,10 +176,6 @@ class ApiHandler extends Controller {
         $headers = $data[0];   // consider first row as header
 
         $content_data = array_slice($data, 1, count($data));
-
-        // var_dump("Headers are:");
-
-        // var_dump($headers);
 
 
         $clean_data = [];
@@ -166,6 +189,7 @@ class ApiHandler extends Controller {
             }
         }   
 
+        $row_number = 2; // starting from 2 as item 1 is headers
         foreach($content_data as $content_row) {
 
             $current_row = [];
@@ -179,8 +203,9 @@ class ApiHandler extends Controller {
             
             }
 
-            $clean_data[] = $current_row;
+            $clean_data[] = array('data' => $current_row, 'row_number' => $row_number);
             
+            $row_number++;
         
         }
 
@@ -195,7 +220,7 @@ class ApiHandler extends Controller {
             'source_headers' => $plain_headers,
             'rows' => $clean_data
         );
-
+        // var_dump($job_data);
         CreateTemplateOnWebsite::dispatch(35, $job_data);
 
         var_dump("Scheduled for " . count($clean_data) . " Templates");

@@ -111,19 +111,23 @@ function generateRandomUniqueNumber() {
     return uniqueNumber.toString().padStart(8, '0'); // Pad with zeros if necessary
 }
 
-// handle sections based on selected type
-document.getElementById('selectType').addEventListener('change', function(e) 
-{
-    var selectedValue = $(this).val();
-    if(selectedValue == 'csv'){
-        $('.uploadCSV').removeClass('d-none');
-        $('.uploadGoogleSheets').addClass('d-none');
-    }
-    else if(selectedValue == 'google_sheet'){
-        $('.uploadGoogleSheets').removeClass('d-none');
-        $('.uploadCSV').addClass('d-none');
-    }
-});
+if(document.getElementById('selectType')) {
+
+    // handle sections based on selected type
+    document.getElementById('selectType').addEventListener('change', function(e) 
+    {
+        var selectedValue = $(this).val();
+        if(selectedValue == 'csv'){
+            $('.uploadCSV').removeClass('d-none');
+            $('.uploadGoogleSheets').addClass('d-none');
+        }
+        else if(selectedValue == 'google_sheet'){
+            $('.uploadGoogleSheets').removeClass('d-none');
+            $('.uploadCSV').addClass('d-none');
+        }
+    });
+
+}
 
 $('.gsheets').on('click', function(e) {
     jQuery.ajax({
@@ -157,20 +161,22 @@ $('.gsheets').on('click', function(e) {
 
 }); 
 
-
+if(document.getElementById('selectType')) {
 // handle sections based on selected type
-document.getElementById('selectType').addEventListener('change', function(e) 
-{
-var selectedValue = $(this).val();
-if(selectedValue == 'csv'){
-    $('.uploadCSV').removeClass('d-none');
-    $('.uploadGoogleSheets').addClass('d-none');
+    document.getElementById('selectType').addEventListener('change', function(e) 
+    {
+    var selectedValue = $(this).val();
+    if(selectedValue == 'csv'){
+        $('.uploadCSV').removeClass('d-none');
+        $('.uploadGoogleSheets').addClass('d-none');
+    }
+    else if(selectedValue == 'google_sheet'){
+        $('.uploadGoogleSheets').removeClass('d-none');
+        $('.uploadCSV').addClass('d-none');
+    }
+    });
+
 }
-else if(selectedValue == 'google_sheet'){
-    $('.uploadGoogleSheets').removeClass('d-none');
-    $('.uploadCSV').addClass('d-none');
-}
-});
 
 $(document).ready(function() {
     var selectedValue = $('#selectType').val(); 
