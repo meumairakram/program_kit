@@ -23,11 +23,11 @@ document.addEventListener('alpine:init', () => {
             }
 
 
-             if (web_type) {
+            if (web_type) {
                 this.requiresMapping = true;
                 this.editwebsitetype(web_type);
             }
-             if (website_id) {
+            if (website_id) {
                 this.requiresMapping = true;
                 this.editwebsiteid(website_id);
             }
@@ -59,6 +59,9 @@ document.addEventListener('alpine:init', () => {
         // website variables
         website_type: "wordpress",        
         avl_websites: [],
+        selectedWebsite: website_name,
+        selectedPostType: post_type,
+        selectedTemplate: template_id,
         avl_post_types: [],
         avl_templates: [],
         website_id: null,
@@ -232,7 +235,6 @@ document.addEventListener('alpine:init', () => {
         },
 
 
-
         editwebsitetype(web_type){
             $pThis.website_type = web_type;
             $pThis.loadWebsites();
@@ -253,7 +255,7 @@ document.addEventListener('alpine:init', () => {
             var selectedType = $pThis.website_type;
 
             if(!selectedType) {
-                alert("website type channot be empty");
+                alert("website type cannot be empty");
 
                 return false;
             }
@@ -523,26 +525,6 @@ document.addEventListener('alpine:init', () => {
             
             }, 500)
         },
-
-        // createDataMapJson() {
-
-        //     var templateVarNames = $pThis.getAvailableVariablesNames();
-        //     var outputJson = [];
-
-        //     templateVarNames.forEach(tempvar => {
-                
-        //         var varmap = [];    
-
-        //         console.log($pThis.variablesMap[tempvar]);
-        //         varmap.push(tempvar);
-        //         varmap.push($pThis.variablesMap[tempvar].source_field);
-
-        //         outputJson.push(varmap);
-
-        //     });
-
-        //     $pThis.dataMapJson = JSON.stringify(outputJson);
-        // },
 
         createDataMapJson() {
 

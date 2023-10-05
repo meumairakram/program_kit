@@ -99,8 +99,6 @@
                                         <select class="form-control web_sec_required" @change="handleWebsiteTypeChange" name="website_type" id="websiteType">
                                             <!-- <option value="{{$campaign->website_type}}">{{$campaign->type}}</option> -->
                                             <option value="wordpress">Wordpress</option>
-                                            <!-- <option value="wordpress">Webflow</option>
-                                            <option value="wordpress">Bubble</option> -->
                                         </select>
 
                                         @error('type')
@@ -117,11 +115,10 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Select Website</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" name="website_id" @change="handleWebsiteIdChange" id="selectWebSite">
+                                        <select x-model="selectedWebsite" class="form-control web_sec_required" name="website_id" @change="handleWebsiteIdChange" id="selectWebSite">
                                             <!-- <option value="{{$campaign->website_id}}">{{$campaign->website_name}} || {{$campaign->website_url}}</option> -->
                                             <template x-for="website_option in avl_websites">
-                                                <option x-bind:value="website_option.id" x-text="website_option.name + ' ( ' + website_option.url + ' )'">Select a website</option>
-
+                                                <option x-bind:selected="website_option.name === selectedWebsite ? 'true' : null" x-bind:value="website_option.id" x-text="website_option.name + ' ( ' + website_option.url + ' )'">Select a website</option>
                                             </template>
 
                                         </select>
@@ -139,10 +136,10 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Post type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" name="post_type" @change="handleWebsitePostTypeChange" id="postType">
+                                        <select x-model="selectedPostType"  class="form-control web_sec_required" name="post_type" @change="handleWebsitePostTypeChange" id="postType">
                                             <!-- <option value="{{$campaign->post_type}}">{{$campaign->post_type}}</option> -->
                                             <template x-for="post_type_option in avl_post_types">
-                                                <option x-bind:value="post_type_option" x-text="post_type_option"></option>
+                                                <option x-bind:selected="post_type_option === selectedPostType ? 'true' : null" x-bind:value="post_type_option" x-text="post_type_option"></option>
                                             </template>
                                         </select>
 
@@ -159,10 +156,10 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Template</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" @change="handleTemplateFieldChange" name="wp_template_id" id="template">
+                                        <select x-model="selectedTemplate" class="form-control web_sec_required" @change="handleTemplateFieldChange" name="wp_template_id" id="template">
                                             <!-- <option value="{{$campaign->wp_template_id}}">{{$campaign->templateName}}</option> -->
                                             <template x-for="template_option in avl_templates"> 
-                                                <option x-bind:value="template_option.id" x-text="`${template_option.title} - #${template_option.id}`"></option>
+                                                <option x-bind:selected="template_option.id === selectedTemplate ? 'true' : null" x-bind:value="template_option.id" x-text="`${template_option.title} - #${template_option.id}`"></option>
 
                                             </template>
                                         </select>
@@ -559,6 +556,7 @@
      
         var web_type = <?php echo json_encode($campaign->type); ?>;
         var website_id = <?php echo json_encode($campaign->website_id); ?>;
+        var website_name = <?php echo json_encode($campaign->website_name); ?>;
         var post_type = <?php echo json_encode($campaign->post_type); ?>;
         var template_id = <?php echo json_encode($campaign->wp_template_id); ?>;
         var ds_id = <?php echo json_encode($campaign->data_source_id); ?>;
