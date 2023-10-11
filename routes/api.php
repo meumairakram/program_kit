@@ -90,6 +90,7 @@ Route::post('/get_datasource_mapping', [ApiHandler::class, 'getDatasourceMapData
 
 Route::post('/create_new_data_source', [ApiHandler::class, 'createDataSourceForUser']);
 
+Route::get('/test_api_method', [ApiHandler::class, 'test_api_method']);
 
 
 /// FAKE API ENDPOINTS START HERE

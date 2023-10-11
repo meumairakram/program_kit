@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use DB;
+
+use Illuminate\Support\Facades\Http;
+
 use App\Models\CampMap;
 use App\Models\Template;
 use App\Models\Campaign ;
@@ -12,7 +15,10 @@ use App\Models\WebsitesInfo;
 use Illuminate\Http\Request;
 use App\Models\DataSourceField;
 use Illuminate\Support\Facades\Auth;
+use App\Models\CampaignExecStatus;
+use App\Models\CampExecLog;
 
+use App\Jobs\StartCampaignSync;
 
 class CampaignController extends Controller {
     //
@@ -27,6 +33,7 @@ class CampaignController extends Controller {
             ->leftjoin('user_datasources', 'campaigns.data_source_id', 'user_datasources.id')
             ->leftjoin('templates', 'campaigns.wp_template_id','templates.template_id')
             ->leftjoin('user_websites', 'campaigns.website_id', 'user_websites.id')
+            ->leftjoin('campaign_exec_status', 'campaigns.id', 'campaign_exec_status.campaign_id')
             // ->where("user_websites.is_authenticated", "Verified")
             ->where('campaigns.owner_id', $current_user_id)
             ->select(
@@ -36,7 +43,8 @@ class CampaignController extends Controller {
                 'templates.template as templateName',
                 'templates.template_variables as variables',
                 'user_websites.website_name as website_name',
-                'user_websites.website_url as website_url'
+                'user_websites.website_url as website_url',
+                'campaign_exec_status.status as exec_status'
             )
             ->orderBy('campaigns.id', 'ASC')
             //->distinct()
@@ -92,12 +100,20 @@ class CampaignController extends Controller {
         $campaign->description = $attributes['description'];
         $campaign->type = $attributes['website_type'];
         $campaign->website_id = $attributes['website_id'];
-      //  $campaign->post_type = $attributes['post_type'];
+       $campaign->post_type = $attributes['post_type'];
         $campaign->wp_template_id = $attributes['wp_template_id'];
         $campaign->data_source_id = $attributes['selected_datasource_id'];
         $campaign->status = 'ready';
         $campaign->owner_id = $user->id;
         $campaign->save();
+
+
+        // create campaign status record
+        CampaignExecStatus::create([
+            'campaign_id' => $campaign->id,
+            'status' => 'idle'
+        ]);
+
 
       
 
@@ -112,15 +128,15 @@ class CampaignController extends Controller {
             $source_maps_fields[] = array(
 
                 'campaign_id' => $campaign->id,
-                'data_source' => $variable_name,
-                'data_source_headers' => $header_name,  
-            
+                'template_variable' => $variable_name,
+                'field_header' => $header_name,  
+                'val_type' => 'string'
             );
         }
 
 
         // Create data source fields mapping
-        DataSourceField::insert($source_maps_fields);
+        CampMap::insert($source_maps_fields);
         
 
         return redirect()->route('campaign-management')->with('message', 'Campaign created successfully!');
@@ -252,5 +268,183 @@ class CampaignController extends Controller {
             "websites" => $websites
         ]);
     }
+
+
+
+
+
+    public function campaignStatusPage(Request $request, $camp_id) {
+
+   
+
+        $campaign_data = Campaign::where(['campaigns.id' => $camp_id])
+            ->leftjoin('user_datasources', 'campaigns.data_source_id', 'user_datasources.id')
+            ->leftjoin('user_websites', 'campaigns.website_id', 'user_websites.id')
+            ->leftjoin('campaign_exec_status', 'campaigns.id', 'campaign_exec_status.campaign_id')
+            ->get([
+                'campaigns.*',
+                'user_websites.*',
+                'campaign_exec_status.status as exec_status'
+            ]);
+
+
+        // var_dump($campaign_data); die();
+            
+
+        return view('dashboard-pages/campaign-status', compact('campaign_data'));
+            
+            // ->leftjoin('templates', 'campaigns.wp_template_id','templates.template_id')
+
+
+    
+    }
+
+
+
+
+        
+    public function data_api_campaign_info(Request $request, $camp_id) {
+
+        //   title:"",
+        //     status: "",
+        //     website_pinged: false,
+        //     pages_published: 0,
+
+        $campaign = Campaign::leftjoin('campaign_exec_status', 'campaigns.id', 'campaign_exec_status.campaign_id')
+        ->where(['campaigns.id' => $camp_id])
+        ->get([
+            'campaigns.*',
+            'campaign_exec_status.status as exec_status'
+        ])->first();
+
+
+        if(!$campaign) {
+            response()->json(array(
+                'success' => false,
+                'error' => "Invalid campaign",
+                'data' => []
+            
+            ));
+        }    
+
+        $pages_count = CampExecLog::where(['campaign_id' => $camp_id])->get()->count();
+
+
+        return response()->json(array(
+            'success' => true,
+            'data' => [
+                'title' => $campaign->title,
+                'status' => $campaign->exec_status ? $campaign->exec_status : "N/A",
+                'pages_published' =>  $pages_count 
+            ],
+            'error' => null
+        
+        ));
+
+        
+
+
+    }
+    
+
+
+    
+        
+    public function data_api_campaign_ping(Request $request, $camp_id) {
+
+        //   title:"",
+        //     status: "",
+        //     website_pinged: false,
+        //     pages_published: 0,
+
+        $campaign = Campaign::where(['id' => $camp_id])->first();
+
+
+        if(!$campaign) {
+            response()->json(array(
+                'success' => false,
+                'error' => "Invalid campaign",
+                'data' => []
+            
+            ));
+        }   
+
+        $website =  WebsitesInfo::where(['id' => $campaign->website_id])->first();
+
+        if(!$website) {
+            response()->json(array(
+                'success' => false,
+                'error' => "Invalid website",
+                'data' => []
+            
+            ));
+        }   
+
+        
+        $website_url = $website->request_url;
+        $call_success = false;
+
+        $before_time = time();
+        try {
+            $http_call = Http::get($website_url);
+            $call_success = true;
+
+        } catch(\Exception $e) {
+            return response()->json(array(
+                'success' => false,
+                'data' => [
+                   
+                ],
+                'error' => $e->getMessage()
+            
+            ));
+        }
+        $after_time = time();
+        
+
+
+        return response()->json(array(
+            'success' => $call_success,
+            'data' => [
+                'pinged_at' => $website_url,
+                'query_time' => $after_time - $before_time
+            ],
+            'error' => null
+        
+        ));
+
+        
+
+
+    }
+
+
+    // public function start camp sync
+    public function data_api_campaign_start(Request $request, int $camp_id): \Illuminate\Http\JsonResponse {
+
+        $campaign_status = CampaignExecStatus::where(['campaign_id' => $camp_id])->first();
+        $started = false;
+
+        if($campaign_status->status == 'idle') {
+            
+            StartCampaignSync::dispatch($camp_id, Auth::user());
+            $started = true;
+        }
+
+
+
+        return response()->json([
+            'success' => $started,
+            'data' => [],
+            'error' => $started ? null : "Campaign sync is already in progress"
+
+        ]);        
+
+    }
+
+
+
+
+
 
 }

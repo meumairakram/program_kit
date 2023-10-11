@@ -69,9 +69,15 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('edit-campaign/{id}', [CampaignController::class, 'edit'])->name('edit-campaign');
 	Route::post('edit-campaign', [CampaignController::class, 'update'])->name('update-campaign');
 	Route::get('delete-campaign/{id}', [CampaignController::class, 'delete'])->name('delete-campaign');
+	Route::get('campaign-status/{camp_id}', [CampaignController::class, 'campaignStatusPage'])->name('campaign-status');
+
+	Route::get('data_api/campaign_info/{camp_id}',[CampaignController::class, 'data_api_campaign_info'])->name('camapaign-info-datapi');
+	Route::get('data_api/start_campaign/{camp_id}',[CampaignController::class, 'data_api_campaign_start'])->name('camapaign-start-datapi');
+	Route::get('data_api/ping_website/{camp_id}',[CampaignController::class, 'data_api_campaign_ping'])->name('camapaign-ping-datapi');
+
+
 
     Route::post('/websites_type', [CampaignController::class, 'selectWebSite']);
-
 
 	// websites
 	Route::get('website-management', [WebsiteController::class, 'manage'])->name('website-management');
@@ -90,7 +96,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('edit-datasource', [DatasourcesController::class, 'update'])->name('update-datasource');
 	Route::get('delete-datasource/{id}', [DatasourcesController::class, 'delete'])->name('delete-datasource');
 
-
+	
 
 
 

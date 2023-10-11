@@ -2331,24 +2331,12 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-/*!************************************************!*\
-  !*** ./resources/js/create_campaign_script.js ***!
-  \************************************************/
+/*!*********************************************!*\
+  !*** ./resources/js/campaign_management.js ***!
+  \*********************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -2357,391 +2345,110 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 document.addEventListener('alpine:init', function () {
-  var $pThis = null;
-  Alpine.store("create_campaign_store", {
+  var $alpine = null;
+  Alpine.store('manage_campaign', {
     init: function init() {
-      this.google_acc_connected = google_acc_connected;
-      $pThis = this;
+      $alpine = this;
     },
-    currentStep: 3,
-    google_acc_connected: false,
-    sheet_type: null,
-    //  new or exisitng
-    data_source_id: null,
-    // create_new_datasource: action_create_new_datasource.bind(this),
-    ds_source_type: "existing",
-    // new or existing
-    new_ds_type: null,
-    gsheet_type: "new_sheet",
-    gsheet_id: "",
-    variables_exported: null,
-    ds_loading: false,
-    // website variables
-    website_type: "wordpress",
-    avl_websites: [],
-    avl_post_types: [],
-    avl_templates: [],
-    website_id: null,
-    new_sheet_name: null,
-    requiresMapping: false,
-    variablesMap: {},
-    datasourceFields: [],
-    firstDataRow: [],
-    dataMapJson: '{}',
-    // Action creators
-    // global setter
-    setValue: function setValue(type, val) {
-      $pThis[type] = val;
+    modalInstance: $('#campaign_detail_modal'),
+    loading: true,
+    campaign_info: {
+      title: "",
+      status: "",
+      website_pinged: false,
+      pages_published: 0
     },
-    incrementStep: function incrementStep() {
-      this.currentStep = this.currentStep + 1;
-    },
-    decrementStep: function decrementStep() {
-      this.currentStep = this.currentStep - 1;
-    },
-    set_new_ds_type: function set_new_ds_type(type) {
-      this.new_ds_type = type;
-    },
-    set_google_sheet_type: function set_google_sheet_type(event) {
-      if (event.target.checked) {
-        this.gsheet_type = "new_sheet";
-        return;
-      }
+    sync_status: "",
+    camp_id: null,
+    updateInfoTimeout: null,
+    showCampaignStatus: function showCampaignStatus(camp_id) {
+      $alpine.camp_id = camp_id;
+      $alpine.showModal();
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/data_api/campaign_info/".concat(camp_id)).then(function (response) {
+        $alpine.loading = false;
 
-      this.gsheet_type = "existing_sheet"; // this.gsheet_type = type;
-    },
-    set_ds_id: function set_ds_id(event) {
-      var source_id = event.target.value;
-      var source_title = $(event.target).find("[value=\"".concat(source_id, "\"]")).attr('name');
-      this.requiresMapping = true;
-      $pThis.setTemplateVariables();
-      this.data_source_id = {
-        id: source_id,
-        title: source_title
-      };
-      $pThis.setDatasourceFields();
-      this.incrementStep();
-    },
-    getSelectedDSLabel: function getSelectedDSLabel() {
-      return "".concat(this.data_source_id.title, " - #").concat(this.data_source_id.id);
-    },
-    validate_create_new_sheet: function validate_create_new_sheet() {
-      if (!this.new_sheet_name || this.new_sheet_name == "" || this.website_id == null) {
-        return false;
-      }
-
-      return true;
-    },
-    handleWebsiteTypeChange: function handleWebsiteTypeChange(event) {
-      $pThis.bind_field_on_change(event);
-      $pThis.loadWebsites();
-    },
-    handleWebsiteIdChange: function handleWebsiteIdChange(event) {
-      $pThis.bind_field_on_change(event);
-      $pThis.loadPostTypes();
-    },
-    handleWebsitePostTypeChange: function handleWebsitePostTypeChange(event) {
-      $pThis.bind_field_on_change(event);
-      $pThis.loadAvlTemplates();
-    },
-    handleTemplateFieldChange: function handleTemplateFieldChange(event) {
-      $pThis.bind_field_on_change(event);
-      $pThis.setTemplateVariables();
-    },
-    setTemplateVariables: function setTemplateVariables() {
-      var formValues = new FormData();
-      formValues.append('post_id', $pThis.wp_template_id);
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_template_vars', formValues).then(function (response) {
-        if (!response.data.success) {
-          console.error("Got invalid response for template vars");
-          return false;
-        }
-
-        if (response.data.data.variables.length < 1) {
-          console.error("got no vars for this template");
-          return false;
-        }
-
-        var varsArray = {};
-        response.data.data.variables.forEach(function (value, index) {
-          varsArray[value] = {
-            source_field: null,
-            preview_row_data: null
-          };
-        });
-        $pThis.variablesMap = _objectSpread({}, varsArray); // Attempt automatch of fields.
-
-        $pThis.autoMatchDSFields();
-      });
-    },
-    loadWebsites: function loadWebsites() {
-      var selectedType = $pThis.website_type;
-
-      if (!selectedType) {
-        alert("website type channot be empty");
-        return false;
-      }
-
-      var formValues = new FormData();
-      formValues.append('type', selectedType);
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/websites_type', formValues).then(function (response) {
-        // console.log(response);
         if (response.data.success) {
-          var websitesStore = [];
-
-          if (!Array.isArray(response.data.websites)) {
-            return false;
-          }
-
-          response.data.websites.forEach(function (item) {
-            websitesStore.push({
-              id: item.id,
-              name: item.website_name,
-              url: item.website_url
-            });
+          $alpine.campaign_info = _objectSpread(_objectSpread({}, $alpine.campaign_info), response.data.data);
+          $alpine.setCampaignStatus('Testing website ping...');
+        }
+      });
+      $alpine.testWebsitePing().then(function (response) {
+        // console.log(response.data);
+        // if(response.data.success) {
+        if (true) {
+          $alpine.campaign_info = _objectSpread(_objectSpread({}, $alpine.campaign_info), {
+            website_pinged: true
           });
-          $pThis.avl_websites = [].concat(websitesStore);
-        } else {
-          alert("error loading websites");
+          $alpine.setCampaignStatus('Testing website Successful, Starting campaign sync...');
+          $alpine.setWatchTimeout();
+
+          if ($alpine.campaign_info.status == "idle") {
+            $alpine.startCampaignSync();
+          }
+        } else {}
+      }); // setTimeout(function() {
+      //     $alpine.campaign_info = {...$alpine.campaign_info , ...{            
+      //         title: "New Campaign",
+      //         status: "ready",
+      //         website_pinged: false,
+      //         pages_published: 0,
+      //     }}
+      //     $alpine.loading = false;
+      //     $alpine.setCampaignStatus('Testing website ping...');
+      // }, 1500);
+      // $alpine.loading = false;
+    },
+    testWebsitePing: function testWebsitePing() {
+      return axios__WEBPACK_IMPORTED_MODULE_0___default().get("data_api/ping_website/".concat($alpine.camp_id));
+    },
+    startCampaignSync: function startCampaignSync() {
+      $alpine.setCampaignStatus("Campaign sync started");
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/data_api/start_campaign/".concat($alpine.camp_id)).then(function (response) {
+        if (response.success) {
+          // $alpine.campaign_info = {...$alpine.campaign_info , ...response.data}
+          $alpine.setCampaignStatus("Syncing");
+          $alpine.updateCampaignInfo();
         }
       });
     },
-    loadPostTypes: function loadPostTypes() {
-      var selectedWebsite = $pThis.website_id;
-
-      if (!selectedWebsite) {
-        alert("website type channot be empty");
-        return false;
-      }
-
-      var formValues = new FormData(); // formValues.append('type', selectedType);
-
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/get_post_types').then(function (response) {
-        console.log(response);
-
+    updateCampaignInfo: function updateCampaignInfo() {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/data_api/campaign_info/".concat($alpine.camp_id)).then(function (response) {
         if (response.data.success) {
-          $pThis.avl_post_types = _toConsumableArray(response.data.data.post_types);
+          $alpine.campaign_info = _objectSpread(_objectSpread({}, $alpine.campaign_info), response.data.data);
         }
       });
     },
-    loadAvlTemplates: function loadAvlTemplates() {
-      var selectedPostType = $pThis.post_type;
-      var formValues = new FormData();
-      formValues.append('post_type', selectedPostType);
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_templates_by_type', formValues).then(function (response) {
-        console.log(response);
+    setWatchTimeout: function setWatchTimeout() {
+      $alpine.updateInfoTimeout = setInterval(function () {
+        if ($alpine.campaign_info.status == 'synced' || $alpine.campaign_info.status == 'failed') {
+          $alpine.setCampaignStatus("Sync Completed");
 
-        if (!response.data.success) {
-          alert("No website found for this settings");
-          return false;
-        }
-
-        if (Array.isArray(response.data.data.posts)) {
-          $pThis.avl_templates = _toConsumableArray(response.data.data.posts);
-        }
-      });
-    },
-    getAvailableVariablesNames: function getAvailableVariablesNames() {
-      var variables = Object.keys($pThis.variablesMap);
-      return variables;
-    },
-    setDatasourceFields: function setDatasourceFields() {
-      var formValues = new FormData();
-      formValues.append('ds_id', $pThis.data_source_id.id);
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_datasource_mapping', formValues).then(function (response) {
-        console.log(response);
-
-        if (response.data.success) {
-          $pThis.datasourceFields = _toConsumableArray(response.data.data.headers);
-          $pThis.firstDataRow = _toConsumableArray(response.data.data.preview_rows[0]); // Attempt automatch of fields.
-
-          $pThis.autoMatchDSFields();
-        }
-      });
-    },
-    autoMatchDSFields: function autoMatchDSFields() {
-      // Auto matching the fields with the same name
-      var allVariables = $pThis.getAvailableVariablesNames();
-      allVariables.forEach(function (element) {
-        var cleanVariable = element.replace("{", "").replace("}", "");
-        var dsIndex = $pThis.datasourceFields.findIndex(function (item) {
-          // var cleanedItem = item.replace("{","").replace("}", "");
-          var matchFound = item === cleanVariable;
-
-          if (matchFound) {
-            console.log("Match found for ".concat(item, " AND ").concat(cleanVariable));
+          if ($alpine.updateInfoTimeout != null) {
+            clearInterval($alpine.updateInfoTimeout);
           }
 
-          return matchFound;
-        });
-        console.log("Found index", dsIndex);
-
-        if (dsIndex > -1) {
-          $pThis.variablesMap[element].source_field = cleanVariable;
-          $pThis.variablesMap[element].preview_row_data = $pThis.firstDataRow[dsIndex];
+          return;
         }
-      });
-    },
-    handle_source_field_change: function handle_source_field_change(event) {
-      event.preventDefault();
-      var elem = event.target;
-      var dataRowIndex = $pThis.datasourceFields.findIndex(function (item) {
-        return item === $(elem).val();
-      });
-      $pThis.variablesMap[$(elem).attr('vartarget')].source_field = $(elem).val();
 
-      if (dataRowIndex > -1) {
-        $pThis.variablesMap[$(elem).attr('vartarget')].preview_row_data = $pThis.firstDataRow[dataRowIndex];
-      }
-    },
-    bind_field_on_change: function bind_field_on_change(event) {
-      event.preventDefault();
-
-      if (event.target.attributes.length == 0) {
-        console.alert("No attribute for name on", event.target);
-      }
-
-      for (var i = 0; i < event.target.attributes.length; i++) {
-        var item = event.target.attributes[i];
-
-        if (item.name == "name") {
-          $pThis[item.value] = event.target.value;
+        if (!$alpine.modalInstance.hasClass('show')) {
+          clearInterval($alpine.updateInfoTimeout);
         }
-      }
+
+        $alpine.updateCampaignInfo();
+      }, 1000);
     },
-    submitCreateCampaign: function submitCreateCampaign(e) {
-      e.preventDefault();
-      $pThis.createDataMapJson();
+    setCampaignStatus: function setCampaignStatus(status) {
       setTimeout(function () {
-        e.target.submit();
+        $alpine.sync_status = status;
       }, 500);
     },
-    createDataMapJson: function createDataMapJson() {
-      var templateVarNames = $pThis.getAvailableVariablesNames();
-      var outputJson = [];
-      templateVarNames.forEach(function (tempvar) {
-        var varmap = [];
-        console.log($pThis.variablesMap[tempvar]);
-        varmap.push(tempvar);
-        varmap.push($pThis.variablesMap[tempvar].source_field);
-        outputJson.push(varmap);
-      });
-      $pThis.dataMapJson = JSON.stringify(outputJson);
+    showModal: function showModal() {
+      $alpine.modalInstance.modal('show');
     },
-    // Action Creators
-    action_create_new_sheet_with_vars: action_create_new_sheet_with_vars,
-    action_handle_campaign_info_step: action_handle_campaign_info_step,
-    action_handle_ds_step: action_handle_ds_step,
-    action_handle_map_step: action_handle_map_step,
-    action_handle_website_submit_step: action_handle_website_submit_step,
-    action_removeSelectedDataSource: action_removeSelectedDataSource,
-    action_switch_ds_type: action_switch_ds_type
+    hideModal: function hideModal() {
+      $alpine.modalInstance.modal('hide');
+    }
   });
-
-  function action_create_new_sheet_with_vars(event) {
-    var _this = this;
-
-    event.preventDefault();
-    this.ds_loading = true;
-
-    if (!$pThis.validate_create_new_sheet()) {
-      alert("there is a problem with your input");
-      return false;
-    }
-
-    var formValues = new FormData();
-    formValues.append('title', this.new_sheet_name);
-    formValues.append('website_id', $pThis.website_id);
-    formValues.append('template_id', $pThis.wp_template_id);
-    axios__WEBPACK_IMPORTED_MODULE_0___default().post('/sheets/create_new', formValues).then(function (response) {
-      if (response.data.success) {
-        var sheetFormValues = new FormData();
-        sheetFormValues.append('title', _this.new_sheet_name);
-        sheetFormValues.append('type', 'google_sheet');
-        sheetFormValues.append('requires_mapping', '0'); // sheetFormValues.append('file_path','');
-
-        sheetFormValues.append('sheet_id', response.data.data.sheet_id); // Create new Datasource 
-
-        axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/create_new_data_source', sheetFormValues).then(function (resp) {
-          if (resp.data.success) {
-            var _resp$data$data = resp.data.data,
-                id = _resp$data$data.id,
-                title = _resp$data$data.title;
-            $pThis.data_source_id = {
-              id: id,
-              title: title
-            }; // Object.keys($pThis.variablesMap)
-
-            $pThis.datasourceFields = _toConsumableArray(Object.keys($pThis.variablesMap).map(function (item) {
-              return item.replace("{", "").replace("}", "");
-            }));
-            $pThis.firstDataRow = _toConsumableArray(new Array($pThis.datasourceFields.length));
-            $pThis.requiresMapping = true;
-            $pThis.ds_loading = false;
-            $pThis.incrementStep();
-            $pThis.autoMatchDSFields();
-          }
-        });
-        return;
-      }
-
-      alert("There is a problem creating sheet with this account");
-    });
-  } // Action Creators
-
-
-  function action_removeSelectedDataSource() {
-    this.data_source_id = null;
-    $pThis.decrementStep();
-  }
-
-  function action_switch_ds_type(event, type) {
-    this.ds_source_type = type;
-    this.new_ds_type = null;
-  }
-
-  function action_handle_campaign_info_step() {
-    var title = $('#campaign-title');
-    var desc = $('#about');
-
-    if (title.val() == "" || desc.val() == "") {
-      alert("Please fill in campaign info.");
-      return false;
-    }
-
-    $pThis.incrementStep();
-  }
-
-  function action_handle_website_submit_step() {
-    var selectedTemplate = $('#template');
-
-    if (selectedTemplate.val() == "") {
-      alert("Please fill in website info.");
-      return false;
-    }
-
-    $pThis.incrementStep();
-  }
-
-  function action_handle_ds_step() {
-    if ($pThis.data_source_id == null) {
-      alert("Please select a datasource.");
-      return false;
-    }
-
-    $pThis.incrementStep();
-  }
-
-  function action_handle_map_step() {
-    var mappingComplete = true;
-
-    if ($pThis.requiresMapping && !mappingComplete) {
-      alert("Please Properly map the fields to their relevant variables.");
-      return false;
-    }
-
-    $pThis.incrementStep();
-  }
 });
 })();
 

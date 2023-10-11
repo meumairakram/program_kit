@@ -276,7 +276,7 @@ class SheetsController extends Controller {
             return response()->json([
                "success" => true,
                 "data" => [
-                    "sheet_id" => "1YUXbojq3AdbXnZpASKoTIj4az5ZT5Kr15RpVP7kUhcA"
+                    "sheet_id" => "1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI"
                 ],
                 "error" => null
             ]);
@@ -354,12 +354,8 @@ class SheetsController extends Controller {
 
 
         if(!$client) {
-
             return false;
-
         }
-
-
 
         $service = new Sheets($client);
 

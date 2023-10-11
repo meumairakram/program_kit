@@ -3,10 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\Datasources;
-
 use Illuminate\Support\Facades\Auth;
+use App\Models\Campaign;
+use App\Models\CampMap;
+use App\Models\WebsitesInfo;
+use App\HelperClasses\WebsiteHelpers;
+use App\Models\CampExecLog;
+use App\Jobs\CreateTemplateOnWebsite;
+use App\Models\User;
+use App\Models\CampaignExecSatus;
+
+
+use App\HelperClasses\GoogleSheetHelpers;
+
 
 
 class ApiHandler extends Controller {
@@ -36,29 +46,47 @@ class ApiHandler extends Controller {
         
         }
 
+        if($datasource->type == "csv") {
 
-        $filePath = $datasource->file_path;
+            $filePath = $datasource->file_path;
 
-        $absolute_file_path = storage_path('app/' . $filePath);
+            $absolute_file_path = storage_path('app/' . $filePath);
 
-        if (!file_exists($absolute_file_path)) {
+            if (!file_exists($absolute_file_path)) {
+                return response()->json([
+                    "success" => false,
+                    "data" => []
+                ]);
+            }
+
+            $csvData = array_map("str_getcsv", file($absolute_file_path));
+            $csvHeaders = $csvData[0];
+            $first_10_records = array_slice($csvData, 1, 10);
+
             return response()->json([
-                "success" => false,
-                "data" => []
+                "success" => true,
+                "data" => array(
+                    "headers" => $csvHeaders,
+                    "preview_rows" => $first_10_records
+                )
             ]);
+
         }
 
-        $csvData = array_map("str_getcsv", file($absolute_file_path));
-        $csvHeaders = $csvData[0];
-        $first_10_records = array_slice($csvData, 1, 10);
+        if($datasource->type == "google_sheet") {
 
-        return response()->json([
-            "success" => true,
-            "data" => array(
-                "headers" => $csvHeaders,
-                "preview_rows" => $first_10_records
-            )
-        ]);
+            return response()->json([
+                "success" => true,
+                "data" => array(
+                    "headers" => [],
+                    "preview_rows" => []
+                )
+            ]);
+        
+        }
+
+
+        
 
     
     }
@@ -116,6 +144,126 @@ class ApiHandler extends Controller {
 
 
     
+    }
+
+
+
+    public function test_api_method(Request $request) {
+
+        
+        $user = User::where(['id' => 2])->first();    // temp set user
+
+        $campaign_id = 35;
+
+        $sheet_id = "1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI";
+
+        
+        // Set campaign status to syncing 
+        CampaignExecSatus::setCampaignStatus($campaign_id, 'syncing');
+
+
+        $sheetsHelper = new GoogleSheetHelpers($user);
+
+        $data = $sheetsHelper->ReadAllDataFromSheet($sheet_id);
+
+
+        if(!$data || !is_array($data) || count($data) < 1) {
+
+            echo "Sheet is empty";
+            die();
+        }
+
+        $headers = $data[0];   // consider first row as header
+
+        $content_data = array_slice($data, 1, count($data));
+
+
+        $clean_data = [];
+        $clean_headers = [];
+        $plain_headers = [];
+        
+        foreach($headers as $index => $header_name) {
+            if($header_name !== "") {
+                $clean_headers[] = ['index' => $index, "header" => $header_name];                   
+                $plain_headers[] = $header_name;
+            }
+        }   
+
+        $row_number = 2; // starting from 2 as item 1 is headers
+        foreach($content_data as $content_row) {
+
+            $current_row = [];
+
+            foreach($clean_headers as $header_data) {
+                
+                $target_index = $header_data['index'];
+                $header_name = $header_data['header'];
+
+                $current_row[] = array_key_exists($target_index, $content_row) ? $content_row[$target_index] : "";
+            
+            }
+
+            $clean_data[] = array('data' => $current_row, 'row_number' => $row_number);
+            
+            $row_number++;
+        
+        }
+
+
+
+
+        // need to split job data in sets of 20 for each job dispatch
+
+
+
+        $job_data = array(
+            'source_headers' => $plain_headers,
+            'rows' => $clean_data
+        );
+        // var_dump($job_data);
+        CreateTemplateOnWebsite::dispatch(35, $job_data);
+
+        var_dump("Scheduled for " . count($clean_data) . " Templates");
+
+        die();
+
+
+
+        //  [ array(2) { ["index"]=> int(0) ["header"]=> string(10) "{author_1}" } ]
+
+
+
+        // var_dump($clean_data);
+        // die();
+
+        // array(
+        //     [],
+        //     [],
+        //     [],
+        
+        // )
+
+
+        // $campaign_id = 33;
+
+        // $data = array(
+        //     'source_headers' => ['feature', 'company', 'price', 'firstname', 'company_two'],
+        //     'rows' => [
+                
+        //         [ 'Fast accelration', "Tesla Motors", '500000k', 'John' , "Ford Motors"],   // represents each row
+        //         [ 'Top speed', "Ferarri Motors", '500000k', 'Henry' , "Volswagon Motors"], 
+        //         [ 'Ultimate Luxury', "Mercedes", '500000k', 'KElvin' , "Toyota Lexus"],  
+        //         [ 'Relibable and Durable', "Honda Motors", '500000k', 'Jonathan' , "Toyota Moters"],
+        //         [ 'Affordability', "Honda Motors", '500000k', 'Nicholas' , "Suzuki Motors corp"],   
+        //     ]
+        // );
+
+        // CreateTemplateOnWebsite::dispatch($campaign_id, $data);
+        
+
+        
+
+
     }
 
 

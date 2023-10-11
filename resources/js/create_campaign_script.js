@@ -1,8 +1,4 @@
 import axios from "axios";
-// import { clean } from "laravel-mix/src/HotReloading";
-
-    
-
         
 
 document.addEventListener('alpine:init', () => {
@@ -14,6 +10,8 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.google_acc_connected = google_acc_connected;
             $pThis = this;
+
+
 
         },
 
@@ -47,7 +45,9 @@ document.addEventListener('alpine:init', () => {
         firstDataRow: [],
 
 
+        dataMapJson: '{}',
 
+        
 
         // Action creators
 
@@ -366,8 +366,22 @@ document.addEventListener('alpine:init', () => {
             allVariables.forEach(element => {
 
                 var cleanVariable = element.replace("{","").replace("}", "");
-                var dsIndex = $pThis.datasourceFields.findIndex((item) => item === cleanVariable);
+                var dsIndex = $pThis.datasourceFields.findIndex((item) => {
+
+                    // var cleanedItem = item.replace("{","").replace("}", "");
+
+                    var matchFound = item === cleanVariable;
+                    
+                    if(matchFound) {
+                        console.log(`Match found for ${item} AND ${cleanVariable}`)
+                    }
+                    
+                    return matchFound;
                 
+                } );
+
+
+                console.log("Found index" , dsIndex);                
 
                 if(dsIndex > -1){
                     $pThis.variablesMap[element].source_field = cleanVariable;
@@ -424,18 +438,8 @@ document.addEventListener('alpine:init', () => {
 
             }
 
-            // event.target.attributes;
-            
-            // ((value, index)=> {
-
-            
-            // });
         
-        
-        },
-
-
-        dataMapJson: '{}',
+        },       
 
         submitCreateCampaign(e) {
             
@@ -537,12 +541,18 @@ document.addEventListener('alpine:init', () => {
                             title:title
                         };
 
-                        $pThis.requiresMapping = false;
+                        // Object.keys($pThis.variablesMap)
+                        $pThis.datasourceFields = [...Object.keys($pThis.variablesMap).map(item => item.replace("{","").replace("}", ""))]
+                        $pThis.firstDataRow = [...new Array($pThis.datasourceFields.length)];
+
+                        $pThis.requiresMapping = true;
 
                         $pThis.ds_loading = false;
 
                         $pThis.incrementStep();
-                        $pThis.incrementStep();
+
+                        $pThis.autoMatchDSFields();
+                      
 
                     }
 
