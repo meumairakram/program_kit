@@ -12,6 +12,7 @@ use App\HelperClasses\WebsiteHelpers;
 use App\Models\CampExecLog;
 use App\Jobs\CreateTemplateOnWebsite;
 use App\Models\User;
+use App\Models\UserWebsiteKey;
 use App\Models\CampaignExecSatus;
 
 
@@ -265,6 +266,43 @@ class ApiHandler extends Controller {
 
 
     }
+
+    public function generateKey(Request $request)
+    {
+        // Generate a unique verification key
+        $key = bin2hex(random_bytes(16));
+
+        $user = Auth::user(); 
+        $websiteUrl = $request->input('website_url');
+        UserWebsiteKey::create([
+            'owner_id' => $user->id,
+            'website_url' => $websiteUrl,
+            'verification_key' => $key,
+        ]);
+
+        return response()->json(['key' => $key]);
+    }
+    
+    public function verifyWebsite(Request $request)
+    {
+        // Retrieve the user's code and website URL from the request
+        $verificationKey = $request->input('verification_key');
+        $websiteUrl = $request->input('website_url');
+
+        $user = Auth::user(); 
+        $verification = UserWebsiteKey::where('user_id', $user->id)
+            ->where('website_url', $websiteUrl)
+            ->where('verification_key', $verificationKey)
+            ->first();
+
+        if ($verification) {
+
+            return response()->json(['message' => 'Website verified successfully']);
+        } else {
+            return response()->json(['message' => 'Verification failed'], 401);
+        }
+    }
+
 
 
 
