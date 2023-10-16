@@ -14,6 +14,7 @@ use App\Jobs\CreateTemplateOnWebsite;
 use App\Models\User;
 use App\Models\UserWebsiteKey;
 use App\Models\CampaignExecSatus;
+use App\Http\Controllers\SheetsController;
 
 
 use App\HelperClasses\GoogleSheetHelpers;
@@ -265,6 +266,43 @@ class ApiHandler extends Controller {
         
 
 
+    }
+
+    public function createCampaign(Request $request)
+    {
+        $sheet_title = $request->input('title');
+        $website_id = $request->input('website_id');
+        $website_url = $request->input('website_url');
+        $template_id = $request->input('template_id');
+
+        if(!$sheet_title ){
+            $urlParts = parse_url($website_url);
+            $hostParts = explode(".", $urlParts['host']);
+            $name = $hostParts[1]; // Assuming "naymasite" is always the second part
+            // $sheet_title = $name . "_001";
+            $sheet_title = strtoupper($name);
+        }
+
+        $description = $website_url;
+
+        // $user = Auth::user();
+        $user = 2;
+        $campaign = new Campaign();
+        $campaign->title = $sheet_title;
+        $campaign->description = $description;
+        $campaign->type = 'Wordpress';
+        $campaign->website_id = null;
+        $campaign->post_type = 'Post';
+        $campaign->wp_template_id = $template_id;
+        $campaign->data_source_id = null;
+        $campaign->status = 'ready';
+        $campaign->owner_id = $user;
+        $campaign->save();
+
+        $sheetsController = new SheetsController();
+        $sheetId = $sheetsController->http_create_new_sheet($request);
+
+        return response()->json(['sheetId' => $sheetId, 'campId' => $campaign->id]);
     }
 
     public function generateKey(Request $request)

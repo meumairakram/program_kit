@@ -102,6 +102,7 @@ Route::post('/get_template_vars', [FakeApiController::class, 'getTemplateVarsByI
 
 Route::get('/validate_auth_key', [FakeApiController::class, 'validateAuthKey']);
 
+Route::post('/create-campaign', [ApiHandler::class, 'createCampaign']);
 Route::post('/generate-key', [ApiHandler::class, 'generateKey']);
 Route::post('/verify-website', [ApiHandler::class, 'verifyWebsite']);
 
