@@ -300,9 +300,11 @@ class ApiHandler extends Controller {
         $campaign->save();
 
         $sheetsController = new SheetsController();
-        $sheetId = $sheetsController->http_create_new_sheet($request);
-
-        return response()->json(['sheetId' => $sheetId, 'campId' => $campaign->id]);
+        $response  = $sheetsController->http_create_new_sheet($request);
+        $data = $response->original;
+        $sheetId = $data['data']['sheet_id'];
+      
+        return response()->json(['sheetId' => $sheetId, 'campId' => $campaign->id]);       
     }
 
     public function generateKey(Request $request)

@@ -240,7 +240,7 @@ class SheetsController extends Controller {
         
         $website = WebsitesInfo::where(['id' => $website_id ])->first();
 
-        if($website->is_authenticated != "yes" || $website->type != "wordpress") {
+        if($website->is_authenticated != "Verified" || $website->type != "wordpress") {
 
             
             return response()->json([
