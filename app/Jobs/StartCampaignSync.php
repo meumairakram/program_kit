@@ -8,6 +8,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+
 
 use App\Models\User;
 use App\Models\CampaignExecStatus;
@@ -142,6 +144,7 @@ class StartCampaignSync implements ShouldQueue
         // var_dump($job_data);
         CreateTemplateOnWebsite::dispatch($campaign_id, $job_data);
 
+        Log::debug("Sent data" . json_encode($job_data));
 
 
 

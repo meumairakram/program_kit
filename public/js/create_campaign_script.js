@@ -2450,8 +2450,17 @@ document.addEventListener('alpine:init', function () {
     },
     setTemplateVariables: function setTemplateVariables() {
       var formValues = new FormData();
-      formValues.append('post_id', $pThis.wp_template_id);
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_template_vars', formValues).then(function (response) {
+      formValues.append('post_id', $pThis.wp_template_id); // getCurrentWebsiteAjaxUrl
+
+      var ajaxurl = $pThis.getCurrentWebsiteAjaxUrl();
+
+      if (!ajaxurl) {
+        alert("Error generating website request.");
+      }
+
+      var requestUrl = "".concat(ajaxurl, "?action=pseo_get_post_variables"); // var requestUrl = '/api/get_template_vars';   // enable if dont have wordpress, enable above on if testing realtie.
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post(requestUrl, formValues).then(function (response) {
         if (!response.data.success) {
           console.error("Got invalid response for template vars");
           return false;
@@ -2506,17 +2515,46 @@ document.addEventListener('alpine:init', function () {
         }
       });
     },
+    getCurrentWebsiteAjaxUrl: function getCurrentWebsiteAjaxUrl() {
+      if (!$pThis.website_id || $pThis.avl_websites.length < 1) {
+        return false;
+      }
+
+      var selectedWebsiteInfo = $pThis.avl_websites.find(function (item) {
+        return item.id == $pThis.website_id;
+      }); // console.log(selectedWebsiteInfo);
+
+      var websiteUrl = selectedWebsiteInfo.url;
+
+      if (!websiteUrl || websiteUrl == "") {
+        return false;
+      }
+
+      var ajaxurl = "".concat(websiteUrl, "/wp-admin/admin-ajax.php"); // var requestUrl = `${ajaxurl}?action=pseo_get_all_post_types`;
+
+      return ajaxurl;
+    },
     loadPostTypes: function loadPostTypes() {
       var selectedWebsite = $pThis.website_id;
 
       if (!selectedWebsite) {
         alert("website type channot be empty");
         return false;
+      } // getCurrentWebsiteAjaxUrl
+
+
+      var ajaxurl = $pThis.getCurrentWebsiteAjaxUrl();
+
+      if (!ajaxurl) {
+        alert("Error generating website request.");
       }
+
+      var requestUrl = "".concat(ajaxurl, "?action=pseo_get_all_post_types"); // var requestUrl = '/api/get_post_types';   // enable if dont have wordpress, enable above on if testing realtie.
+      // console.log(websiteUrl)
 
       var formValues = new FormData(); // formValues.append('type', selectedType);
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/get_post_types').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get(requestUrl).then(function (response) {
         console.log(response);
 
         if (response.data.success) {
@@ -2527,8 +2565,18 @@ document.addEventListener('alpine:init', function () {
     loadAvlTemplates: function loadAvlTemplates() {
       var selectedPostType = $pThis.post_type;
       var formValues = new FormData();
-      formValues.append('post_type', selectedPostType);
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/get_templates_by_type', formValues).then(function (response) {
+      formValues.append('post_type', selectedPostType); // getCurrentWebsiteAjaxUrl
+
+      var ajaxurl = $pThis.getCurrentWebsiteAjaxUrl();
+
+      if (!ajaxurl) {
+        alert("Error generating website request.");
+      }
+
+      var requestUrl = "".concat(ajaxurl, "?action=pseo_get_posts_by_type"); // Comment the below one or this one.
+      // var requestUrl = '/api/get_templates_by_type';      // enable if you dont have wordpress instance setup
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post(requestUrl, formValues).then(function (response) {
         console.log(response);
 
         if (!response.data.success) {
