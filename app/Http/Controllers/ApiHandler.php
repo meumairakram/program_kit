@@ -312,10 +312,11 @@ class ApiHandler extends Controller {
         // Generate a unique verification key
         $key = bin2hex(random_bytes(16));
 
-        $user = Auth::user(); 
+        // $user = Auth::user(); 
+        $user = 2; 
         $websiteUrl = $request->input('website_url');
         UserWebsiteKey::create([
-            'owner_id' => $user->id,
+            'owner_id' => $user,
             'website_url' => $websiteUrl,
             'verification_key' => $key,
         ]);
@@ -329,8 +330,9 @@ class ApiHandler extends Controller {
         $verificationKey = $request->input('verification_key');
         $websiteUrl = $request->input('website_url');
 
-        $user = Auth::user(); 
-        $verification = UserWebsiteKey::where('user_id', $user->id)
+        // $user = Auth::user(); 
+        $user = 2; 
+        $verification = UserWebsiteKey::where('owner_id', $user)
             ->where('website_url', $websiteUrl)
             ->where('verification_key', $verificationKey)
             ->first();

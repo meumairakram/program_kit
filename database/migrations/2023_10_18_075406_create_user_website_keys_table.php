@@ -13,12 +13,10 @@ return new class extends Migration
     {
         Schema::create('user_website_keys', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('owner_id');
+            $table->string('owner_id');
             $table->string('website_url');
-            $table->string('verification_key')->unique();
+            $table->string('verification_key');
             $table->timestamps();
-    
-            $table->foreign('owner_id')->references('id')->on('users');
         });
     }
 

@@ -9,5 +9,9 @@ class UserWebsiteKey extends Model
 {
     use HasFactory;
     protected $table = 'user_website_keys';
-
+    protected $fillable = [
+        'owner_id',
+        'website_url',
+        'verification_key'
+    ];
 }
