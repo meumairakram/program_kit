@@ -194,22 +194,32 @@
                         <template x-if="$store.manage_campaign.loading == false">
                         
                             <div class="row">
-                                <div class="col-md-12">
-                                    <h5>Status for: <span x-text="$store.manage_campaign.campaign_info.title"></span></h5>                    
-                                    <span class="d-block" x-text="$store.manage_campaign.campaign_info.status"></span>
-                                </div>
+                            <div class="col-md-12 text-center">
+
+                                <h5>Status for: <span x-text="$store.manage_campaign.campaign_info.title"></span></h5>
+
+                                <div class="divider "></div>
+
+                                <!-- <span class="d-block">
+                                    <span class="font-weight-bold" x-text="$store.manage_campaign.campaign_info.status"></span>
+                                </span> -->
+                                <span class="d-block">
+                                    <span :class="{'font-weight-bold text-danger': $store.manage_campaign.campaign_info.status === 'failed', 'font-weight-bold text-success': $store.manage_campaign.campaign_info.status !== 'failed'}" x-text="$store.manage_campaign.campaign_info.status"></span>
+                                </span>
+
+
+                            </div>
 
                                 <div class="col-md-12">
-                                    
                                     
                                     <span><span x-text="$store.manage_campaign.sync_status"></span>...</span>
 
 
                                 </div>
 
-                                <div class="col-md-12">                                  
+                                <div class="col-md-12 pt-3">                                  
                                     
-                                    <span>Published pages: <span x-text="$store.manage_campaign.campaign_info.pages_published">></span></span>
+                                    <span class="text-bold">Published pages: <span x-text="$store.manage_campaign.campaign_info.pages_published"></span></span>
                                  
                                 </div>
                             

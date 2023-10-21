@@ -100,7 +100,7 @@ class CampaignController extends Controller {
         $campaign->description = $attributes['description'];
         $campaign->type = $attributes['website_type'];
         $campaign->website_id = $attributes['website_id'];
-       $campaign->post_type = $attributes['post_type'];
+        $campaign->post_type = $attributes['post_type'];
         $campaign->wp_template_id = $attributes['wp_template_id'];
         $campaign->data_source_id = $attributes['selected_datasource_id'];
         $campaign->status = 'ready';

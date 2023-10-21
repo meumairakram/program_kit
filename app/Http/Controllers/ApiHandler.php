@@ -309,8 +309,8 @@ class ApiHandler extends Controller {
 
     public function generateKey(Request $request)
     {
-        // Generate a unique verification key
-        $key = bin2hex(random_bytes(16));
+        // $key = bin2hex(random_bytes(16));
+        $key = random_int(100000, 999999);
 
         // $user = Auth::user(); 
         $user = 2; 
@@ -327,7 +327,7 @@ class ApiHandler extends Controller {
     public function verifyWebsite(Request $request)
     {
         // Retrieve the user's code and website URL from the request
-        $verificationKey = $request->input('verification_key');
+        $verificationKey = $request->input('otp');
         $websiteUrl = $request->input('website_url');
 
         // $user = Auth::user(); 
