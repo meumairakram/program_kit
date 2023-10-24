@@ -28,6 +28,7 @@ document.addEventListener('alpine:init', () => {
         },
         sync_status: "",
         camp_id: null,
+        message: '',
 
         updateInfoTimeout: null,
 
@@ -197,6 +198,7 @@ document.addEventListener('alpine:init', () => {
 
                 console.log(response);
                 console.log(response.data.message);
+                this.message = response;
             })
             .catch(error => {
 

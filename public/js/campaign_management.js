@@ -2361,6 +2361,7 @@ document.addEventListener('alpine:init', function () {
     },
     sync_status: "",
     camp_id: null,
+    message: '',
     updateInfoTimeout: null,
     showCampaignStatus: function showCampaignStatus(camp_id) {
       $alpine.camp_id = camp_id;
@@ -2450,10 +2451,13 @@ document.addEventListener('alpine:init', function () {
       $alpine.modalInstance.modal('hide');
     },
     getSheetChanges: function getSheetChanges() {
+      var _this = this;
+
       alert('hii');
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('sheets/listen/changes').then(function (response) {
         console.log(response);
         console.log(response.data.message);
+        _this.message = response;
       })["catch"](function (error) {
         console.error(error);
       });
