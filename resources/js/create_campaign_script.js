@@ -11,8 +11,6 @@ document.addEventListener('alpine:init', () => {
             this.google_acc_connected = google_acc_connected;
             $pThis = this;
 
-
-
         },
 
         currentStep: 3,
@@ -171,7 +169,24 @@ document.addEventListener('alpine:init', () => {
             var formValues = new FormData();
 
             formValues.append('post_id', $pThis.wp_template_id);
-            axios.post('/api/get_template_vars', formValues)
+
+
+             // getCurrentWebsiteAjaxUrl
+            var ajaxurl = $pThis.getCurrentWebsiteAjaxUrl();
+
+            if(!ajaxurl) {
+
+                alert("Error generating website request.");
+            }
+
+            
+            var requestUrl = `${ajaxurl}?action=pseo_get_post_variables`;
+            // var requestUrl = '/api/get_template_vars';   // enable if dont have wordpress, enable above on if testing realtie.
+
+
+
+
+            axios.post(requestUrl, formValues)
             .then(response => {
 
                 if(!response.data.success) {
@@ -256,6 +271,35 @@ document.addEventListener('alpine:init', () => {
         },
 
 
+        getCurrentWebsiteAjaxUrl() {
+
+            
+            if(!$pThis.website_id || $pThis.avl_websites.length < 1) {
+                return false;
+            }
+
+
+
+            var selectedWebsiteInfo = $pThis.avl_websites.find((item) => item.id == $pThis.website_id); 
+            
+            // console.log(selectedWebsiteInfo);
+            
+            var websiteUrl = selectedWebsiteInfo.url;
+
+            if(!websiteUrl || websiteUrl == "") {
+                return false;
+            }
+
+
+            var ajaxurl = `${websiteUrl}/wp-admin/admin-ajax.php`;
+            
+            // var requestUrl = `${ajaxurl}?action=pseo_get_all_post_types`;
+
+            return ajaxurl;
+
+        },
+
+
         loadPostTypes() {
 
             var selectedWebsite = $pThis.website_id;
@@ -265,12 +309,28 @@ document.addEventListener('alpine:init', () => {
 
                 return false;
 
+            }   
+
+
+            // getCurrentWebsiteAjaxUrl
+            var ajaxurl = $pThis.getCurrentWebsiteAjaxUrl();
+
+            if(!ajaxurl) {
+
+                alert("Error generating website request.");
             }
+
+            
+            var requestUrl = `${ajaxurl}?action=pseo_get_all_post_types`;
+            // var requestUrl = '/api/get_post_types';   // enable if dont have wordpress, enable above on if testing realtie.
+
+            
+            // console.log(websiteUrl)
 
             var formValues  = new FormData();
 
             // formValues.append('type', selectedType);
-            axios.get('/api/get_post_types')
+            axios.get(requestUrl)
             .then((response) => {
 
                 console.log(response);
@@ -297,7 +357,20 @@ document.addEventListener('alpine:init', () => {
             
             var formValues = new FormData();
             formValues.append('post_type', selectedPostType);
-            axios.post('/api/get_templates_by_type', formValues)
+
+            // getCurrentWebsiteAjaxUrl
+            var ajaxurl = $pThis.getCurrentWebsiteAjaxUrl();
+
+            if(!ajaxurl) {
+
+                alert("Error generating website request.");
+            }
+
+            
+            var requestUrl = `${ajaxurl}?action=pseo_get_posts_by_type`;    // Comment the below one or this one.
+            // var requestUrl = '/api/get_templates_by_type';      // enable if you dont have wordpress instance setup
+
+            axios.post( requestUrl , formValues )
             .then((response) => {
 
                 console.log(response);

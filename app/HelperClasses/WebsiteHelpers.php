@@ -4,7 +4,7 @@ namespace App\HelperClasses;
 
 use App\Models\WebsitesInfo;
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Facades\Log;
 
 class WebsiteHelpers {
 
@@ -32,6 +32,7 @@ class WebsiteHelpers {
 
     public function createTemplateFromValues($params) {
 
+        Log::debug("Sending generatecontent call" . json_encode($params));
         $action_type = 'pseo_generate_content';        
           
         $response = $this->doPost('', $params, $action_type);
