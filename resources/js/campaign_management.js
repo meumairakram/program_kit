@@ -12,6 +12,7 @@ document.addEventListener('alpine:init', () => {
         init() {
             
             $alpine = this
+            getSheetChanges();
 
         },
 
@@ -186,6 +187,20 @@ document.addEventListener('alpine:init', () => {
 
             $alpine.modalInstance.modal('hide');
 
+        },
+
+        getSheetChanges() {
+
+            axios.post('sheets/listen/changes')
+            .then(response => {
+
+                console.log(response);
+                console.log(response.data.message);
+            })
+            .catch(error => {
+
+                console.error(error);
+            });
         }
 
     })

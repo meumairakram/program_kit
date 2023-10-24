@@ -389,5 +389,24 @@ class SheetsController extends Controller {
         
         return view('internal.account_auth_result')->with(["status" => "error"]);
     }
+    public function listenChanges(Request $request) 
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+          // Parse the JSON data sent from Google Apps Script
+          $data = json_decode(file_get_contents('php://input'), true);
+        
+          // Extract data from the JSON
+          $sheetId = $data['sheetId'];
+          $campaignId = $data['campaignId'];
+          $newValue = $data['newValue'];
+        
+          // Respond to the request
+          $response = array("message" => "Request received and processed");
+          echo json_encode($response);
+        } else {
+          http_response_code(400);
+        }
+        
+    }
 
 }

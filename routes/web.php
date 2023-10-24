@@ -60,6 +60,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('sheets/init', [App\Http\Controllers\SheetsController::class, 'init'])->name('sheets.init');
 	Route::post('sheets/create_new', [App\Http\Controllers\SheetsController::class, 'http_create_new_sheet'])->name('sheets.create_new');
 	Route::get('sheets/test', [App\Http\Controllers\SheetsController::class, 'testRoute'])->name('sheets.test');
+	Route::get('sheets/listen/changes', [App\Http\Controllers\SheetsController::class, 'listenChanges'])->name('sheets.listenChanges');
 
 
 	// Camapaign Management
