@@ -190,6 +190,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         getSheetChanges() {
+            alert('hii');
 
             axios.post('sheets/listen/changes')
             .then(response => {

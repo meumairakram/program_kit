@@ -2450,6 +2450,7 @@ document.addEventListener('alpine:init', function () {
       $alpine.modalInstance.modal('hide');
     },
     getSheetChanges: function getSheetChanges() {
+      alert('hii');
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('sheets/listen/changes').then(function (response) {
         console.log(response);
         console.log(response.data.message);
