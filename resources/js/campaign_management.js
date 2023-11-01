@@ -12,6 +12,7 @@ document.addEventListener('alpine:init', () => {
         init() {
             
             $alpine = this
+            getSheetChanges();
 
         },
 
@@ -27,6 +28,7 @@ document.addEventListener('alpine:init', () => {
         },
         sync_status: "",
         camp_id: null,
+        message: '',
 
         updateInfoTimeout: null,
 
@@ -186,6 +188,22 @@ document.addEventListener('alpine:init', () => {
 
             $alpine.modalInstance.modal('hide');
 
+        },
+
+        getSheetChanges() {
+            alert('hii');
+
+            axios.post('sheets/listen/changes')
+            .then(response => {
+
+                console.log(response);
+                console.log(response.data.message);
+                this.message = response;
+            })
+            .catch(error => {
+
+                console.error(error);
+            });
         }
 
     })
