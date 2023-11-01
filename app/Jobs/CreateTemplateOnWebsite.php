@@ -179,7 +179,7 @@ class CreateTemplateOnWebsite implements ShouldQueue
 
         $requestdataPrep['template_id'] = $campaign->wp_template_id;
 
-        Log::debug("Request Data Prep " . json_encode($requestdataPrep));
+        // Log::debug("Request Data Prep " . json_encode($requestdataPrep));
 
         if(count($requestdataPrep['dataset']) > 0) {
             // Dont send call if there is no data set    

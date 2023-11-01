@@ -32,7 +32,7 @@ class WebsiteHelpers {
 
     public function createTemplateFromValues($params) {
 
-        Log::debug("Sending generatecontent call" . json_encode($params));
+        // Log::debug("Sending generatecontent call" . json_encode($params));
         $action_type = 'pseo_generate_content';        
           
         $response = $this->doPost('', $params, $action_type);

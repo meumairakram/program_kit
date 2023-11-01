@@ -144,7 +144,7 @@ class StartCampaignSync implements ShouldQueue
         // var_dump($job_data);
         CreateTemplateOnWebsite::dispatch($campaign_id, $job_data);
 
-        Log::debug("Sent data" . json_encode($job_data));
+        // Log::debug("Sent data" . json_encode($job_data));
 
 
 
