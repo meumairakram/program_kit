@@ -28,29 +28,19 @@ class CampaignController extends Controller {
     public function manage() {
 
         $current_user_id = Auth::user()->id;
-    //    $campaigns = Campaign::where('owner_id', $current_user_id)->get();
-        $campaigns = DB::table('campaigns')
+        $campaigns = Campaign::join('user_websites', 'campaigns.website_id', '=', 'user_websites.id')
             ->leftjoin('user_datasources', 'campaigns.data_source_id', 'user_datasources.id')
-            ->leftjoin('templates', 'campaigns.wp_template_id','templates.template_id')
-            ->leftjoin('user_websites', 'campaigns.website_id', 'user_websites.id')
             ->leftjoin('campaign_exec_status', 'campaigns.id', 'campaign_exec_status.campaign_id')
-            // ->where("user_websites.is_authenticated", "Verified")
             ->where('campaigns.owner_id', $current_user_id)
             ->select(
                 'campaigns.*',
                 'user_datasources.name as dataSourceName',
                 'user_datasources.type as dataSourceType',
-                'templates.template as templateName',
-                'templates.template_variables as variables',
                 'user_websites.website_name as website_name',
                 'user_websites.website_url as website_url',
                 'campaign_exec_status.status as exec_status'
             )
-            ->orderBy('campaigns.id', 'ASC')
-            //->distinct()
             ->get();
-
-        
      
         return view('dashboard-pages/campaign-management',array(
             'campaigns' => $campaigns
@@ -345,6 +335,12 @@ class CampaignController extends Controller {
 
 
     }
+
+    // public function data_api_get_status(Request $request, $title) {
+
+    //     return redirect()->route('campaign-management')->with('message', $title.'Campaign is still Syncing...');
+
+    // }
     
 
 

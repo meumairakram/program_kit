@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('campaign-status/{camp_id}', [CampaignController::class, 'campaignStatusPage'])->name('campaign-status');
 
 	Route::get('data_api/campaign_info/{camp_id}',[CampaignController::class, 'data_api_campaign_info'])->name('camapaign-info-datapi');
+	// Route::get('data_api/get_status/{title}',[CampaignController::class, 'data_api_get_status'])->name('get_status-datapi');
 	Route::get('data_api/start_campaign/{camp_id}',[CampaignController::class, 'data_api_campaign_start'])->name('camapaign-start-datapi');
 	Route::get('data_api/ping_website/{camp_id}',[CampaignController::class, 'data_api_campaign_ping'])->name('camapaign-ping-datapi');
 

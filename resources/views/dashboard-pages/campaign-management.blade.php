@@ -67,6 +67,15 @@
                         </button>
                     </div>
                 @endif
+                <template x-if="$store.manage_campaign.status_info">
+                    <div class="m-3  alert alert-success alert-dismissible fade show" id="alert-success" role="alert">
+                        <span class="alert-text text-white" x-text="$store.manage_campaign.status_info"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </template>
+                
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
