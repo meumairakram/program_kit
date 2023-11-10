@@ -70,14 +70,14 @@ class CampaignController extends Controller {
     {
        
         $attributes  = $request->validate([
-            'title' => [''],
-            'description' => [],
-            'website_type' => [''],
-            'website_id' => [''],
-            'post_type' => [''],
-            'wp_template_id' => [''],
-            'selected_datasource_id' => [''],
-            'data_maps_json' => ['']
+            'title' => ['required'],
+            'description' => ['required'],
+            'website_type' => ['required'],
+            'website_id' => ['required'],
+            'post_type' => ['required'],
+            'wp_template_id' => ['required'],
+            'selected_datasource_id' => ['required'],
+            'data_maps_json' => ['required']
         ]);
 
         if(!Auth::check()) {
