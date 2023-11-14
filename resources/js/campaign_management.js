@@ -13,6 +13,7 @@ document.addEventListener('alpine:init', () => {
             
             $alpine = this
             getSheetChanges();
+            checkCampaignStatus();
 
         },
 
@@ -20,6 +21,7 @@ document.addEventListener('alpine:init', () => {
 
         modalInstance: $('#campaign_detail_modal'),
         loading: true,
+        status_info: "",
         campaign_info: {
             title:"",
             status: "",
@@ -138,11 +140,31 @@ document.addEventListener('alpine:init', () => {
 
         
         },
-        
+
+        checkCampaignStatus() {
+            
+            if (
+                $alpine.campaign_info.status !== 'synced' &&
+                $alpine.campaign_info.status !== 'failed'
+            ) {
+                // axios.get(`/data_api/get_status/${$alpine.campaign_info.title}`)
+                // .then(response => {
+                //     if(response.success) {
+                //        //
+                //     }
+                // });
+                $store.manage_campaign.status_info = `${$alpine.campaign_info.title}'s Status is still running`;
+            } else {
+                $store.manage_campaign.status_info = ''; 
+            }
+        },
 
         setWatchTimeout() {
 
             $alpine.updateInfoTimeout = setInterval(function() {
+
+                // Check the campaign status
+                $alpine.checkCampaignStatus();
 
                 if($alpine.campaign_info.status == 'synced' || $alpine.campaign_info.status == 'failed') {
                         $alpine.setCampaignStatus("Sync Completed");
@@ -165,12 +187,13 @@ document.addEventListener('alpine:init', () => {
 
         },
 
-            
+        
         setCampaignStatus(status) {
 
             setTimeout(function() {
                 
                 $alpine.sync_status = status;
+                $alpine.checkCampaignStatus();
             
             }, 500);
         

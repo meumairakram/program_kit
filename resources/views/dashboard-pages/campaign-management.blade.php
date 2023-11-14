@@ -67,6 +67,15 @@
                         </button>
                     </div>
                 @endif
+                <template x-if="$store.manage_campaign.status_info">
+                    <div class="m-3  alert alert-success alert-dismissible fade show" id="alert-success" role="alert">
+                        <span class="alert-text text-white" x-text="$store.manage_campaign.status_info"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </template>
+                
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
@@ -184,49 +193,59 @@
 
 
 <div class="modal fade" id="campaign_detail_modal">  
-            <div class="modal-dialog">
-                <div class="modal-content py-4 px-2" x-data="">
-                    <div class="container-fluid">
-                        <template x-if="$store.manage_campaign.loading">
-                            <h5>Loading...</h5>
-                        </template>
+    <div class="modal-dialog">
+        <div class="modal-content py-4 px-2" x-data="">
+            <div class="container-fluid">
+                <template x-if="$store.manage_campaign.loading">
+                    <h5>Loading...</h5>
+                </template>
 
-                        <template x-if="$store.manage_campaign.loading == false">
-                        
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h5>Status for: <span x-text="$store.manage_campaign.campaign_info.title"></span></h5>                    
-                                    <span class="d-block" x-text="$store.manage_campaign.campaign_info.status"></span>
-                                </div>
-
-                                <div class="col-md-12">
-                                    
-                                    
-                                    <span><span x-text="$store.manage_campaign.sync_status"></span>...</span>
-
-
-                                </div>
-
-                                <div class="col-md-12">                                  
-                                    
-                                    <span>Published pages: <span x-text="$store.manage_campaign.campaign_info.pages_published">></span></span>
-                                 
-                                </div>
-                            
-                            
-                            
-                            </div> 
-                        
-                        </template>
-
+                <template x-if="$store.manage_campaign.loading == false">
                 
-                    
+                    <div class="row">
+                    <div class="col-md-12 text-center">
+
+                        <h5>Status for: <span x-text="$store.manage_campaign.campaign_info.title"></span></h5>
+
+                        <div class="divider "></div>
+
+                        <!-- <span class="d-block">
+                            <span class="font-weight-bold" x-text="$store.manage_campaign.campaign_info.status"></span>
+                        </span> -->
+                        <span class="d-block">
+                            <span :class="{'font-weight-bold text-danger': $store.manage_campaign.campaign_info.status === 'failed', 'font-weight-bold text-success': $store.manage_campaign.campaign_info.status !== 'failed'}" x-text="$store.manage_campaign.campaign_info.status"></span>
+                        </span>
+
+
                     </div>
-                </div>
+
+                        <div class="col-md-12">
+                            
+                            <span><span x-text="$store.manage_campaign.sync_status"></span>...</span>
+
+
+                        </div>
+
+                        <div class="col-md-12 pt-3">                                  
+                            
+                            <span class="text-bold">Published pages: <span x-text="$store.manage_campaign.campaign_info.pages_published"></span></span>
+                            
+                        </div>
+                    
+                    
+                    
+                    </div> 
+                
+                </template>
+
+        
             
             </div>
-
         </div>
+    
+    </div>
+
+</div>
 
 
     
