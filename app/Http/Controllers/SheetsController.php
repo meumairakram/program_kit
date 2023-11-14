@@ -214,7 +214,8 @@ class SheetsController extends Controller {
             
                 $new_access_token = $client->fetchAccessTokenWithRefreshToken($accessToken->refresh_token);
                 
-                var_dump($new_access_token); die();
+                  
+              
                 $accessToken->key_value = $new_access_token['access_token'];
                 $accessToken->save();
 
