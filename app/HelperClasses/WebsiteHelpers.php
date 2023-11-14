@@ -53,6 +53,27 @@ class WebsiteHelpers {
     }
 
 
+    public function get_post_types() {
+
+        $postUrl = $this->websiteInfo->request_url ;
+
+        $response = Http::withQueryParameters(['action', 'pseo_get_all_post_types'])->get($postUrl );
+
+        return $response;
+
+    
+    }   
+
+
+    public function get_templates_for_post_type($post_type) {
+
+       return $this->doPost('', ['post_type' => $post_type], 'pseo_get_posts_by_type');
+
+    }    
+
+
+
+
 
 
 

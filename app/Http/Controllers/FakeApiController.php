@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Http;
+
 
 
 
@@ -35,6 +37,7 @@ class FakeApiController extends Controller {
 
 
     public function getPostsByType(Request $request) {
+        
 
 
         $post_type = $request->input('post_type');
