@@ -271,16 +271,16 @@ class SheetsController extends Controller {
 
 
         // Dont try to create sheet on local, as it will eventually fail
-        if(env('APP_ENV') == 'local') {
+        // if(env('APP_ENV') == 'local') {
 
-            return response()->json([
-               "success" => true,
-                "data" => [
-                    "sheet_id" => "1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI"
-                ],
-                "error" => null
-            ]);
-        }
+        //     return response()->json([
+        //        "success" => true,
+        //         "data" => [
+        //             "sheet_id" => "1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI"
+        //         ],
+        //         "error" => null
+        //     ]);
+        // }
 
 
         // WebsitesInfo;
