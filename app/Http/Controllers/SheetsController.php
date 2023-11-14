@@ -213,7 +213,8 @@ class SheetsController extends Controller {
             if($accessToken->refresh_token != '' && $accessToken->refresh_token != 'Not available') {
             
                 $new_access_token = $client->fetchAccessTokenWithRefreshToken($accessToken->refresh_token);
-
+                
+                var_dump($new_access_token); die();
                 $accessToken->key_value = $new_access_token['access_token'];
                 $accessToken->save();
 
@@ -271,16 +272,16 @@ class SheetsController extends Controller {
 
 
         // Dont try to create sheet on local, as it will eventually fail
-        // if(env('APP_ENV') == 'local') {
+        if(env('APP_ENV') == 'local') {
 
-        //     return response()->json([
-        //        "success" => true,
-        //         "data" => [
-        //             "sheet_id" => "1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI"
-        //         ],
-        //         "error" => null
-        //     ]);
-        // }
+            return response()->json([
+               "success" => true,
+                "data" => [
+                    "sheet_id" => "1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI"
+                ],
+                "error" => null
+            ]);
+        }
 
 
         // WebsitesInfo;
