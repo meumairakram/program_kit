@@ -321,7 +321,7 @@ document.addEventListener('alpine:init', () => {
             }
 
             
-            var requestUrl = `${ajaxurl}?action=pseo_get_all_post_types`;
+            var requestUrl = `${ajaxurl}?action=pseo_get_all_post_types&website_id${selectedWebsite}`;
             // var requestUrl = '/api/get_post_types';   // enable if dont have wordpress, enable above on if testing realtie.
 
             
@@ -354,8 +354,10 @@ document.addEventListener('alpine:init', () => {
         loadAvlTemplates() {
 
             var selectedPostType = $pThis.post_type;
+            var selectedWebsite = $pThis.website_id;
             
             var formValues = new FormData();
+            formValues.append('website_id', selectedWebsite);
             formValues.append('post_type', selectedPostType);
 
             // getCurrentWebsiteAjaxUrl
