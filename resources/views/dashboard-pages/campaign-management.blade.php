@@ -67,7 +67,7 @@
                         </button>
                     </div>
                 @endif
-                <template x-if="$store.manage_campaign.status_info">
+                <template x-if="$store.manage_campaign.status_info"> 
                     <div class="m-3  alert alert-success alert-dismissible fade show" id="alert-success" role="alert">
                         <span class="alert-text text-white" x-text="$store.manage_campaign.status_info"></span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -153,7 +153,7 @@
                                         </td>
                                         <td class="text-center">
                                             
-                                            <a @click="showCampaignStatus({{ $camp->id }})" class="mx-2 cursor-pointer">
+                                            <a @click="showCampaignStatus({{ $camp->id }})" class="mx-2 cursor-pointer" data-bs-toggle="tooltip" data-bs-original-title="Run Status">
                                                 <i class="fas fa-play text-secondary"></i>
                                             </a>
                                             

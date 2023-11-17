@@ -147,15 +147,9 @@ document.addEventListener('alpine:init', () => {
                 $alpine.campaign_info.status !== 'synced' &&
                 $alpine.campaign_info.status !== 'failed'
             ) {
-                // axios.get(`/data_api/get_status/${$alpine.campaign_info.title}`)
-                // .then(response => {
-                //     if(response.success) {
-                //        //
-                //     }
-                // });
-                $store.manage_campaign.status_info = `${$alpine.campaign_info.title}'s Status is still running`;
+                $alpine.status_info = `${$alpine.campaign_info.title}'s Status is still running`;
             } else {
-                $store.manage_campaign.status_info = ''; 
+                $alpine.status_info = ''; 
             }
         },
 
