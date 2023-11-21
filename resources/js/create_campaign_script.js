@@ -282,7 +282,7 @@ document.addEventListener('alpine:init', () => {
 
             var selectedWebsiteInfo = $pThis.avl_websites.find((item) => item.id == $pThis.website_id); 
             
-            // console.log(selectedWebsiteInfo);
+            console.log(selectedWebsiteInfo);
             
             var websiteUrl = selectedWebsiteInfo.url;
 
@@ -321,8 +321,8 @@ document.addEventListener('alpine:init', () => {
             }
 
             
-            var requestUrl = `${ajaxurl}?action=pseo_get_all_post_types&website_id${selectedWebsite}`;
-            // var requestUrl = '/api/get_post_types';   // enable if dont have wordpress, enable above on if testing realtie.
+            // var requestUrl = `${ajaxurl}?action=pseo_get_all_post_types&website_id${selectedWebsite}`;
+            var requestUrl = '/api/get_post_types';   // enable if dont have wordpress, enable above on if testing realtie.
 
             
             // console.log(websiteUrl)
@@ -369,8 +369,8 @@ document.addEventListener('alpine:init', () => {
             }
 
             
-            var requestUrl = `${ajaxurl}?action=pseo_get_posts_by_type`;    // Comment the below one or this one.
-            // var requestUrl = '/api/get_templates_by_type';      // enable if you dont have wordpress instance setup
+            // var requestUrl = `${ajaxurl}?action=pseo_get_posts_by_type`;    // Comment the below one or this one.
+            var requestUrl = '/api/get_templates_by_type';      // enable if you dont have wordpress instance setup
 
             axios.post( requestUrl , formValues )
             .then((response) => {

@@ -2522,8 +2522,8 @@ document.addEventListener('alpine:init', function () {
 
       var selectedWebsiteInfo = $pThis.avl_websites.find(function (item) {
         return item.id == $pThis.website_id;
-      }); // console.log(selectedWebsiteInfo);
-
+      });
+      console.log(selectedWebsiteInfo);
       var websiteUrl = selectedWebsiteInfo.url;
 
       if (!websiteUrl || websiteUrl == "") {
@@ -2547,9 +2547,10 @@ document.addEventListener('alpine:init', function () {
 
       if (!ajaxurl) {
         alert("Error generating website request.");
-      }
+      } // var requestUrl = `${ajaxurl}?action=pseo_get_all_post_types&website_id${selectedWebsite}`;
 
-      var requestUrl = "".concat(ajaxurl, "?action=pseo_get_all_post_types&website_id").concat(selectedWebsite); // var requestUrl = '/api/get_post_types';   // enable if dont have wordpress, enable above on if testing realtie.
+
+      var requestUrl = '/api/get_post_types'; // enable if dont have wordpress, enable above on if testing realtie.
       // console.log(websiteUrl)
 
       var formValues = new FormData(); // formValues.append('type', selectedType);
@@ -2573,10 +2574,10 @@ document.addEventListener('alpine:init', function () {
 
       if (!ajaxurl) {
         alert("Error generating website request.");
-      }
+      } // var requestUrl = `${ajaxurl}?action=pseo_get_posts_by_type`;    // Comment the below one or this one.
 
-      var requestUrl = "".concat(ajaxurl, "?action=pseo_get_posts_by_type"); // Comment the below one or this one.
-      // var requestUrl = '/api/get_templates_by_type';      // enable if you dont have wordpress instance setup
+
+      var requestUrl = '/api/get_templates_by_type'; // enable if you dont have wordpress instance setup
 
       axios__WEBPACK_IMPORTED_MODULE_0___default().post(requestUrl, formValues).then(function (response) {
         console.log(response);
