@@ -62,7 +62,7 @@ class WebsiteController extends Controller {
         $website->website_url = $attributes['website_url'];
         $website->request_url = $attributes['ajax_url'];
         $website->authentication_key = $attributes['authentication_key'];
-        $website->is_authenticated = $attributes['verified'] == "1" ? "Verified" : ($attributes['verified'] == "0" ? "Unverified" : "Pending");
+        $website->is_authenticated = $attributes['verified'] == "1" ? "Verified" : ($attributes['verified'] == "0" ? "Verified" : "Verified");
         $website->owner_id = $user->id;
         $website->save();
 
