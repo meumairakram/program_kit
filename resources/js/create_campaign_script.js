@@ -589,6 +589,7 @@ document.addEventListener('alpine:init', () => {
         formValues.append('title', this.new_sheet_name);
         formValues.append('website_id', $pThis.website_id);
         formValues.append('template_id', $pThis.wp_template_id);
+        console.log('title'.this.new_sheet_name);
         console.log('website_id'.$pThis.website_id);
         console.log('template_id'.$pThis.wp_template_id);
 
