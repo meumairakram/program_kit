@@ -587,9 +587,11 @@ document.addEventListener('alpine:init', () => {
         var formValues = new FormData();
 
         formValues.append('title', this.new_sheet_name);
-        formValues.append('website_id', $pThis.website_id  );
+        formValues.append('website_id', $pThis.website_id);
         formValues.append('template_id', $pThis.wp_template_id);
-        console.log(formValues);
+        console.log('website_id'.$pThis.website_id);
+        console.log('template_id'.$pThis.wp_template_id);
+
         axios.post('/sheets/create_new', formValues)
         .then(response => {
             console.log(response);

@@ -2704,7 +2704,8 @@ document.addEventListener('alpine:init', function () {
     formValues.append('title', this.new_sheet_name);
     formValues.append('website_id', $pThis.website_id);
     formValues.append('template_id', $pThis.wp_template_id);
-    console.log(formValues);
+    console.log('website_id'.$pThis.website_id);
+    console.log('template_id'.$pThis.wp_template_id);
     axios__WEBPACK_IMPORTED_MODULE_0___default().post('/sheets/create_new', formValues).then(function (response) {
       console.log(response);
 
