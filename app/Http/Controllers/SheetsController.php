@@ -126,7 +126,7 @@ class SheetsController extends Controller {
                     'owner_id' => $request->user()->id,
                     'auth_type' => 'google_oauth',
                     'key_type' => 'access_token',
-                    // 'key_value' => $accessToken['access_token'],
+                    'key_value' => $accessToken['access_token'],
                     'refresh_token' => $refreshToken
                 ));
 
@@ -207,7 +207,7 @@ class SheetsController extends Controller {
 
         $client = $this->getClient();
 
-        // $client->setAccessToken($accessToken->key_value);
+        $client->setAccessToken($accessToken->key_value);
 
         if($client->isAccessTokenExpired()) {
 
@@ -217,8 +217,7 @@ class SheetsController extends Controller {
                 
                   
               
-                // $accessToken->key_value = $new_access_token['access_token'];
-                $accessToken = $new_access_token['access_token'];
+                $accessToken->key_value = $new_access_token['access_token'];
                 $accessToken->save();
 
                 $client->setAccessToken($new_access_token['access_token']);
