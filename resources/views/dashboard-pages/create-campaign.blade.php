@@ -334,6 +334,11 @@
                                                                             <select class="form-control" name="select_existing_sheet">
 
                                                                                 <option value="">Existing sheet options here</option>
+
+                                                                                @foreach($allDatasources as $ds)
+                                                                                    <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
+                                                                                @endforeach
+
                                                                             </select>
 
                                                                         </div>
