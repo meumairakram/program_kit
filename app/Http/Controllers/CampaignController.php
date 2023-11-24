@@ -57,13 +57,13 @@ class CampaignController extends Controller {
         $allWebsites = WebsitesInfo::where("owner_id", "=", $current_user_id)->get();
 
         $allDatasources = Campaign::leftjoin('user_datasources', 'campaigns.data_source_id', 'user_datasources.id')
-        ->where('campaigns.owner_id', $current_user_id)
-        ->select(
-            'campaigns.*',
-            'user_datasources.name',
-            'user_datasources.type'
-        )
-        ->get();
+            ->where('campaigns.owner_id', $current_user_id)
+            ->select(
+                'campaigns.*',
+                'user_datasources.name',
+                'user_datasources.type'
+            )
+            ->get();
 
         $get_auth_token = AuthTokens::where('owner_id', '=', $current_user_id)->first();
         $google_acc_connected = $get_auth_token ? true : false;

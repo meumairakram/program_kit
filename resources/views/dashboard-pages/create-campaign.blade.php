@@ -250,7 +250,9 @@
                                                         <option value="">-- Choose a Source --</option>
 
                                                         @foreach($allDatasources as $ds)
-                                                            <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
+                                                            @if($ds->type == 'csv')
+                                                                <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
+                                                            @endif
                                                         @endforeach
 
                                                     </select>
@@ -336,7 +338,9 @@
                                                                                 <option value="">Existing sheet options here</option>
 
                                                                                 @foreach($allDatasources as $ds)
-                                                                                    <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
+                                                                                    @if($ds->type == 'google_sheet')
+                                                                                        <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
+                                                                                    @endif
                                                                                 @endforeach
 
                                                                             </select>
