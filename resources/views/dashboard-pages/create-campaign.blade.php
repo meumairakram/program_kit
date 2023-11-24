@@ -335,7 +335,7 @@
 
                                                                             <select class="form-control" name="select_existing_sheet">
 
-                                                                                <option value="">Existing sheet options here</option>
+                                                                                <option value="">-- Choose Existing sheet --</option>
 
                                                                                 @foreach($allDatasources as $ds)
                                                                                     @if($ds->type == 'google_sheet')
