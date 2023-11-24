@@ -148,7 +148,7 @@ class SheetsController extends Controller {
 
     public function getUserAccessToken() {
 
-        return "ya29.a0AfB_byDLWMB1Q-Tgu9IRAvP_sAgmejYzfOdNEctq1TMDtUMSh9zEL-bpZ7MwztwH8tnyyapnsYlU-x2tgZ7IrnwSWmLUnPa5XNBFkspVjVPqt3A_gPDlIhuSdgp6-vBZugmoD16evCXuuGntELpTizj0y1egQna8VRzIaCgYKATMSARMSFQHGX2MiR8gtkm-F5yCkj572GqCvSA0171";
+        // return "ya29.a0AfB_byDLWMB1Q-Tgu9IRAvP_sAgmejYzfOdNEctq1TMDtUMSh9zEL-bpZ7MwztwH8tnyyapnsYlU-x2tgZ7IrnwSWmLUnPa5XNBFkspVjVPqt3A_gPDlIhuSdgp6-vBZugmoD16evCXuuGntELpTizj0y1egQna8VRzIaCgYKATMSARMSFQHGX2MiR8gtkm-F5yCkj572GqCvSA0171";
         $user = auth()->user();
 
         if(!$user) {
@@ -208,15 +208,8 @@ class SheetsController extends Controller {
         $client = $this->getClient();
 
         $client->setAccessToken($accessToken->key_value);
-        // if (is_object($accessToken) && property_exists($accessToken, 'key_value')) {
-        //     $client->setAccessToken($accessToken->key_value);
-        // }
 
         if($client->isAccessTokenExpired()) {
-            // $token = '';
-            // if (is_object($accessToken) && property_exists($accessToken, 'refresh_token')) {
-            //     $token = $accessToken->refresh_token;
-            // }
             if($accessToken->refresh_token != '' && $accessToken->refresh_token != 'Not available') {
             
                 $new_access_token = $client->fetchAccessTokenWithRefreshToken($accessToken->refresh_token);
