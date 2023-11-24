@@ -56,7 +56,7 @@ class CampaignController extends Controller {
 
         $allWebsites = WebsitesInfo::where("owner_id", "=", $current_user_id)->get();
 
-        $allDatasources = Datasources::where("owner_id", "=", $current_user_id)->get();
+        return $allDatasources = Datasources::where("owner_id", "=", $current_user_id)->get();
 
         $get_auth_token = AuthTokens::where('owner_id', '=', $current_user_id)->first();
         $google_acc_connected = $get_auth_token ? true : false;
@@ -90,7 +90,7 @@ class CampaignController extends Controller {
         $campaign->description = $attributes['description'];
         $campaign->type = $attributes['website_type'];
         $campaign->website_id = $attributes['website_id'];
-       $campaign->post_type = $attributes['post_type'];
+        $campaign->post_type = $attributes['post_type'];
         $campaign->wp_template_id = $attributes['wp_template_id'];
         $campaign->data_source_id = $attributes['selected_datasource_id'];
         $campaign->status = 'ready';
