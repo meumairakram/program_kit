@@ -213,8 +213,11 @@ class SheetsController extends Controller {
         }
 
         if($client->isAccessTokenExpired()) {
-
-            if($accessToken->refresh_token != '' && $accessToken->refresh_token != 'Not available') {
+            $token = '';
+            if (is_object($accessToken) && property_exists($accessToken, 'refresh_token')) {
+                $token = $accessToken->refresh_token;
+            }
+            if($token != '' && $token != 'Not available') {
             
                 $new_access_token = $client->fetchAccessTokenWithRefreshToken($accessToken->refresh_token);
                 
