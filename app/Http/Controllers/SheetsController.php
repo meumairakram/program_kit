@@ -207,7 +207,7 @@ class SheetsController extends Controller {
 
         $client = $this->getClient();
 
-        $client->setAccessToken($accessToken['key_value']);
+        $client->setAccessToken($accessToken->key_value);
         // if (is_object($accessToken) && property_exists($accessToken, 'key_value')) {
         //     $client->setAccessToken($accessToken->key_value);
         // }
@@ -217,7 +217,7 @@ class SheetsController extends Controller {
             // if (is_object($accessToken) && property_exists($accessToken, 'refresh_token')) {
             //     $token = $accessToken->refresh_token;
             // }
-            if($accessToken['refresh_token'] != '' && $accessToken['refresh_token'] != 'Not available') {
+            if($accessToken->refresh_token != '' && $accessToken->refresh_token != 'Not available') {
             
                 $new_access_token = $client->fetchAccessTokenWithRefreshToken($accessToken->refresh_token);
                 
