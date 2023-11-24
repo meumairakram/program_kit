@@ -207,7 +207,10 @@ class SheetsController extends Controller {
 
         $client = $this->getClient();
 
-        $client->setAccessToken($accessToken->key_value);
+        // $client->setAccessToken($accessToken->key_value);
+        if (is_object($accessToken) && property_exists($accessToken, 'key_value')) {
+            $client->setAccessToken($accessToken->key_value);
+        }
 
         if($client->isAccessTokenExpired()) {
 
