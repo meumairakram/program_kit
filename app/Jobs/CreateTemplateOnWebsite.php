@@ -121,7 +121,9 @@ class CreateTemplateOnWebsite implements ShouldQueue
             return;
         }
 
-        
+        // Log::debug(json_encode($data['rows']));
+
+
         foreach($data['rows'] as $row_info) {
 
             $variablesMap = [];
@@ -155,9 +157,11 @@ class CreateTemplateOnWebsite implements ShouldQueue
                 $requestdataPrep['variables'] = $variablesMap;
             }
 
-            $alreadyExecuted = $existingExecInfo->filter(function($value, $key) use($row_number) {
-                return $value->data_address == $row_number;
-            })->count();
+            // $alreadyExecuted = $existingExecInfo->filter(function($value, $key) use($row_number) {
+            //     return $value->data_address == $row_number;
+            // })->count();
+
+            $alreadyExecuted = 0;
 
             if( $hasValue && $alreadyExecuted < 1) {
 
@@ -179,8 +183,9 @@ class CreateTemplateOnWebsite implements ShouldQueue
 
         $requestdataPrep['template_id'] = $campaign->wp_template_id;
 
-        // Log::debug("Request Data Prep " . json_encode($requestdataPrep));
+        Log::debug("Request Data Prep " . json_encode($requestdataPrep));
 
+        // Log::debug("DATA", )
         if(count($requestdataPrep['dataset']) > 0) {
             // Dont send call if there is no data set    
             $response = $websiteHelper->createTemplateFromValues($requestdataPrep);
@@ -189,7 +194,7 @@ class CreateTemplateOnWebsite implements ShouldQueue
 
         CampExecLog::insert( $campExecLogs);
 
-        CampaignExecStatus::setCampaignStatus($campaign_id, 'synced');
+        CampaignExecStatus::setCampaignStatus($campaign_id, 'synced_' . count($requestdataPrep['dataset']));
         
     }
 }

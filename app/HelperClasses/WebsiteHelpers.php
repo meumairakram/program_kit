@@ -18,7 +18,7 @@ class WebsiteHelpers {
             return;
         }
 
-        if($website_info->is_authenticated !== 'yes') {
+        if($website_info->is_authenticated !== 'Verified') {
             throw new \Exception("Website is not authenticated");
 
             return;
