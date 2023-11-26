@@ -14,8 +14,8 @@ return new class extends Migration
         //
 
         Schema::table("campaign_exec_status", function(Blueprint $table) {
-            $table->bigInteger('found_records')->default(0);
-            $table->bigInteger('created_records')->default(0);
+            $table->bigInteger('found_records')->default(0)->change();
+            $table->bigInteger('created_records')->default(0)->change();
         });
     }
 
@@ -26,8 +26,8 @@ return new class extends Migration
     {
         //
         Schema::table("campaign_exec_status", function(Blueprint $table) {
-            $table->bigInteger('found_records')->default(null);
-            $table->bigInteger('created_records')->default(null);
+            $table->bigInteger('found_records')->default(null)->change();
+            $table->bigInteger('created_records')->default(null)->change();
         });
     }
 };
