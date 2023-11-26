@@ -15,6 +15,8 @@ use App\Http\Controllers\DatasourcesController;
 use App\Http\Controllers\GoogleSheetController;
 use App\Http\Controllers\ChangePasswordController;
 
+use App\Http\Controllers\FakeApiController;
+
 
 
 /*
@@ -99,6 +101,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('delete-datasource/{id}', [DatasourcesController::class, 'delete'])->name('delete-datasource');
 
 	
+	Route::get('/test_endpoint', [FakeApiController::class, 'test_endpoint']);
 
 
 

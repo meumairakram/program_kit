@@ -4,6 +4,10 @@ namespace App\HelperClasses;
 
 use Google\Client;
 use Google\Service\Sheets;
+use Illuminate\Support\Facades\Log;
+
+
+
 class GoogleSheetHelpers {
 
 	public $user;
@@ -19,19 +23,20 @@ class GoogleSheetHelpers {
 	public function getUserAccessToken() {
 
 		$user = $this->user;
+		
 
 		if ( ! $user ) {
-
-			return false;
+			throw new \Exception("No user found");
 		}
 
 		$accessTokens = $user->google_access_token()->where( [ 'auth_type' => 'google_oauth' ] );
 
 		if ( $accessTokens->count() < 1 ) {
 
-			return false;
+			throw new \Exception("No Access token found in database.");
 		}
 
+		
         
 		return $accessTokens->first();
 
@@ -69,7 +74,7 @@ class GoogleSheetHelpers {
 
 		if ( ! $accessToken ) {
 
-			return false;
+			throw new \Exception("No Access token found for this user");
 			// redirect('/sheets/init');
 
 		}
@@ -97,7 +102,7 @@ class GoogleSheetHelpers {
 
 			} else {
 
-                return false;
+               throw new \Exception("Access token expired, No refresh token available in database.");
 
             }
 
@@ -109,7 +114,16 @@ class GoogleSheetHelpers {
 
 	public function readAllDataFromSheet( $sheet_id ) {
 
-		$client = $this->initializeClientWithAccessToken();
+		try {
+			$client = $this->initializeClientWithAccessToken();		
+		} catch(\Exception $e) {
+		
+			throw new \Exception($e->getMessage());
+
+			
+		}
+
+		// var_dump($client); die(); 
 
         $sheets = new Sheets($client);
         

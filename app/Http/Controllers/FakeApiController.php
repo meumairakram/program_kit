@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
 
-
+use App\HelperClasses\GoogleSheetHelpers;
 
 
 class FakeApiController extends Controller {
@@ -169,6 +170,19 @@ class FakeApiController extends Controller {
         ));
     
     
+    }
+
+
+    function test_endpoint(Request $request) {
+
+        $sheet_id = $request->input('sheet_id');
+        
+        $sheet_helpers = new GoogleSheetHelpers(Auth::user());
+        
+        $sheet_helpers->readAllDataFromSheet($sheet_id);
+
+
+
     }
 
 

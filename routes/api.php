@@ -105,5 +105,4 @@ Route::get('/validate_auth_key', [FakeApiController::class, 'validateAuthKey']);
 
 
 
-
 /// FAKE API ENDOINTS END HERE
