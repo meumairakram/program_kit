@@ -141,6 +141,9 @@ class StartCampaignSync implements ShouldQueue
         );
 
 
+        CampaignExecStatus::where(['campaign_id' => $campaign_id])->update(['found_records' => count($clean_data)]);
+
+        
         // var_dump($job_data);
         CreateTemplateOnWebsite::dispatch($campaign_id, $job_data);
 

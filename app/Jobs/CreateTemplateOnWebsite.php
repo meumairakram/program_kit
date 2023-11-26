@@ -92,9 +92,11 @@ class CreateTemplateOnWebsite implements ShouldQueue
         // Its an additonal step for Google sheets which are created locally, as they are 1:1 mapped
         foreach($campMapping as $index => $item) {
 
-            Log::debug("Searching for " . $item->field_header );
+
+            $search_key = "{" . $item->field_header . "}";
+            Log::debug("Searching forr: " . $search_key);
         
-            $headerIndex = array_search($item->field_header, $sourceHeaders);
+            $headerIndex = array_search($search_key, $sourceHeaders);
 
             if($headerIndex === false) {
             //    continue;
@@ -193,8 +195,10 @@ class CreateTemplateOnWebsite implements ShouldQueue
         }
 
         CampExecLog::insert( $campExecLogs);
+        //  . count($requestdataPrep['dataset'])
 
-        CampaignExecStatus::setCampaignStatus($campaign_id, 'synced_' . count($requestdataPrep['dataset']));
+        CampaignExecStatus::where(['campaign_id' => $campaign_id])->update(['created_records' => count($requestdataPrep['dataset'])]);
+        CampaignExecStatus::setCampaignStatus($campaign_id, 'synced');
         
     }
 }

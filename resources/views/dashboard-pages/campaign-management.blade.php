@@ -226,9 +226,14 @@
 
                         </div>
 
-                        <div class="col-md-12 pt-3">                                  
+                        <div class="col-md-6 pt-3">                                  
+                            <span class="text-bold">Found Records: <span x-text="$store.manage_campaign.campaign_info.found_pages"></span></span>
                             
+                        </div>
+
+                        <div class="col-md-6 pt-3">                                  
                             <span class="text-bold">Published pages: <span x-text="$store.manage_campaign.campaign_info.pages_published"></span></span>
+                            
                             
                         </div>
                     

@@ -310,8 +310,12 @@ class CampaignController extends Controller {
         $campaign = Campaign::leftjoin('campaign_exec_status', 'campaigns.id', 'campaign_exec_status.campaign_id')
         ->where(['campaigns.id' => $camp_id])
         ->get([
+
             'campaigns.*',
-            'campaign_exec_status.status as exec_status'
+            'campaign_exec_status.status as exec_status',
+            'campaign_exec_status.found_records',
+            'campaign_exec_status.created_records'
+            
         ])->first();
 
 
@@ -320,7 +324,6 @@ class CampaignController extends Controller {
                 'success' => false,
                 'error' => "Invalid campaign",
                 'data' => []
-            
             ));
         }    
 
@@ -332,7 +335,9 @@ class CampaignController extends Controller {
             'data' => [
                 'title' => $campaign->title,
                 'status' => $campaign->exec_status ? $campaign->exec_status : "N/A",
-                'pages_published' =>  $pages_count 
+                'pages_published' => $campaign->created_records,
+                'found_pages' => $campaign->found_records,
+                'total_pages_published' =>  $pages_count 
             ],
             'error' => null
         

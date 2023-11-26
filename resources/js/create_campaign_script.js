@@ -321,7 +321,7 @@ document.addEventListener('alpine:init', () => {
             }
 
             
-            var requestUrl = `${ajaxurl}?action=pseo_get_all_post_types&website_id${selectedWebsite}`;
+            var requestUrl = `${ajaxurl}?action=pseo_get_all_post_types`;
             // var requestUrl = '/api/get_post_types';   // enable if dont have wordpress, enable above on if testing realtie.
 
             
