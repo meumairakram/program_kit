@@ -93,14 +93,15 @@ class CreateTemplateOnWebsite implements ShouldQueue
         foreach($campMapping as $index => $item) {
 
 
-            $search_key = "{" . $item->field_header . "}";
+            $search_key = $item->field_header ;
             Log::debug("Searching forr: " . $search_key);
         
             $headerIndex = array_search($search_key, $sourceHeaders);
 
+
             if($headerIndex === false) {
-            //    continue;
-                $headerIndex = -1;
+                continue;
+                // $headerIndex = -1;
             }
 
             $varIndexMap[] = array(
@@ -108,7 +109,33 @@ class CreateTemplateOnWebsite implements ShouldQueue
                 'header_index' => $headerIndex    
             );
 
-        }   
+        } 
+
+
+        $utility_variables = ['post_slug'];
+
+        if(array_intersect($utility_variables, $sourceHeaders)) {
+
+            foreach($utility_variables as $utl_var) {
+
+                $headerIndex = array_search($utl_var, $sourceHeaders);
+            
+                if($headerIndex === false) {
+                    // continue;
+                    $headerIndex = -1;
+                }
+
+                $varIndexMap[] = array(
+                    'var' => $utl_var,
+                    'header_index' => $headerIndex    
+                );
+
+            }
+        }
+
+        
+
+
 
         $requestdataPrep = array(
             'variables' => [],
