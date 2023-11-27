@@ -269,9 +269,6 @@ class SheetsController extends Controller {
         }
 
 
-
-
-
         // Dont try to create sheet on local, as it will eventually fail
         if(env('APP_ENV') == 'local') {
 
