@@ -25,6 +25,7 @@ document.addEventListener('alpine:init', () => {
         gsheet_id: "",
         variables_exported : null,
         ds_loading: false,
+        wb_loading: false,
 
 
         // website variables
@@ -167,7 +168,7 @@ document.addEventListener('alpine:init', () => {
         setTemplateVariables() {
             
             var formValues = new FormData();
-
+            this.wb_loading = true;
             formValues.append('post_id', $pThis.wp_template_id);
 
 
@@ -212,6 +213,7 @@ document.addEventListener('alpine:init', () => {
                 })
 
                 $pThis.variablesMap = {...varsArray};
+                this.wb_loading = false;
 
                 
                 // Attempt automatch of fields.
@@ -227,7 +229,7 @@ document.addEventListener('alpine:init', () => {
 
         loadWebsites() {
             var selectedType = $pThis.website_type;
-
+            this.wb_loading = true;
 
             if(!selectedType) {
                 alert("website type channot be empty");
@@ -258,7 +260,7 @@ document.addEventListener('alpine:init', () => {
 
 
                     $pThis.avl_websites = [...websitesStore];
-
+                    this.wb_loading = false;
 
                 } else {
                     alert("error loading websites");
@@ -303,7 +305,7 @@ document.addEventListener('alpine:init', () => {
         loadPostTypes() {
 
             var selectedWebsite = $pThis.website_id;
-
+            this.wb_loading = true;
             if(!selectedWebsite) {
                 alert("website type channot be empty");
 
@@ -338,7 +340,7 @@ document.addEventListener('alpine:init', () => {
                 if(response.data.success) {
 
                     $pThis.avl_post_types = [...response.data.data.post_types];
-
+                    this.wb_loading = false;
 
 
                 }
@@ -355,7 +357,8 @@ document.addEventListener('alpine:init', () => {
 
             var selectedPostType = $pThis.post_type;
             var selectedWebsite = $pThis.website_id;
-            
+            this.wb_loading = true;
+        
             var formValues = new FormData();
             formValues.append('website_id', selectedWebsite);
             formValues.append('post_type', selectedPostType);
@@ -385,6 +388,7 @@ document.addEventListener('alpine:init', () => {
                 if(Array.isArray(response.data.data.posts)) {
                 
                     $pThis.avl_templates = [...response.data.data.posts];
+                    this.wb_loading = false;
                 }
 
             

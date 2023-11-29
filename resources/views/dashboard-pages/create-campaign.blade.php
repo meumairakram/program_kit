@@ -214,6 +214,20 @@
                                 <button type="button" @click="action_handle_website_submit_step" class="btn bg-gradient-dark btn-md mt-4 mb-4">Next</button>
                         </div>
 
+                        <div class="col-12"  x-show="wb_loading == true" >
+
+                            <div class="col-4 offset-8 d-flex align-items-center justify-content-end">
+
+                                <div class="spinner-border text-dark mr-2" style="width: 1.5rem;height: 1.5rem; margin-right : 8px;" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+
+                                <span>Processing...</span>
+
+                            </div>
+
+                        </div>
+
                         <div class="mt-3  alert alert-primary alert-dismissible fade show d-none secondError" role="alert">
                             <span class="alert-text text-white">You have to fill 'Website' section completely to proceed next.</span>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">

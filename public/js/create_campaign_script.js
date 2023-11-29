@@ -2255,7 +2255,7 @@ process.umask = function() { return 0; };
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"Promise based HTTP client for the browser and node.js","main":"index.js","scripts":{"test":"grunt test","start":"node ./sandbox/server.js","build":"NODE_ENV=production grunt build","preversion":"npm test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json","postversion":"git push && git push --tags","examples":"node ./examples/server.js","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","fix":"eslint --fix lib/**/*.js"},"repository":{"type":"git","url":"https://github.com/axios/axios.git"},"keywords":["xhr","http","ajax","promise","node"],"author":"Matt Zabriskie","license":"MIT","bugs":{"url":"https://github.com/axios/axios/issues"},"homepage":"https://axios-http.com","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"jsdelivr":"dist/axios.min.js","unpkg":"dist/axios.min.js","typings":"./index.d.ts","dependencies":{"follow-redirects":"^1.14.0"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}]}');
+module.exports = JSON.parse('{"_args":[["axios@0.21.4","D:\\\\coding-challenge-main\\\\New folder\\\\program_kit"]],"_development":true,"_from":"axios@0.21.4","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.4","name":"axios","escapedName":"axios","rawSpec":"0.21.4","saveSpec":null,"fetchSpec":"0.21.4"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_spec":"0.21.4","_where":"D:\\\\coding-challenge-main\\\\New folder\\\\program_kit","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
 
 /***/ })
 
@@ -2376,6 +2376,7 @@ document.addEventListener('alpine:init', function () {
     gsheet_id: "",
     variables_exported: null,
     ds_loading: false,
+    wb_loading: false,
     // website variables
     website_type: "wordpress",
     avl_websites: [],
@@ -2449,7 +2450,10 @@ document.addEventListener('alpine:init', function () {
       $pThis.setTemplateVariables();
     },
     setTemplateVariables: function setTemplateVariables() {
+      var _this = this;
+
       var formValues = new FormData();
+      this.wb_loading = true;
       formValues.append('post_id', $pThis.wp_template_id); // getCurrentWebsiteAjaxUrl
 
       var ajaxurl = $pThis.getCurrentWebsiteAjaxUrl();
@@ -2478,13 +2482,17 @@ document.addEventListener('alpine:init', function () {
             preview_row_data: null
           };
         });
-        $pThis.variablesMap = _objectSpread({}, varsArray); // Attempt automatch of fields.
+        $pThis.variablesMap = _objectSpread({}, varsArray);
+        _this.wb_loading = false; // Attempt automatch of fields.
 
         $pThis.autoMatchDSFields();
       });
     },
     loadWebsites: function loadWebsites() {
+      var _this2 = this;
+
       var selectedType = $pThis.website_type;
+      this.wb_loading = true;
 
       if (!selectedType) {
         alert("website type channot be empty");
@@ -2510,6 +2518,7 @@ document.addEventListener('alpine:init', function () {
             });
           });
           $pThis.avl_websites = [].concat(websitesStore);
+          _this2.wb_loading = false;
         } else {
           alert("error loading websites");
         }
@@ -2535,7 +2544,10 @@ document.addEventListener('alpine:init', function () {
       return ajaxurl;
     },
     loadPostTypes: function loadPostTypes() {
+      var _this3 = this;
+
       var selectedWebsite = $pThis.website_id;
+      this.wb_loading = true;
 
       if (!selectedWebsite) {
         alert("website type channot be empty");
@@ -2559,12 +2571,16 @@ document.addEventListener('alpine:init', function () {
 
         if (response.data.success) {
           $pThis.avl_post_types = _toConsumableArray(response.data.data.post_types);
+          _this3.wb_loading = false;
         }
       });
     },
     loadAvlTemplates: function loadAvlTemplates() {
+      var _this4 = this;
+
       var selectedPostType = $pThis.post_type;
       var selectedWebsite = $pThis.website_id;
+      this.wb_loading = true;
       var formValues = new FormData();
       formValues.append('website_id', selectedWebsite);
       formValues.append('post_type', selectedPostType); // getCurrentWebsiteAjaxUrl
@@ -2588,6 +2604,7 @@ document.addEventListener('alpine:init', function () {
 
         if (Array.isArray(response.data.data.posts)) {
           $pThis.avl_templates = _toConsumableArray(response.data.data.posts);
+          _this4.wb_loading = false;
         }
       });
     },
@@ -2689,7 +2706,7 @@ document.addEventListener('alpine:init', function () {
   });
 
   function action_create_new_sheet_with_vars(event) {
-    var _this = this;
+    var _this5 = this;
 
     event.preventDefault();
     this.ds_loading = true;
@@ -2711,7 +2728,7 @@ document.addEventListener('alpine:init', function () {
 
       if (response.data.success) {
         var sheetFormValues = new FormData();
-        sheetFormValues.append('title', _this.new_sheet_name);
+        sheetFormValues.append('title', _this5.new_sheet_name);
         sheetFormValues.append('type', 'google_sheet');
         sheetFormValues.append('requires_mapping', '0'); // sheetFormValues.append('file_path','');
 
