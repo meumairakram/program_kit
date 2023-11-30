@@ -119,7 +119,7 @@
                 </div>
 
                 <div class="card-body pt-4 p-3">
-                     <div class="row">
+                        <div class="row">
 
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -193,8 +193,7 @@
                                                 <option x-bind:value="template_option.id" x-text="`${template_option.title} - #${template_option.id}`"></option>
 
                                             </template>
-<!--                                             
-                                            <option value="2">Template title - #19</option>
+                                            <!--<option value="2">Template title - #19</option>
                                             <option value="3">Bubble</option> --> 
                                         </select>
 
@@ -208,6 +207,19 @@
 
                             <input type="hidden" name="template_name" id="templateName" value="">
                             <textarea class="d-none" name="variables" id="templateTextArea" value=""></textarea>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="user.phone" class="form-control-label">Page Status</label>
+                                    <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                        <select class="form-control web_sec_required" @change="handleTemplateFieldChange" name="pg_status" id="pg_status">
+                                            <option value="">-- Select Page Status --</option>
+                                            <option value="draft"> Draft </option>
+                                            <option value="publish"> Publish </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                         <div class="d-flex justify-content-start">

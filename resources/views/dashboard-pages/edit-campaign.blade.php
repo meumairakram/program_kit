@@ -70,7 +70,7 @@
                     <h6 class="mb-0">Choose Website</h6>
                 </div>
                 <div class="card-body pt-4 p-3">
-                     <div class="row">
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Select Website Type</label>
@@ -112,7 +112,6 @@
                                 <div class="form-group">
                                     <label for="user.phone" class="form-control-label">Post type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
-                                        <select class="form-control web_sec_required" name="post_type" @change="handleWebsitePostTypeChange" id="postType">
                                         <select x-model="selectedPostType"  class="form-control web_sec_required" name="post_type" @change="handleWebsitePostTypeChange" id="postType">
                                             <!-- <option value="{{$campaign->post_type}}">{{$campaign->post_type}}</option> -->
                                             <template x-for="post_type_option in avl_post_types">
@@ -148,6 +147,20 @@
                             </div>
                              <input type="hidden" name="template_name" id="templateName" value="{{$campaign->templateName}}">
                              <textarea class="d-none" name="variables" id="templateTextArea" value="{{$campaign->variables}}">{{$campaign->variables}}</textarea>
+
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="user.phone" class="form-control-label">Page Status</label>
+                                    <div class="@error('user.phone')border border-danger rounded-3 @enderror">
+                                        <select class="form-control web_sec_required" @change="handleTemplateFieldChange" name="pg_status" id="pg_status">
+                                            <option value="">-- Select Page Status --</option>
+                                            <option value="draft"> Draft </option>
+                                            <option value="publish"> Publish </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                 </div>
             </div>
@@ -165,7 +178,6 @@
                                             <template x-if="ds_source_type == 'existing'">
                                                 <div class="existing-datasource">
                                                     <select @change="set_ds_id" class="form-control datasource_sec_required" name="data_source_id" id="dataSource">
-                                                        <!-- <option value="{{$campaign->data_source_id}}">{{$campaign->name}}({{$campaign->data_source_type}})</option> -->
                                                         @foreach($allDatasources as $ds)
                                                             <option value="{{ $ds->id }}" name="{{ $ds->name }} ( {{$ds->type}} )">{{ $ds->name }} ( {{$ds->type}} )</option>
                                                         @endforeach
@@ -315,7 +327,7 @@
                             </div> -->
                             <input type="hidden" name="data_source_name" id="dataSourceName" value="">
                             <!-- <input type="hidden" name="data_source_id" id="dataSourceId" value=""> -->
-                            <textarea class="d-none" name="data_source_headers" id="sourceTextArea" value="{{$campaign->data_source_headers}}">{{$campaign->data_source_headers}}</textarea>
+                            <textarea class="d-none" name="data_source_headers" id="sourceTextArea" value=""></textarea>
                             <input type="hidden" id="variableArrayInput" name="variableArray" value="">
                             <input type="hidden" id="datasourceArrayInput" name="sourceArray" value="">
                     </div>
@@ -413,6 +425,7 @@
         var website_name = <?php echo json_encode($campaign->website_name); ?>;
         var post_type = <?php echo json_encode($campaign->post_type); ?>;
         var template_id = <?php echo json_encode($campaign->wp_template_id); ?>;
+        var pg_status = <?php echo json_encode($campaign->pg_status); ?>;
         var ds_id = <?php echo json_encode($campaign->data_source_id); ?>;
         var mapData = <?php echo json_encode($mapData); ?>;
         
