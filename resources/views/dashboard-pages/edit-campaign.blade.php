@@ -76,7 +76,7 @@
                                     <label for="user.phone" class="form-control-label">Select Website Type</label>
                                     <div class="@error('user.phone')border border-danger rounded-3 @enderror">
                                         <select class="form-control web_sec_required" @change="handleWebsiteTypeChange" name="website_type" id="websiteType">
-                                            <!-- <option value="{{$campaign->website_type}}">{{$campaign->type}}</option> -->
+                                            <option value="{{$campaign->website_type}}">{{$campaign->type}}</option>
                                             <option value="wordpress">Wordpress</option>
                                             <!-- <option value="wordpress">Webflow</option>
                                             <option value="wordpress">Bubble</option> -->

@@ -142,10 +142,11 @@ class CampaignController extends Controller {
         // store-campaign
     }
 
-    public function edit(Request $request, $id) {
+    public function edit(Request $request, $id) 
+    {
 
         $current_user_id = Auth::user()->id;
-//      $campaign = Campaign::where('id', $id)->first();
+            //      $campaign = Campaign::where('id', $id)->first();
         $campaign = DB::table('campaigns')
             ->leftjoin('user_datasources', 'campaigns.data_source_id', 'user_datasources.id')
             ->leftjoin('templates', 'campaigns.wp_template_id', '=', 'templates.template_id')
@@ -184,7 +185,7 @@ class CampaignController extends Controller {
         $campaign =  Campaign::find($request->id);
         $campaign->title = $request->title;
         $campaign->description = $request->description;
-        $campaign->website_type = $request->website_type;
+        $campaign->type = $request->website_type;
         $campaign->website_id = $request->website_id;
         $campaign->post_type = $request->post_type;
         $campaign->wp_template_id = $request->wp_template_id;
@@ -194,40 +195,36 @@ class CampaignController extends Controller {
         $campaign->owner_id = $user->id;
         $campaign->save();
 
-        $templateid= Template::where('template_id', $campaignid->wp_template_id)->where('owner_id', $user->id)->first();
-
-        $template = Template::find($templateid->id);
-        $template->template_id = $request->wp_template_id;;
-        $template->template = $request->template_name;
-        $template->template_variables = $request->variables;
-        $template->owner_id = $user->id;
-        $template->save();
-
-        $datasourceid = DataSourceField::where('data_source_id', $campaignid->data_source_id)->where('owner_id', $user->id)->first();
-
-        $dataSource = DataSourceField::find($datasourceid->id);
-        $dataSource->data_source_id = $request->data_source_id;
-        $dataSource->data_source = $request->data_source_name;
-        $dataSource->data_source_headers = $request->data_source_headers;
-        $dataSource->owner_id = $user->id;
-        $dataSource->save();
-
         $source_maps_fields = array();
-        $data_maps = json_decode($request->input('data_maps_json', true));
+        $data_maps = json_decode($request->input('data_maps_json'), true);
 
-        foreach($data_maps as $map) {
-
+        foreach ($data_maps as $map) {
             $variable_name = $map[0];
             $header_name = $map[1];
-
+        
             $source_maps_fields[] = array(
-
                 'campaign_id' => $campaign->id,
-                'data_source' => $variable_name,
-                'data_source_headers' => $header_name,  
-            
+                'template_variable' => $variable_name,
+                'field_header' => $header_name,
+                'val_type' => 'string'  
             );
         }
+        
+        $records = CampMap::where('campaign_id', $request->id)->get();
+        if(empty($records)){
+            CampMap::insert($source_maps_fields);
+        }
+        else{
+            foreach ($records as $index => $record) {
+                if (isset($source_maps_fields[$index])) {
+                    $record->update([
+                        'template_variable' => $source_maps_fields[$index]['template_variable'],
+                        'field_header' => $source_maps_fields[$index]['field_header'],
+                    ]);
+                }
+            }
+        }
+  
 
         return redirect()->route('campaign-management')->with('message', 'Campaign Updated successfully!');
     }
