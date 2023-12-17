@@ -15,6 +15,7 @@ use Google\Service\Sheets;
 use Google\Service\Sheets\ValueRange;
 
 use App\HelperClasses\TemplateHelpers;
+use App\HelperClasses\WebsiteHelpers;
 
 class SheetsController extends Controller {
     //  
@@ -272,24 +273,39 @@ class SheetsController extends Controller {
         // Dont try to create sheet on local, as it will eventually fail
         if(env('APP_ENV') == 'local') {
 
-            return response()->json([
-               "success" => true,
-                "data" => [
-                    "sheet_id" => "1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI"
-                ],
-                "error" => null
-            ]);
+
+            $new_sheet = "1l_hs1QcqCvNnQUBs72ik3kFIKJEey7gkKp-M-EaDcrI";
+
+
+        } else {
+
+
+            $new_sheet = $this->createNewGoogleSheet($sheet_title);
+
+
         }
 
 
         // WebsitesInfo;
 
 
-        $new_sheet = $this->createNewGoogleSheet($sheet_title);
+        
 
-        $variables = TemplateHelpers::getTemplateVarsArray();
+        if($new_sheet == false) {
+            return response()->json([
+                'success' => false,
+                'data' => [],
+                'error' => "There is an error creating Google sheet."
+            ]);
+        }
+
+
+        $website_helper = new WebsiteHelpers($website_id);
+
+        $variables = $website_helper->get_template_variables_array($template_id);
 
         $this->loadVariablesToSheetHeader($new_sheet, $variables);
+
         
         if($new_sheet) {
 
@@ -316,12 +332,17 @@ class SheetsController extends Controller {
         $client = $this->initializeClientWithAccessToken();
 
 
-
         if(!$client) {
 
             return false;
 
         }
+
+
+        $prefixed_variables = ['post_slug_url'];
+        // Add post slug url support
+        $vars_array = array_merge($vars_array, $prefixed_variables);
+        
 
         $service = new Sheets($client);
         $values = [$vars_array];

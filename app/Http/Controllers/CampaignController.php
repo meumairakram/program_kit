@@ -159,6 +159,7 @@ class CampaignController extends Controller {
                 'templates.template_variables as variables',
                 'user_websites.website_name as website_name',
                 'user_websites.website_url as website_url',
+                'user_websites.type as website_type',
                 'campaigns.*'
             )
             ->first();

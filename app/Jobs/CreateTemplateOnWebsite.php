@@ -112,7 +112,14 @@ class CreateTemplateOnWebsite implements ShouldQueue
         } 
 
 
-        $utility_variables = ['post_slug'];
+        // // add support for post slug urls
+        // $varIndexMap[] = array( 
+        //     'var' => 'post_slug_url',
+        //     'header_index' => 'post_slug_url'
+        // );
+
+
+        $utility_variables = ['post_slug_url'];
 
         if(array_intersect($utility_variables, $sourceHeaders)) {
 
@@ -211,6 +218,7 @@ class CreateTemplateOnWebsite implements ShouldQueue
 
 
         $requestdataPrep['template_id'] = $campaign->wp_template_id;
+        $requestdataPrep['post_status'] = $campaign->pg_status;
 
         Log::debug("Request Data Prep " . json_encode($requestdataPrep));
 

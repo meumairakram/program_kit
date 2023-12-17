@@ -72,9 +72,41 @@ class WebsiteHelpers {
     }    
 
 
+    public function get_template_variables_array($template_id) {
+
+        $action = 'pseo_get_post_variables';
+
+        $ajax_url = sprintf('%s?action=%s',$this->websiteInfo->request_url, $action);
+
+        $response = Http::asForm()
+        ->post($ajax_url, ['post_id' => $template_id]);
+
+         if ($response->successful()) {
+            $responseData = $response->json();
 
 
+            // Check if success is true in the JSON response
+            if ($responseData['success']) {
+                // Extract variables from the data array
+                $variables = $responseData['data']['variables'];
 
+                // You now have the variables in a PHP array
+                return $variables;
+            } else {
+                // Handle the case where success is not true
+                return [];
+            }
+
+        } else {
+            // Handle the case where the request was not successful
+            return [];
+        }
+
+// http://wpsandbox.local//wp-admin/admin-ajax.php?action=pseo_get_post_variables
+
+    }
+
+    
 
 
 
