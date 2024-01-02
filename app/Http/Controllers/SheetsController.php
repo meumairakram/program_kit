@@ -215,7 +215,12 @@ class SheetsController extends Controller {
             
                 $new_access_token = $client->fetchAccessTokenWithRefreshToken($accessToken->refresh_token);
                 
-                  
+
+                if(!array_key_exists('access_token', $new_access_token)) {
+
+                    return false;
+
+                }
               
                 $accessToken->key_value = $new_access_token['access_token'];
                 $accessToken->save();
@@ -231,6 +236,74 @@ class SheetsController extends Controller {
         return $client;
     
     }
+
+
+
+    public function http_get_sheet_row(Request $request) {
+
+            $sheet_id = $request->input("sheet_id");
+            $row_number = $request->input('row_number', 1);
+
+            if($sheet_id == "") {
+
+                return response()->json(array(
+                    'success' => false,
+                    'error' => "Google sheet Id is missing",
+                    'data' => null
+
+                ));
+
+            }
+
+            $client = $this->initializeClientWithAccessToken();
+
+
+
+            if(!$client) {
+                return response()->json(array(
+                    'success' => false,
+                    'error' => 'There is an error connecting to your google account, Please try to reconnect your google account and try again.',
+                    'data' => null
+
+                ));
+            }
+
+
+            $range_to_fetch = sprintf("A%s:ZZ%s", $row_number, $row_number);
+
+            $service = new Sheets($client);
+
+            try {   
+
+                $values = $service->spreadsheets_values->get($sheet_id, $range_to_fetch);
+
+                $title = $service->spreadsheets->get($sheet_id)->getProperties()->getTitle();
+                
+                $columns = is_array($values['values']) ? $values['values'][0] : [];
+
+                return response()->json([
+
+                    'success' => true,
+                    'data' => ['columns' => $columns, 'title' => $title],
+                    'error' => null
+
+                ]);
+
+
+            } catch (\Exception $e) {
+
+                return response()->json(array(
+                    "success" => false,
+                    "data" => null,
+                    "error" => "You are not authorized to access this google sheet"
+
+                ));
+
+            }     
+
+    }
+
+
 
     
     public function http_create_new_sheet(Request $request) {

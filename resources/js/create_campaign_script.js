@@ -26,6 +26,7 @@ document.addEventListener('alpine:init', () => {
         variables_exported : null,
         ds_loading: false,
         wb_loading: false,
+        existing_sheet_url: null,
 
 
         // website variables
@@ -140,6 +141,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         handleWebsiteIdChange(event) {
+
             $pThis.bind_field_on_change(event);
 
             $pThis.loadPostTypes();
@@ -160,6 +162,82 @@ document.addEventListener('alpine:init', () => {
             $pThis.bind_field_on_change(event);
 
             $pThis.setTemplateVariables();
+
+        },
+
+
+        handleExistingSheetUrlChange(event) {
+            
+            $pThis.bind_field_on_change(event);
+
+            
+            if(!$pThis['existing_sheet_url']) { 
+                
+                // alert("existing sheet url empty")
+                // set error message
+                return;
+            }
+
+            var match_pattern = $pThis['existing_sheet_url'].match(/docs.google.com\/spreadsheets\/d\/[a-zA-Z0-9-_]+/g)
+            
+            if(match_pattern.length < 1) {
+                // sheet url is invalid trigger error
+                console.log("invalid sheet url");
+            }
+
+            var existing_sheet_id = match_pattern[0].replace("docs.google.com/spreadsheets/d/","");
+
+            $pThis.gsheet_id = existing_sheet_id;
+
+            if(existing_sheet_id == "") {
+
+                // alert 
+                alert("invalid sheet url");
+                return;
+
+            }
+
+
+            var formValues = new FormData();
+
+            formValues.append("sheet_id", $pThis.gsheet_id);
+
+
+            // try to fetch sheet's first row - contians columns
+            axios.post('/sheets/get_sheet_row', formValues)
+            .then((response) => {
+
+                if(response.data.success) {
+                    
+                    var sheetColumns = response.data.data.columns;
+                    var sheetTitle = response.data.data.title;
+
+
+                    // set variables
+                    $pThis.requiresMapping = true;
+                    $pThis.datasourceFields = [...sheetColumns]
+                    $pThis.ds_loading = false;
+
+
+                    $pThis.incrementStep();
+
+                    // create a new datasource
+
+                    // mark as used datasource
+
+
+                } else {
+
+                    alert(response.data.error)
+
+                }
+
+            })
+            .catch(err => {
+
+                alert(err);
+
+            })
 
         },
 

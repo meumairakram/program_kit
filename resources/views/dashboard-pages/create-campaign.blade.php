@@ -357,9 +357,22 @@
 
                                                                         <div class="from-group">
 
-                                                                            <label class="d-block">Lets choose a Google Sheet</label>
+                                                                            <label class="d-block">Paste your google sheet URL from your browser:</label>
+                                                                            
+                                                                            <div class="">
 
-                                                                            <select class="form-control" name="select_existing_sheet">
+                                                                                <input type="text" class="form-control" name="existing_sheet_url" @change="handleExistingSheetUrlChange" placeholder="https://docs.google.com/spreadsheets/d/4545454FEFRGR454FR45f4reTRT4/edit#gid=0" />
+    
+                                                                                <div class="mt-2">
+                                                                                    <button class="btn btn-dark mt-sm">Connect Sheet</button>
+                                                                                    <span class="text-xs d-none">Trying to connect...</span>
+    
+                                                                                </div>
+
+                                                                            </div>
+
+
+                                                                            <!-- <select class="form-control" name="select_existing_sheet">
 
                                                                                 <option value="">-- Choose Existing sheet --</option>
 
@@ -369,7 +382,7 @@
                                                                                     @endif
                                                                                 @endforeach
 
-                                                                            </select>
+                                                                            </select> -->
 
                                                                         </div>
                                                                     </template>
