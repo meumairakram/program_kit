@@ -587,6 +587,11 @@
                                         </tbody>
 
                                     </table>
+                                    
+                                    <template x-if="ignoredDataSourceFields.length > 0">
+                                        <span class="text-sm"><strong>Note:</strong>System columns including: <span class="text-bold" x-text="getIgnoredColumns()"></span> are ignored as they cannot be mapped. </span>
+
+                                    </template>
 
                                 </div>
                                 

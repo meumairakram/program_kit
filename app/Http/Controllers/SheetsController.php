@@ -281,10 +281,19 @@ class SheetsController extends Controller {
                 
                 $columns = is_array($values['values']) ? $values['values'][0] : [];
 
+
+
+                // remove preset columns from the sheet
+
+                $preset_columns = ['post_slug_url'];
+                $filtered_columns = array_diff($columns , $preset_columns);
+                $ignored_columns = array_values(array_intersect($columns, $preset_columns));
+
+                
                 return response()->json([
 
                     'success' => true,
-                    'data' => ['columns' => $columns, 'title' => $title],
+                    'data' => ['columns' => $filtered_columns,'ignored_columns' => $ignored_columns, 'title' => $title],
                     'error' => null
 
                 ]);

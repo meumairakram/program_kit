@@ -106,6 +106,21 @@ class ApiHandler extends Controller {
   
         $title = $type == 'google_sheet' ? 'G-Sheet: ' . $title : $title;  
 
+
+        $findExistingRecords = Datasources::where(['sheet_id' => $sheet_id])->first();
+
+        if($findExistingRecords) {
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $findExistingRecords->id,
+                    'title' => $findExistingRecords->name
+                ],
+                'error' => ''
+            ]);
+
+        }
         
 
         $newDatasource = new Datasources();
@@ -122,7 +137,7 @@ class ApiHandler extends Controller {
             $newDatasource->last_synced = date('Y-m-d H:m:i',time());
 
         } elseif ($type == 'google_sheet') {
-    
+            
             $newDatasource->sheet_id = $sheet_id;    
             $newDatasource->records_count = 0;
             $newDatasource->last_synced = date('Y-m-d H:m:i',time());

@@ -42,6 +42,7 @@ document.addEventListener('alpine:init', () => {
         requiresMapping: false,
         variablesMap : {},
         datasourceFields: [],
+        ignoredDataSourceFields: [],
         firstDataRow: [],
 
 
@@ -50,6 +51,15 @@ document.addEventListener('alpine:init', () => {
         
 
         // Action creators
+
+
+        getIgnoredColumns() {
+
+
+            return $pThis.ignoredDataSourceFields.join(",");
+
+
+        },
 
 
         // global setter
@@ -202,6 +212,7 @@ document.addEventListener('alpine:init', () => {
 
             formValues.append("sheet_id", $pThis.gsheet_id);
 
+            $pThis.ds_loading = true;
 
             // try to fetch sheet's first row - contians columns
             axios.post('/sheets/get_sheet_row', formValues)
@@ -211,15 +222,55 @@ document.addEventListener('alpine:init', () => {
                     
                     var sheetColumns = response.data.data.columns;
                     var sheetTitle = response.data.data.title;
+                    var ignoredColumns = response.data.data.ignored_columns;
+
+                    var sheetFormValues = new FormData();
+                    sheetFormValues.append('title', sheetTitle);
+                    sheetFormValues.append('type','google_sheet');
+                    sheetFormValues.append('requires_mapping','0');
+                    // sheetFormValues.append('file_path','');
+                    sheetFormValues.append('sheet_id', $pThis.gsheet_id);
 
 
-                    // set variables
-                    $pThis.requiresMapping = true;
-                    $pThis.datasourceFields = [...sheetColumns]
-                    $pThis.ds_loading = false;
+                    // Create new Datasource 
+                    axios.post('/api/create_new_data_source', sheetFormValues)
+                    .then(function(resp) {
 
+                        if(resp.data.success) {
 
-                    $pThis.incrementStep();
+                            const {id, title} = resp.data.data;
+
+                            $pThis.data_source_id = {
+                                id:id, 
+                                title:title
+                            };
+
+                            // Object.keys($pThis.variablesMap)
+                            $pThis.datasourceFields = [...sheetColumns]
+                            $pThis.firstDataRow = [...new Array($pThis.datasourceFields.length)];
+                            
+                            $pThis.ignoredDataSourceFields = [...ignoredColumns];
+
+                            // temporarily enable mapping for google sheets
+                            $pThis.requiresMapping = true;
+
+                            $pThis.ds_loading = false;
+
+                            $pThis.incrementStep();
+
+                            $pThis.autoMatchDSFields();
+                        
+
+                        }
+
+                    });
+                    
+
+                    // // set variables
+                    // $pThis.requiresMapping = true;
+                    // $pThis.datasourceFields = [...sheetColumns]
+                    // $pThis.ds_loading = false;
+                    // $pThis.incrementStep();
 
                     // create a new datasource
 
