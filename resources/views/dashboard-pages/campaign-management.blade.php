@@ -153,9 +153,16 @@
                                         </td>
                                         <td class="text-center">
                                             
-                                            <a @click="showCampaignStatus({{ $camp->id }})" class="mx-2 cursor-pointer" data-bs-toggle="tooltip" data-bs-original-title="Run Status">
-                                                <i class="fas fa-play text-secondary"></i>
-                                            </a>
+                                            @if($camp->exec_status == "idle")
+                                                <a @click="showCampaignStatus({{ $camp->id }})" class="mx-2 cursor-pointer" data-bs-toggle="tooltip" data-bs-original-title="Run Status">
+                                                    <i class="fas fa-play text-secondary"></i>
+                                                </a>
+                                            @else
+                                                <a @click="showCampaignStatus({{ $camp->id }})" class="mx-2 cursor-pointer opacity-7" data-bs-toggle="tooltip" data-bs-original-title="Re sync campaign">
+                                                    <i class="fas fa-sync text-secondary"></i>
+                                                </a>
+
+                                            @endif
                                             
                                             <a href="{{ url('edit-campaign')}}/{{$camp->id}}" class="mx-2" data-bs-toggle="tooltip" data-bs-original-title="Edit Campaign">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill text-secondary" viewBox="0 0 16 16">
