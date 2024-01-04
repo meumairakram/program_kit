@@ -421,6 +421,38 @@ class CampaignController extends Controller {
     }
 
 
+
+    public function data_api_reset_campaign_status(Request $request, int $camp_id): \Illuminate\Http\JsonResponse {
+
+        
+
+        $selectCampaign = CampaignExecStatus::where(['campaign_id' => $camp_id])->first();
+
+        // var_dump($selectCampaign); die();
+        if(!$selectCampaign) {
+
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'error' => "Cannot find the campaign specified."
+            ]);
+
+        }
+
+
+        CampaignExecStatus::setCampaignStatus($camp_id, 'idle');
+    
+
+        return response()->json([
+            'success' => true,
+            'data' => $selectCampaign,
+            'error' => null
+
+        ]);
+
+    }
+
+
     // public function start camp sync
     public function data_api_campaign_start(Request $request, int $camp_id): \Illuminate\Http\JsonResponse {
 

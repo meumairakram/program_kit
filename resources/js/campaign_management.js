@@ -19,7 +19,9 @@ document.addEventListener('alpine:init', () => {
 
         
 
-        modalInstance: $('#campaign_detail_modal'),
+        startCampaignModel: $('#campaign_detail_modal'),
+        resyncCampaignModel: $('#action_confirm_model'),
+
         loading: true,
         status_info: "",
         campaign_info: {
@@ -34,10 +36,145 @@ document.addEventListener('alpine:init', () => {
 
         updateInfoTimeout: null,
 
+
+        confirmResyncCampaign(camp_id) {
+
+            $alpine.camp_id = camp_id;
+
+
+            $alpine.showModal($alpine.resyncCampaignModel);
+
+        },
+
+
+        resyncCampaign() {
+
+           var actionConfirmed =  $('#confirm_text_window').val().toLowerCase() === "yes";
+
+           if(!actionConfirmed) {
+                
+                $alpine.hideModal($alpine.resyncCampaignModel);
+                $alpine.camp_id = null;
+                return;
+
+           }
+
+           var camp_id = $alpine.camp_id;
+
+           // action cofnirmed proceed
+
+            $alpine.hideModal($alpine.resyncCampaignModel);
+            $alpine.showModal($alpine.startCampaignModel);
+
+            $alpine.setCampaignStatus("Resetting your Campaign Status");
+
+            // Reste campaign status via backend
+
+            axios.get(`/data_api/reset_campaign_status/${camp_id}`)
+            .then(response => {
+
+                if(!response.data.success) {
+
+                    alert(response.data.error);
+                    return ;
+                }
+
+
+                // get campaign info
+                axios.get(`/data_api/campaign_info/${camp_id}`)
+                .then(response => {
+                    $alpine.loading = false;
+                    if(response.data.success) {
+                        $alpine.campaign_info = {...$alpine.campaign_info , ...response.data.data}
+                        $alpine.setCampaignStatus('Testing website ping...');
+
+
+
+
+                        $alpine.testWebsitePing()
+                        .then(response => {
+                           
+                            if(response.data.success) {
+                            // if(true) {
+                            
+                                $alpine.campaign_info = {...$alpine.campaign_info , ...{website_pinged: true}}
+                                $alpine.setCampaignStatus('Testing website Successful, Starting campaign sync...');
+
+                                $alpine.setWatchTimeout();
+
+                                if($alpine.campaign_info.status == "idle") {
+                                
+                                    $alpine.startCampaignSync();
+                                }
+
+                            } else {
+
+                                $alpine.setCampaignStatus('Website ping failed...');
+                            
+                            }
+                        
+                        });
+
+
+
+
+
+                    }
+                });
+
+
+
+
+            });
+            
+
+            // get campaign info
+            // axios.get(`/data_api/campaign_info/${camp_id}`)
+            // .then(response => {
+            //     $alpine.loading = false;
+            //     if(response.data.success) {
+            //         $alpine.campaign_info = {...$alpine.campaign_info , ...response.data.data}
+            //         $alpine.setCampaignStatus('Testing website ping...');
+            //     }
+            // });
+
+
+
+
+            // $alpine.testWebsitePing()
+            // .then(response => {
+            //    
+            //     // if(response.data.success) {
+            //     if(true) {
+                
+            //         $alpine.campaign_info = {...$alpine.campaign_info , ...{website_pinged: true}}
+            //         $alpine.setCampaignStatus('Testing website Successful, Starting campaign sync...');
+
+            //         $alpine.setWatchTimeout();
+
+            //         if($alpine.campaign_info.status == "idle") {
+                      
+            //             $alpine.startCampaignSync();
+            //         }
+
+            //     } else {
+
+            //         $alpine.setCampaignStatus('Website ping failed...');
+                
+            //     }
+            
+            // });
+
+
+
+
+        },
+
+
         showCampaignStatus(camp_id) {
 
             $alpine.camp_id = camp_id;
-            $alpine.showModal();
+            $alpine.showModal($alpine.startCampaignModel);
 
             axios.get(`/data_api/campaign_info/${camp_id}`)
             .then(response => {
@@ -123,6 +260,8 @@ document.addEventListener('alpine:init', () => {
                     $alpine.setCampaignStatus("Syncing");
                     
                     $alpine.updateCampaignInfo();
+
+
                 }
             });
 
@@ -170,7 +309,7 @@ document.addEventListener('alpine:init', () => {
                     return ;
                 }
 
-                if(!$alpine.modalInstance.hasClass('show')) {
+                if(!$alpine.startCampaignModel.hasClass('show')) {
                    
                     clearInterval($alpine.updateInfoTimeout)
                 }
@@ -194,16 +333,16 @@ document.addEventListener('alpine:init', () => {
         },
 
 
-        showModal() {
+        showModal(targetModel) {
 
-            $alpine.modalInstance.modal('show');
+            targetModel.modal('show');
 
         },
 
 
-        hideModal() {
+        hideModal(targetModel) {
 
-            $alpine.modalInstance.modal('hide');
+            targetModel.modal('hide');
 
         },
 

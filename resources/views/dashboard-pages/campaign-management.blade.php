@@ -158,7 +158,7 @@
                                                     <i class="fas fa-play text-secondary"></i>
                                                 </a>
                                             @else
-                                                <a @click="showCampaignStatus({{ $camp->id }})" class="mx-2 cursor-pointer opacity-7" data-bs-toggle="tooltip" data-bs-original-title="Re sync campaign">
+                                                <a @click="confirmResyncCampaign({{ $camp->id }})" class="mx-2 cursor-pointer opacity-7" data-bs-toggle="tooltip" data-bs-original-title="Re sync campaign">
                                                     <i class="fas fa-sync text-secondary"></i>
                                                 </a>
 
@@ -258,6 +258,50 @@
     </div>
 
 </div>
+
+
+
+
+<div class="modal fade" id="action_confirm_model">  
+    <div class="modal-dialog">
+        <div class="modal-content py-4 px-2" x-data="">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Confirm your action</h4>
+
+                        <p>Restarting a campaign sync can result in duplicate pages, and cannot be reversed until you delete it from the main website.</p>
+
+                        <p>Confirm your action by writing "YES" in the input field below</p>
+
+                        <div class="form-group">
+                            <label class="mb-2 d-block">Type here:</label>
+                            <input type="text" id="confirm_text_window" name="action_confirmation" class="form-control" />
+
+                        </div>
+                        
+
+                        <div class="row">
+                            <div class="col-sm-12 mt-2">
+                                <button class="btn btn-outline mr-2" @click="$store.manage_campaign.hideModal($store.manage_campaign.resyncCampaignModel)">Cancel</button>
+                                
+                                <button @click="$store.manage_campaign.resyncCampaign" class="btn bg-gradient-dark btn-primary" style="margin-left: 10px;">Continue</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    
+
+                </div>
+                                                        
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
     
