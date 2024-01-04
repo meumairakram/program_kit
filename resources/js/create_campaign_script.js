@@ -18,7 +18,7 @@ document.addEventListener('alpine:init', () => {
         sheet_type: null,   //  new or exisitng
         data_source_id: null,
         // create_new_datasource: action_create_new_datasource.bind(this),
-        ds_source_type: "existing",     // new or existing
+        ds_source_type: "new",     // new or existing
 
         new_ds_type: null,
         gsheet_type:"new_sheet",

@@ -432,7 +432,7 @@
 
                                                     <template x-if="new_ds_type == 'csv'">
 
-                                                        <span>Upload a CSV File</span>
+                                                        <span>Upload a CSV File (Coming soon)</span>
 
 
                                                     </template>
