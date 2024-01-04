@@ -288,7 +288,7 @@
                                                     </div>
 
                                                     <div class="mt-2">
-                                                        <button class="btn ds-new" @click='(e) => { action_switch_ds_type(e, "new") }'>Add new datasource</button>
+                                                        <a class="text-decoration-underline ds-new" @click='(e) => { action_switch_ds_type(e, "new") }'>Add new datasource</a>
                                                     </div>
 
                                                 </div>
@@ -411,13 +411,16 @@
 
 
                                                             <template x-if="!google_acc_connected">
-                                                                <h6>Seems like your google account is not connected. <a class="text-underline" target="_blank" href="/sheets/init"> Connect here</a></h6>
-                                                                <span> Lets connect your Google account first</span>
-                                                                
-                                                                <div class="mt-3">
-
-                                                                    <a target="blank" href="/sheets/init"  class="btn secondary">Connect Google Account</a>
-
+                                                                <div>
+                                                                    
+                                                                    <h6>Seems like your google account is not connected.</h6>
+                                                                    <span> Lets connect your Google account first</span>
+                                                                    
+                                                                    <div class="mt-3">
+    
+                                                                        <a target="blank" href="/sheets/init"  class="btn btn-dark">Connect Google Account</a>
+    
+                                                                    </div>
                                                                 </div>
                                                             </template>
                                                             
@@ -440,7 +443,7 @@
 
 
                                                     <div class="mt-4">
-                                                        <button class="btn ds-existing" @click='(e) => { action_switch_ds_type(e, "existing") }'>Use existing datasource</button>
+                                                        <a class="text-decoration-underline cursor-pointer" @click='(e) => { action_switch_ds_type(e, "existing") }'>Use existing datasource</button>
                                                     </div>
                                                 
                                                 </div>
